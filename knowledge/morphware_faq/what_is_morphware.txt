@@ -1,0 +1,1 @@
+What is Morphware and what is XMW? Morphware is a machine learning platform that enables users to execute powerful agents, train models, or interact with any model they choose. XMW is the token of Morphware - an AI training platform. The XMW token operates on Ethereum mainnet.

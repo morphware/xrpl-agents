@@ -1,0 +1,15 @@
+__pycache__
+env/
+*.pyc
+*.pyo
+venv/
+.idea/
+.vscode/
+.env
+*.session
+orig_app.py
+src/agent/agent_stable.py
+src/main_stable.py
+telegram.py.txt
+app.log
+*.bin

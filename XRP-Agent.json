@@ -1,0 +1,53 @@
+[
+    {
+        "type": "prompt_filter",
+        "model": "llama3.3:70b-instruct-q8_0",
+        "tools": [],
+        "system_prompt": "",
+        "id": "prompt_filter_1",
+        "input": ["start"],
+        "output": ["planner_1", "direct_llm_1", "direct_tool_1"],
+        "priority": 1
+    },
+    {
+        "type": "direct_llm",
+        "model": "llama3.3:70b-instruct-q8_0",
+        "tools": [],
+        "system_prompt": "",
+        "id": "direct_llm_1",
+        "input": ["prompt_filter_1"],
+        "output": ["end"],
+        "priority": 3
+    },
+    {
+        "type": "direct_tool",
+        "model": "llama3.3:70b-instruct-q8_0",
+        "tools": ["all"],
+        "system_prompt": "",
+        "id": "direct_tool_1",
+        "input": ["prompt_filter_1"],
+        "output": ["end"],
+        "priority": 2
+    },
+    {
+        "type": "planner",
+        "model": "llama3.3:70b-instruct-q8_0",
+        "tools": ["MorphwareKnowledgeTool"],
+        "system_prompt": "",
+        "id": "planner_1",
+        "input": ["prompt_filter_1"],
+        "output": ["executor_1"],
+        "priority": 4
+    },
+    {
+        "type": "executor",
+        "model": "llama3.3:70b-instruct-q8_0",
+        "tools": ["UniblockTool", "CryptoAnalysis", "CryptoPrice", "CryptoPrice", "direct_llm", "MorphwareKnowledgeTool", "TavilySearch", "Wikipedia", "Search", "calculator", "youtube_transcript", "twitter"],
+        "system_prompt": "",
+        "id": "executor_1",
+        "input": ["planner_1"],
+        "output": ["end"],
+        "priority": 5
+    }
+
+]

@@ -1,0 +1,15 @@
+The Morphware team consists of the following core members:
+Kenso Trabing - Founder
+Kenso Trabing founded Morphware in 2021.  He previously worked as a senior data scientist for a blockchain-based venture studio.  He has taught hands-­on coding techniques at the Princeton Quant conference and Yale Blockchain Bootcamp.
+
+Darshan Raju - AI Lead
+Darshan has been with Morphware since 2021.  He previously worked at Microsoft as a software engineer and now works at Byte Dance on TikTok.
+
+Anthony Albertorio - Community Lead
+Anthony has been with Morphware since 2021, as an advisor, and recently joined full-time.  He previously worked at zkSync as their director of developer relations.  Before that, he worked at ConsenSys as their director of community development and developer relations.
+
+Asim Jan - CTO
+Asim Jan is an experienced AI consultant has successfully managed high-value AI projects at Shell, deploying innovative solutions in real-time image processing and edge computing. Asim has a PhD in AI and has a proven ability to bring AI projects from research to a production environment.
+
+Chris Mallalieu - Blockchain engineer
+He has worked in the blockchain industry for several years, both professionally and as a hobbyist. Formerly a software engineer at Crossmint, he has experience building high-performance decentralized applications utilizing blockchain backends
