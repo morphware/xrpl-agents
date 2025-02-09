@@ -14,7 +14,6 @@ from src.utils.logger import setup_logger, chat_ui_logger
 from src.tools import discover_tools
 from src.agent.agent import MultiAgentSystem
 from memory import GlobalMemory
-from src.utils.mw_api_handler import create_chat_init_message_payload
 from src.agent.agent_loader import Agent, AgentStruct, AgentsWorkflow
 import requests
 import json
