@@ -5,6 +5,7 @@ from langchain.tools import BaseTool
 from xrpl.clients import JsonRpcClient
 from xrpl.models.requests import GatewayBalances
 from xrpl.wallet import Wallet
+from config import Config
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from base import BaseCustomTool
@@ -26,13 +27,8 @@ class XRPLGetBalanceTool(BaseCustomTool, BaseTool):
         client = JsonRpcClient("https://s.altnet.rippletest.net:51234")
         try:
             # Get sender's credentials from environment variables
-            xrpl_sender_secret = os.getenv("XRPL_WALLET_SECRET")
-            if not xrpl_sender_secret:
-                return "Sender credentials not set. Please set XRPL_WALLET_SECRET in your environment."
-
-            wallet = Wallet.from_seed(xrpl_sender_secret)
             request=GatewayBalances(
-                account=wallet.address,
+                account=Config.XRP_WALLET.address,
                 ledger_index="validated"
             )
 

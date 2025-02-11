@@ -44,6 +44,16 @@ class Config:
     # Just incase to disable anonymized telemetry from Chroma
     os.environ["ANONYMIZED_TELEMETRY"] = "False"
 
+    # init XRP Wallet
+    XRPL_WALLET_SECRET = os.getenv("XRPL_WALLET_SECRET", None)
+    if XRPL_WALLET_SECRET:
+        from xrpl.wallet import Wallet
+        XRP_WALLET = Wallet.from_seed(XRPL_WALLET_SECRET)
+    else:
+        XRP_WALLET = None
+
+
+
     # Kafka Settings
     if KAFKA.lower() == "true":
         from src.utils.kafka import create_kafka_producer, create_kafka_consumer, send_to_kafka, consume_from_kafka, get_kafka_messages

@@ -4,6 +4,7 @@ import os
 import sys
 from typing import ClassVar
 from langchain.tools import BaseTool
+from config import Config
 from xrpl.models.requests import AccountInfo
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))

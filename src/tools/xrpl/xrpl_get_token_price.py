@@ -1,6 +1,6 @@
 from typing import ClassVar
 from langchain.tools import BaseTool
-
+from config import Config
 # from ..base import BaseCustomTool
 from xrpl.clients import JsonRpcClient
 from xrpl.models.requests import BookOffers

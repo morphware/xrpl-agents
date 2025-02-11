@@ -3,6 +3,7 @@ import sys
 import json
 from typing import ClassVar
 from langchain.tools import BaseTool
+from config import Config
 from xrpl.clients import JsonRpcClient
 from xrpl.models.requests import NFTBuyOffers, NFTSellOffers
 

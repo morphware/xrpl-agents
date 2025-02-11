@@ -2,6 +2,7 @@ import os
 import sys
 from typing import ClassVar
 from langchain.tools import BaseTool
+from config import Config
 from xrpl.clients import JsonRpcClient
 from xrpl.wallet import Wallet
 from xrpl.models.transactions import NFTokenAcceptOffer
@@ -14,34 +15,26 @@ class XRPLAcceptSellOfferTool(BaseCustomTool, BaseTool):
     """
     Tool for accepting an NFT sell offer on the XRPL testnet.
     Input should be the offer index.
-    The buyer's secret is taken from the environment variable:
-        XRPL_WALLET_SECRET.
     """
     name: ClassVar[str] = "XRPLAcceptSellOffer"
     description: ClassVar[str] = (
         "Accept an NFT sell offer on the XRPL. "
         "Input should be the offer index. "
-        "The buyer's secret is taken from XRPL_WALLET_SECRET environment variable."
     )
 
     def _run(self, tool_input: str) -> str:
         try:
             offer_index = tool_input.strip()
             
-            buyer_secret = os.getenv("XRPL_WALLET_SECRET")
-            if not buyer_secret:
-                return "Buyer credentials not set. Please set XRPL_WALLET_SECRET in your environment."
-            
-            wallet = Wallet.from_seed(buyer_secret)
             client = JsonRpcClient("https://s.altnet.rippletest.net:51234")
 
             accept_offer_tx = NFTokenAcceptOffer(
-                account=wallet.address,
+                account=Config.XRP_WALLET.address,
                 nftoken_sell_offer=offer_index
             )
 
             try:
-                response = tx.submit_and_wait(accept_offer_tx, client, wallet)
+                response = tx.submit_and_wait(accept_offer_tx, client, Config.XRP_WALLET)
                 return str(response.result)
             except tx.XRPLReliableSubmissionException as e:
                 return f"Submit failed: {e}"
@@ -53,7 +46,6 @@ class XRPLAcceptSellOfferTool(BaseCustomTool, BaseTool):
 
 if __name__ == "__main__":
     # Example usage:
-    # Set XRPL_WALLET_SECRET env variable before running.
     tool = XRPLAcceptSellOfferTool()
     example_input = ""  # Replace with a real offer index
     result = tool._run(example_input)
