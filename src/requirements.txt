@@ -22,3 +22,4 @@ wikipedia
 youtube_transcript_api
 tweepy
 telethon
+xrpl-py

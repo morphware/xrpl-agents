@@ -15,7 +15,6 @@ from src.tools import discover_tools
 from src.agent.agent import MultiAgentSystem
 from memory import GlobalMemory
 from src.utils.kafka import send_to_kafka
-from src.utils.mw_api_handler import create_chat_init_message_payload
 
 
 os.environ["ANONYMIZED_TELEMETRY"] = "False"
