@@ -5,10 +5,8 @@ from langchain.tools import BaseTool
 from xrpl.clients import JsonRpcClient
 from xrpl.models.requests import GatewayBalances
 from xrpl.wallet import Wallet
-from config import Config
-
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-from base import BaseCustomTool
+from ...config import Config
+from ..base import BaseCustomTool
 
 
 

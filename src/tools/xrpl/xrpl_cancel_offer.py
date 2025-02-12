@@ -6,10 +6,8 @@ from xrpl.clients import JsonRpcClient
 from xrpl.wallet import Wallet
 from xrpl.models.transactions import NFTokenCancelOffer
 from xrpl import transaction as tx
-from config import Config
-
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-from base import BaseCustomTool
+from ...config import Config
+from ..base import BaseCustomTool
 
 class XRPLCancelOfferTool(BaseCustomTool, BaseTool):
     """

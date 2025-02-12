@@ -3,14 +3,12 @@ import sys
 from datetime import datetime
 from typing import ClassVar
 from langchain.tools import BaseTool
-from config import Config
+from ...config import Config
 from xrpl.clients import JsonRpcClient
 from xrpl.wallet import Wallet
 from xrpl.models.transactions import NFTokenCreateOffer
 from xrpl import transaction as tx
-
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-from base import BaseCustomTool
+from ..base import BaseCustomTool
 
 import xrpl.utils
 

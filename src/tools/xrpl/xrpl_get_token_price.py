@@ -1,14 +1,11 @@
 from typing import ClassVar
 from langchain.tools import BaseTool
-from config import Config
-# from ..base import BaseCustomTool
+from ...config import Config
+from ..base import BaseCustomTool
 from xrpl.clients import JsonRpcClient
 from xrpl.models.requests import BookOffers
 import os
 import sys
-
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-from base import BaseCustomTool
 
 class XRPLTokenPriceTool(BaseCustomTool, BaseTool):
     """

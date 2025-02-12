@@ -2,14 +2,12 @@ import os
 import sys
 from typing import ClassVar
 from langchain.tools import BaseTool
-from config import Config
 from xrpl.clients import JsonRpcClient
 from xrpl.models.transactions import Payment
 from xrpl import transaction as tx
 from xrpl.wallet import Wallet
-
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-from base import BaseCustomTool
+from ..base import BaseCustomTool
+from ...config import Config
 
 class XRPLSendXrpTool(BaseCustomTool, BaseTool):
     """
