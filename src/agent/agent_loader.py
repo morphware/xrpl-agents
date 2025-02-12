@@ -11,6 +11,7 @@ from agent.agents.PlannerAgent import PlannerAgent
 from agent.agents.DirectLLMChain import DirectLLMChain
 from agent.agents.FilterPromptLLM import PromptFilter
 from agent.agents.DirectToolLLM import DirectToolLLM
+from agent.agents.XRPLToolAgent import XRPLToolAgent
 import json
 
 AGENT_TYPES = {
@@ -19,7 +20,8 @@ AGENT_TYPES = {
     "reviewer": ReviewerAgent,
     "planner": PlannerAgent,
     "direct_llm": DirectLLMChain,
-    "direct_tool": DirectToolLLM
+    "direct_tool": DirectToolLLM,
+    "xrpl_tool": XRPLToolAgent
 }
 
 class AgentStruct(BaseModel):

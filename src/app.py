@@ -46,7 +46,7 @@ app = Flask(__name__)
 tools = discover_tools()
 print([tool.name for tool in tools])
 
-workflow = "XRP-Agent.json"
+workflow = "XRPL.json"
 
 # Initialize the multi-agent system with shared memory
 agent_system = MultiAgentSystem(workflow=workflow, tools=tools)
@@ -90,4 +90,4 @@ def handle_prompt():
         return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=5050)
