@@ -51,7 +51,7 @@ class Config:
         XRP_WALLET = Wallet.from_seed(XRPL_WALLET_SECRET)
     else:
         XRP_WALLET = None
-
+    XRPL_ENDPOINT = os.getenv("XRPL_ENDPOINT", "https://s.altnet.rippletest.net:51234")
 
 
     # Kafka Settings

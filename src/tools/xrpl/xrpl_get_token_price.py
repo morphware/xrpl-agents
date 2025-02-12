@@ -29,7 +29,7 @@ class XRPLTokenPriceTool(BaseCustomTool, BaseTool):
             token_code = parts[0].strip().upper()
             issuer = parts[1].strip()
             # Connect to the XRPL mainnet
-            client = JsonRpcClient("https://s.altnet.rippletest.net:51234")
+            client = JsonRpcClient(Config.XRPL_ENDPOINT)
 
             # Build order book request:
             # Get offers where taker_gets is XRP and taker_pays is the token.

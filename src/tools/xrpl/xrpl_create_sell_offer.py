@@ -39,7 +39,7 @@ class XRPLCreateSellOfferTool(BaseCustomTool, BaseTool):
             expiration = parts[2].strip()
             destination = parts[3].strip()
             
-            client = JsonRpcClient("https://s.altnet.rippletest.net:51234")
+            client = JsonRpcClient(Config.XRPL_ENDPOINT)
 
             # Prepare expiration if provided
             expiration_value = None

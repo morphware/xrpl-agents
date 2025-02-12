@@ -22,7 +22,7 @@ class XRPLGetOffersTool(BaseCustomTool, BaseTool):
     def _run(self, tool_input: str) -> str:
         try:
             nft_id = tool_input.strip()
-            client = JsonRpcClient("https://s.altnet.rippletest.net:51234")
+            client = JsonRpcClient(Config.XRPL_ENDPOINT)
 
             # Get buy offers
             buy_offers_request = NFTBuyOffers(nft_id=nft_id)

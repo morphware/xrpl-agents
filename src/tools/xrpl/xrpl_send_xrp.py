@@ -37,7 +37,7 @@ class XRPLSendXrpTool(BaseCustomTool, BaseTool):
             amount_drops = str(int(amount_xrp * 1_000_000))
 
             # Connect to the XRPL mainnet
-            client = JsonRpcClient("https://s.altnet.rippletest.net:51234")
+            client = JsonRpcClient(Config.XRPL_ENDPOINT)
 
             # Create Payment transaction
             payment = Payment(

@@ -22,7 +22,7 @@ class XRPLGetBalanceTool(BaseCustomTool, BaseTool):
     )
 
     def _run(self, tool_input: str) -> str:
-        client = JsonRpcClient("https://s.altnet.rippletest.net:51234")
+        client = JsonRpcClient(Config.XRPL_ENDPOINT)
         try:
             # Get sender's credentials from environment variables
             request=GatewayBalances(

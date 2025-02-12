@@ -24,7 +24,7 @@ class XRPLCancelOfferTool(BaseCustomTool, BaseTool):
         try:
             offer_id = tool_input.strip()
             
-            client = JsonRpcClient("https://s.altnet.rippletest.net:51234")
+            client = JsonRpcClient(Config.XRPL_ENDPOINT)
 
             cancel_offer_tx = NFTokenCancelOffer(
                 account=Config.XRP_WALLET.address,

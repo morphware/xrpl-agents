@@ -24,7 +24,7 @@ class XRPLAcceptBuyOfferTool(BaseCustomTool, BaseTool):
         try:
             offer_index = tool_input.strip()
             
-            client = JsonRpcClient("https://s.altnet.rippletest.net:51234")
+            client = JsonRpcClient(Config.XRPL_ENDPOINT)
 
             accept_offer_tx = NFTokenAcceptOffer(
                 account=Config.XRP_WALLET.address,
