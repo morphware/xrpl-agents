@@ -3,6 +3,9 @@ from dotenv import load_dotenv
 import logging
 import json
 import uuid
+from xrpl.wallet import Wallet
+from xrpl.wallet.wallet_generation import generate_faucet_wallet
+from xrpl.clients import JsonRpcClient
 load_dotenv()
 
 class Config:
@@ -45,13 +48,13 @@ class Config:
     os.environ["ANONYMIZED_TELEMETRY"] = "False"
 
     # init XRP Wallet
-    XRPL_WALLET_SECRET = os.getenv("XRPL_WALLET_SECRET", None)
+    XRPL_WALLET_SECRET = os.getenv("XRPL_WALLET_SECRET", 'sEd7ifJUaDCfH9wEy78EX4SfyA9vv7E')
+    XRPL_ENDPOINT = os.getenv("XRPL_ENDPOINT", "https://s.altnet.rippletest.net:51234")
     if XRPL_WALLET_SECRET:
-        from xrpl.wallet import Wallet
         XRP_WALLET = Wallet.from_seed(XRPL_WALLET_SECRET)
     else:
-        XRP_WALLET = None
-    XRPL_ENDPOINT = os.getenv("XRPL_ENDPOINT", "https://s.altnet.rippletest.net:51234")
+        client = JsonRpcClient(XRPL_ENDPOINT)
+        XRP_WALLET = generate_faucet_wallet(client=JsonRpcClient(XRPL_ENDPOINT))
 
 
     # Kafka Settings
