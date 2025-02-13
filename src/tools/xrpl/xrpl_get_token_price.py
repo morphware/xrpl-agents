@@ -62,14 +62,14 @@ class XRPLTokenPriceTool(BaseCustomTool, BaseTool):
 
             token_amount = float(taker_pays.get("value", 0)) if isinstance(taker_pays, dict) else float(taker_pays)
             if token_amount == 0:
-                return f"Token amount is zero in the best offer for {token_code}."
+                return True, f"Token amount is zero in the best offer for {token_code}."
 
             # Calculate price as XRP per token
             price = xrp_amount / token_amount
 
-            return f"The current price for {token_code} is approximately {price:.6f} XRP per token."
+            return True, f"The current price for {token_code} is approximately {price:.6f} XRP per token."
         except Exception as e:
-            return f"Error retrieving token price: {str(e)}"
+            return False, f"Error retrieving token price: {str(e)}"
 
     async def _arun(self, tool_input: str) -> str:
         raise NotImplementedError("Async execution is not supported for XRPLTokenPriceTool.")

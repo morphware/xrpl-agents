@@ -64,11 +64,11 @@ class XRPLCreateBuyOfferTool(BaseCustomTool, BaseTool):
 
             try:
                 response = tx.submit_and_wait(buy_offer_tx, client, Config.XRP_WALLET)
-                return str(response.result)
+                return True, str(response.result)
             except tx.XRPLReliableSubmissionException as e:
-                return f"Submit failed: {e}"
+                return False, f"Submit failed: {e}"
         except Exception as e:
-            return f"Error creating buy offer: {str(e)}"
+            return False, f"Error creating buy offer: {str(e)}"
 
     async def _arun(self, tool_input: str) -> str:
         raise NotImplementedError("Async execution is not supported for XRPLCreateBuyOfferTool.")

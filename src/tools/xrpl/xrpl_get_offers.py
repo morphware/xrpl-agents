@@ -37,9 +37,9 @@ class XRPLGetOffersTool(BaseCustomTool, BaseTool):
             sell_offers_str = "\n\nSell Offers:\n" + sell_offers_json
 
             all_offers = buy_offers_str + sell_offers_str
-            return all_offers
+            return True, all_offers
         except Exception as e:
-            return f"Error getting offers: {str(e)}"
+            return False, f"Error getting offers: {str(e)}"
 
     async def _arun(self, tool_input: str) -> str:
         raise NotImplementedError("Async execution is not supported for XRPLGetOffersTool.")

@@ -48,13 +48,14 @@ class XRPLSendXrpTool(BaseCustomTool, BaseTool):
 
             # Create a wallet instance, set with the current sequence
             try:    
-                response = tx.submit_and_wait(payment, client, Config.XRP_WALLET)    
+                output = tx.submit_and_wait(payment, client, Config.XRP_WALLET)    
             except tx.XRPLReliableSubmissionException as e:    
-                response = f"Submit failed: {e}"
-                return response
-            return response
+                response = f"Submit failed: {str(e)}"
+                return False, response
+            response = str(output.result.get("status"))
+            return True, response
         except Exception as e:
-            return f"Error sending XRP: {str(e)}"
+            return False, f"Error sending XRP: {str(e)}"
 
     async def _arun(self, tool_input: str) -> str:
         raise NotImplementedError("Async execution is not supported for XRPLSendXRPTool.")

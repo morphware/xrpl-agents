@@ -30,10 +30,10 @@ class XRPLAccountInfoTool(BaseCustomTool, BaseTool):
             response = client.request(request)
             account_info = response.result.get("account_data", {})
             if not account_info:
-                return f"No account data found for account {tool_input}."
-            return str(account_info)
+                return False, f"No account data found for account {tool_input}."
+            return True, str(account_info)
         except Exception as e:
-            return f"Error retrieving account info: {str(e)}"
+            return False, f"Error retrieving account info: {str(e)}"
 
     async def _arun(self, tool_input: str) -> str:
         raise NotImplementedError("Async execution is not supported for XRPLAccountInfoTool.")
