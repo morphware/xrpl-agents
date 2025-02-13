@@ -21,7 +21,6 @@ class XRPLGetXRPBalanceTool(BaseCustomTool, BaseTool):
 
     def __init__(self):
         super().__init__()
-        self.client = JsonRpcClient("https://xrplcluster.com/")
 
     def _validate_address(self, address: str) -> bool:
         """Validate if the input looks like a proper XRPL address."""
@@ -45,7 +44,8 @@ class XRPLGetXRPBalanceTool(BaseCustomTool, BaseTool):
             )
             
             # Send request and get response
-            response = self.client.request(acct_info)
+            client = JsonRpcClient(Config.XRPL_ENDPOINT)
+            response = client.request(acct_info)
             
             # Extract balance from account data
             if response.status == "success" and "account_data" in response.result:
@@ -66,7 +66,10 @@ class XRPLGetXRPBalanceTool(BaseCustomTool, BaseTool):
             str: Formatted balance response or error message
         """
         # Clean the input
-        address = tool_input.strip()
+        if tool_input == "user_account_address":
+            address = Config.XRP_WALLET.address
+        else:
+            address = tool_input.strip()
         
         # Validate address format
         if not self._validate_address(address):

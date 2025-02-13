@@ -1,5 +1,6 @@
 import os
 import sys
+import json
 from typing import ClassVar
 from langchain.tools import BaseTool
 from xrpl.clients import JsonRpcClient
@@ -52,7 +53,7 @@ class XRPLSendXrpTool(BaseCustomTool, BaseTool):
             except tx.XRPLReliableSubmissionException as e:    
                 response = f"Submit failed: {str(e)}"
                 return False, response
-            response = str(output.result.get("status"))
+            response = f"Transaction Successfull: {json.dumps(output.result.get('tx_json'))}"
             return True, response
         except Exception as e:
             return False, f"Error sending XRP: {str(e)}"
