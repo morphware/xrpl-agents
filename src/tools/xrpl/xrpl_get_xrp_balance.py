@@ -8,12 +8,12 @@ from xrpl.wallet import Wallet
 from ...config import Config
 from ..base import BaseCustomTool
 
-class XRPLGetBalanceTool(BaseCustomTool, BaseTool):
+class XRPLGetXRPBalanceTool(BaseCustomTool, BaseTool):
     """
     Tool for retrieving the XRP balance of an XRPL account.
     Input should be a valid XRPL account address.
     """
-    name: ClassVar[str] = "XRPLGetBalance"
+    name: ClassVar[str] = "XRPLGetXRPBalance"
     description: ClassVar[str] = (
         "Retrieve the XRP balance of an XRPL account. "
         "Input should be the account address."
@@ -70,23 +70,23 @@ class XRPLGetBalanceTool(BaseCustomTool, BaseTool):
         
         # Validate address format
         if not self._validate_address(address):
-            return f"Invalid XRPL address format: {address}"
+            return False, f"Invalid XRPL address format: {address}"
 
         # Get the balance
         balance, error = self._get_balance(address)
         
         # Handle the response
         if error:
-            return f"Error retrieving balance for {address}: {error}"
+            return False, f"Error retrieving balance for {address}: {error}"
         
-        return f"Balance for account {address}: {balance:.6f} XRP"
+        return True, f"Balance for account {address}: {balance:.6f} XRP"
 
     async def _arun(self, tool_input: str) -> str:
         """Async execution is not supported."""
-        raise NotImplementedError("Async execution is not supported for XRPLGetBalanceTool.")
+        raise NotImplementedError("Async execution is not supported for XRPLGetXRPBalanceTool.")
 
 if __name__ == "__main__":
-    tool = XRPLGetBalanceTool()
+    tool = XRPLGetXRPBalanceTool()
     # Example usage:
     account_address = "rHzykWRVdAfEHk6c5fQxyYYHF9waQXN5Dz"
     result = tool._run(account_address)

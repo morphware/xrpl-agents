@@ -1,4 +1,4 @@
-from .xrpl_get_xrp_balance import XRPLGetBalanceTool
+from .xrpl_get_xrp_balance import XRPLGetXRPBalanceTool
 from .xrpl_get_account_info import XRPLAccountInfoTool
 from .xrpl_send_xrp import XRPLSendXrpTool
 from .xrpl_create_sell_offer import XRPLCreateSellOfferTool
@@ -10,7 +10,7 @@ from .xrpl_get_offers import XRPLGetOffersTool
 from .xrpl_get_token_price import XRPLTokenPriceTool
 
 __all__ = [
-    'XRPLGetBalanceTool',
+    'XRPLGetXRPBalanceTool',
     'XRPLAccountInfoTool',
     'XRPLSendXrpTool',
     'XRPLCreateSellOfferTool',
