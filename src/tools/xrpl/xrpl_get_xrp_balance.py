@@ -16,7 +16,7 @@ class XRPLGetXRPBalanceTool(BaseCustomTool, BaseTool):
     Tool for retrieving the XRP balance of an XRPL account.
     Input should be a valid XRPL account address.
     """
-    name: ClassVar[str] = "XRPLGetBalance"
+    name: ClassVar[str] = "XRPLGetXRPBalance"
     description: ClassVar[str] = (
         "Retrieve the XRP balance of an XRPL account. "
         "Input should be the account address."

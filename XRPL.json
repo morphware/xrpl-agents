@@ -2,7 +2,7 @@
     {
         "type": "xrpl_tool",
         "model": "phi4:latest",
-        "tools": ["XRPLGetBalance","XRPLAccountInfo","XRPLSendXRP",
+        "tools": ["XRPLGetXRPBalance","XRPLAccountInfo","XRPLSendXRP",
             "XRPLCreateSellOffer","XRPLCreateBuyOffer","XRPLCancelOffer",
             "XRPLAcceptSellOffer","XRPLAcceptBuyOffer","XRPLGetOffers","XRPLTokenPrice"],
         "system_prompt": "",
