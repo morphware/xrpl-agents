@@ -1,0 +1,1243 @@
+2025-02-13 15:21:36,826 - AGENT OUTPUT:
+Collection morphware_store already exists, returning existing collection.
+
+2025-02-13 15:21:36,828 - AGENT OUTPUT:
+MorphwareKnowledgeTool initialized successfully
+
+2025-02-13 15:21:36,855 - AGENT OUTPUT:
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5050
+ * Running on http://192.168.1.138:5050
+
+2025-02-13 15:21:36,855 - AGENT OUTPUT:
+[33mPress CTRL+C to quit[0m
+
+2025-02-13 15:21:48,748 - AGENT OUTPUT:
+Appending user message to memory: what is my wallet balance
+
+
+
+2025-02-13 15:21:48,748 - AGENT OUTPUT:
+Starting Agent Workflow
+
+2025-02-13 15:21:48,749 - AGENT OUTPUT:
+Inferencing Branch: ['start', 'xrpl_tool_1', 'end']
+
+2025-02-13 15:21:48,749 - AGENT OUTPUT:
+XRPLToolAgent: Received query for tool inference
+
+2025-02-13 15:21:48,754 - AGENT OUTPUT:
+Starting new HTTPS connection (1): app.morphware.com:443
+
+2025-02-13 15:21:49,424 - AGENT OUTPUT:
+https://app.morphware.com:443 "POST /ollama/api/generate HTTP/1.1" 200 None
+
+2025-02-13 15:21:50,115 - AGENT OUTPUT:
+Initial text to clean: ```json
+{
+  "selected_tool": "XRPLGetBalance",
+  "reasoning": "The user query asks for the wallet balance, which corresponds to retrieving the XRP balance of an XRPL account.",
+  "formatted_input": "user_account_address"
+}
+```
+
+*Note: Replace `user_account_address` with the actual account address when executing the tool.*
+
+2025-02-13 15:21:50,116 - AGENT OUTPUT:
+Final cleaned text: {
+  "selected_tool": "XRPLGetBalance",
+  "reasoning": "The user query asks for the wallet balance, which corresponds to retrieving the XRP balance of an XRPL account.",
+  "formatted_input": "user_account_address"
+}
+
+2025-02-13 15:21:50,117 - AGENT OUTPUT:
+XRPLToolAgent: Executing tool 'XRPLGetBalance'
+
+2025-02-13 15:21:50,119 - AGENT OUTPUT:
+Using selector: KqueueSelector
+
+2025-02-13 15:21:50,167 - AGENT OUTPUT:
+connect_tcp.started host='xrplcluster.com' port=443 local_address=None timeout=10.0 socket_options=None
+
+2025-02-13 15:21:50,277 - AGENT OUTPUT:
+connect_tcp.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x1247b5a10>
+
+2025-02-13 15:21:50,277 - AGENT OUTPUT:
+start_tls.started ssl_context=<ssl.SSLContext object at 0x12489a180> server_hostname='xrplcluster.com' timeout=10.0
+
+2025-02-13 15:21:50,313 - AGENT OUTPUT:
+start_tls.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x121d0f610>
+
+2025-02-13 15:21:50,314 - AGENT OUTPUT:
+send_request_headers.started request=<Request [b'POST']>
+
+2025-02-13 15:21:50,314 - AGENT OUTPUT:
+send_request_headers.complete
+
+2025-02-13 15:21:50,314 - AGENT OUTPUT:
+send_request_body.started request=<Request [b'POST']>
+
+2025-02-13 15:21:50,315 - AGENT OUTPUT:
+send_request_body.complete
+
+2025-02-13 15:21:50,315 - AGENT OUTPUT:
+receive_response_headers.started request=<Request [b'POST']>
+
+2025-02-13 15:21:50,606 - AGENT OUTPUT:
+receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Date', b'Thu, 13 Feb 2025 20:21:50 GMT'), (b'Content-Type', b'application/json; charset=UTF-8'), (b'Transfer-Encoding', b'chunked'), (b'Connection', b'keep-alive'), (b'X-Remote-F', b'71.63.55.174'), (b'X-Remote-P', b'108.162.238.184'), (b'X-Payment-Claim-Surcharge', b'eyJzY2hlbWEiOiAiMC4wLjEiLCJhbW91bnQiOiAxMDAwMDB9'), (b'X-Upstream', b'unix:/104'), (b'X-Edge', b'001'), (b'X-RateLimit-Key', b'71.63.55.174'), (b'Access-Control-Allow-Origin', b'*'), (b'X-By', b'@XRPLF'), (b'X-Conn', b'close'), (b'cf-cache-status', b'DYNAMIC'), (b'Report-To', b'{"endpoints":[{"url":"https:\\/\\/a.nel.cloudflare.com\\/report\\/v4?s=TFImOHMMS1YiE07h%2Fd0Y%2B0%2BP24EWeTdd%2B5QVE2CngdebuhOm0ZSXAHbdKOWGXxK%2Bv44ofSdf%2BdH81oc7qwM%2B5X%2Fn38PpLuNhfDS8NzoKGV6j%2F61SADTeVq58rKdu5%2Fqnrg%3D%3D"}],"group":"cf-nel","max_age":604800}'), (b'NEL', b'{"success_fraction":0,"report_to":"cf-nel","max_age":604800}'), (b'Strict-Transport-Security', b'max-age=0; includeSubDomains; preload'), (b'X-Content-Type-Options', b'nosniff'), (b'Server', b'cloudflare'), (b'CF-RAY', b'911786ee1e4b12d6-ATL'), (b'Content-Encoding', b'gzip'), (b'server-timing', b'cfL4;desc="?proto=TCP&rtt=29013&min_rtt=28414&rtt_var=11854&sent=6&recv=7&lost=0&retrans=0&sent_bytes=2851&recv_bytes=991&delivery_rate=87202&cwnd=231&unsent_bytes=0&cid=b0935e971b19ead7&ts=300&x=0"')])
+
+2025-02-13 15:21:50,610 - AGENT OUTPUT:
+HTTP Request: POST https://xrplcluster.com "HTTP/1.1 200 OK"
+
+2025-02-13 15:21:50,610 - AGENT OUTPUT:
+receive_response_body.started request=<Request [b'POST']>
+
+2025-02-13 15:21:50,610 - AGENT OUTPUT:
+receive_response_body.complete
+
+2025-02-13 15:21:50,611 - AGENT OUTPUT:
+response_closed.started
+
+2025-02-13 15:21:50,611 - AGENT OUTPUT:
+response_closed.complete
+
+2025-02-13 15:21:50,611 - AGENT OUTPUT:
+close.started
+
+2025-02-13 15:21:50,612 - AGENT OUTPUT:
+close.complete
+
+2025-02-13 15:21:50,614 - AGENT OUTPUT:
+127.0.0.1 - - [13/Feb/2025 15:21:50] "POST /prompt HTTP/1.1" 200 -
+
+2025-02-13 15:22:22,318 - AGENT OUTPUT:
+Appending user message to memory: get the wallet balance of rHzykWRVdAfEHk6c5fQxyYYHF9waQXN5Dz
+
+
+
+2025-02-13 15:22:22,318 - AGENT OUTPUT:
+Starting Agent Workflow
+
+2025-02-13 15:22:22,318 - AGENT OUTPUT:
+Inferencing Branch: ['start', 'xrpl_tool_1', 'end']
+
+2025-02-13 15:22:22,318 - AGENT OUTPUT:
+XRPLToolAgent: Received query for tool inference
+
+2025-02-13 15:22:22,321 - AGENT OUTPUT:
+Starting new HTTPS connection (1): app.morphware.com:443
+
+2025-02-13 15:22:22,887 - AGENT OUTPUT:
+https://app.morphware.com:443 "POST /ollama/api/generate HTTP/1.1" 200 None
+
+2025-02-13 15:22:23,711 - AGENT OUTPUT:
+Initial text to clean: ```json
+{
+  "selected_tool": "XRPLGetBalance",
+  "reasoning": "The user query requests to get the wallet balance of a specific XRPL account address, which directly corresponds to the functionality provided by the XRPLGetBalance tool.",
+  "formatted_input": "rHzykWRVdAfEHk6c5fQxyYYHF9waQXN5Dz"
+}
+```
+
+2025-02-13 15:22:23,712 - AGENT OUTPUT:
+Final cleaned text: {
+  "selected_tool": "XRPLGetBalance",
+  "reasoning": "The user query requests to get the wallet balance of a specific XRPL account address, which directly corresponds to the functionality provided by the XRPLGetBalance tool.",
+  "formatted_input": "rHzykWRVdAfEHk6c5fQxyYYHF9waQXN5Dz"
+}
+
+2025-02-13 15:22:23,712 - AGENT OUTPUT:
+XRPLToolAgent: Executing tool 'XRPLGetBalance'
+
+2025-02-13 15:22:23,713 - AGENT OUTPUT:
+Using selector: KqueueSelector
+
+2025-02-13 15:22:23,726 - AGENT OUTPUT:
+connect_tcp.started host='xrplcluster.com' port=443 local_address=None timeout=10.0 socket_options=None
+
+2025-02-13 15:22:23,782 - AGENT OUTPUT:
+connect_tcp.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x1247716d0>
+
+2025-02-13 15:22:23,782 - AGENT OUTPUT:
+start_tls.started ssl_context=<ssl.SSLContext object at 0x12489a7b0> server_hostname='xrplcluster.com' timeout=10.0
+
+2025-02-13 15:22:23,824 - AGENT OUTPUT:
+start_tls.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x11f5f8f50>
+
+2025-02-13 15:22:23,825 - AGENT OUTPUT:
+send_request_headers.started request=<Request [b'POST']>
+
+2025-02-13 15:22:23,826 - AGENT OUTPUT:
+send_request_headers.complete
+
+2025-02-13 15:22:23,826 - AGENT OUTPUT:
+send_request_body.started request=<Request [b'POST']>
+
+2025-02-13 15:22:23,826 - AGENT OUTPUT:
+send_request_body.complete
+
+2025-02-13 15:22:23,826 - AGENT OUTPUT:
+receive_response_headers.started request=<Request [b'POST']>
+
+2025-02-13 15:22:24,097 - AGENT OUTPUT:
+receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Date', b'Thu, 13 Feb 2025 20:22:24 GMT'), (b'Content-Type', b'application/json; charset=UTF-8'), (b'Transfer-Encoding', b'chunked'), (b'Connection', b'keep-alive'), (b'X-Remote-F', b'71.63.55.174'), (b'X-Remote-P', b'172.68.70.87'), (b'X-Payment-Claim-Surcharge', b'eyJzY2hlbWEiOiAiMC4wLjEiLCJhbW91bnQiOiAxMDAwMDB9'), (b'X-Upstream', b'unix:/104'), (b'X-Edge', b'001'), (b'X-RateLimit-Key', b'71.63.55.174'), (b'Access-Control-Allow-Origin', b'*'), (b'X-By', b'@XRPLF'), (b'X-Conn', b'close'), (b'cf-cache-status', b'DYNAMIC'), (b'Report-To', b'{"endpoints":[{"url":"https:\\/\\/a.nel.cloudflare.com\\/report\\/v4?s=ngtVcYK%2BeUE6vzaY%2FjlCQXQMnueOeMBY3%2BovDrM4Tyqx7cshxkxFBUS%2BYvdRhPy0LTdHZU0%2B2BTabUYSej8nyR1XvZLvlA%2BKFMgWGff4yovcJPWpeNJeJD1njHdPtzPdlA%3D%3D"}],"group":"cf-nel","max_age":604800}'), (b'NEL', b'{"success_fraction":0,"report_to":"cf-nel","max_age":604800}'), (b'Strict-Transport-Security', b'max-age=0; includeSubDomains; preload'), (b'X-Content-Type-Options', b'nosniff'), (b'Server', b'cloudflare'), (b'CF-RAY', b'911787bf8bd8bcda-ATL'), (b'Content-Encoding', b'gzip'), (b'server-timing', b'cfL4;desc="?proto=TCP&rtt=33270&min_rtt=30847&rtt_var=13299&sent=4&recv=7&lost=0&retrans=0&sent_bytes=2852&recv_bytes=991&delivery_rate=93882&cwnd=244&unsent_bytes=0&cid=a9242ff639b28f2f&ts=281&x=0"')])
+
+2025-02-13 15:22:24,099 - AGENT OUTPUT:
+HTTP Request: POST https://xrplcluster.com "HTTP/1.1 200 OK"
+
+2025-02-13 15:22:24,100 - AGENT OUTPUT:
+receive_response_body.started request=<Request [b'POST']>
+
+2025-02-13 15:22:24,100 - AGENT OUTPUT:
+receive_response_body.complete
+
+2025-02-13 15:22:24,100 - AGENT OUTPUT:
+response_closed.started
+
+2025-02-13 15:22:24,101 - AGENT OUTPUT:
+response_closed.complete
+
+2025-02-13 15:22:24,101 - AGENT OUTPUT:
+close.started
+
+2025-02-13 15:22:24,102 - AGENT OUTPUT:
+close.complete
+
+2025-02-13 15:22:24,103 - AGENT OUTPUT:
+127.0.0.1 - - [13/Feb/2025 15:22:24] "POST /prompt HTTP/1.1" 200 -
+
+2025-02-13 15:24:55,781 - AGENT OUTPUT:
+Appending user message to memory: what is the xrp balance of rHzykWRVdAfEHk6c5fQxyYYHF9waQXN5Dz
+
+
+
+2025-02-13 15:24:55,781 - AGENT OUTPUT:
+Starting Agent Workflow
+
+2025-02-13 15:24:55,781 - AGENT OUTPUT:
+Inferencing Branch: ['start', 'xrpl_tool_1', 'end']
+
+2025-02-13 15:24:55,781 - AGENT OUTPUT:
+XRPLToolAgent: Received query for tool inference
+
+2025-02-13 15:24:55,782 - AGENT OUTPUT:
+Starting new HTTPS connection (1): app.morphware.com:443
+
+2025-02-13 15:24:56,368 - AGENT OUTPUT:
+https://app.morphware.com:443 "POST /ollama/api/generate HTTP/1.1" 200 None
+
+2025-02-13 15:24:57,124 - AGENT OUTPUT:
+Initial text to clean: ```json
+{
+  "selected_tool": "XRPLGetBalance",
+  "reasoning": "The user query asks for the XRP balance of a specific XRPL account, which directly corresponds to the functionality provided by the XRPLGetBalance tool.",
+  "formatted_input": "rHzykWRVdAfEHk6c5fQxyYYHF9waQXN5Dz"
+}
+```
+
+2025-02-13 15:24:57,125 - AGENT OUTPUT:
+Final cleaned text: {
+  "selected_tool": "XRPLGetBalance",
+  "reasoning": "The user query asks for the XRP balance of a specific XRPL account, which directly corresponds to the functionality provided by the XRPLGetBalance tool.",
+  "formatted_input": "rHzykWRVdAfEHk6c5fQxyYYHF9waQXN5Dz"
+}
+
+2025-02-13 15:24:57,126 - AGENT OUTPUT:
+XRPLToolAgent: Executing tool 'XRPLGetBalance'
+
+2025-02-13 15:24:57,126 - AGENT OUTPUT:
+Using selector: KqueueSelector
+
+2025-02-13 15:24:57,132 - AGENT OUTPUT:
+connect_tcp.started host='xrplcluster.com' port=443 local_address=None timeout=10.0 socket_options=None
+
+2025-02-13 15:24:57,168 - AGENT OUTPUT:
+connect_tcp.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x12441a9d0>
+
+2025-02-13 15:24:57,169 - AGENT OUTPUT:
+start_tls.started ssl_context=<ssl.SSLContext object at 0x12489a960> server_hostname='xrplcluster.com' timeout=10.0
+
+2025-02-13 15:24:57,217 - AGENT OUTPUT:
+start_tls.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x12441f610>
+
+2025-02-13 15:24:57,217 - AGENT OUTPUT:
+send_request_headers.started request=<Request [b'POST']>
+
+2025-02-13 15:24:57,219 - AGENT OUTPUT:
+send_request_headers.complete
+
+2025-02-13 15:24:57,219 - AGENT OUTPUT:
+send_request_body.started request=<Request [b'POST']>
+
+2025-02-13 15:24:57,219 - AGENT OUTPUT:
+send_request_body.complete
+
+2025-02-13 15:24:57,219 - AGENT OUTPUT:
+receive_response_headers.started request=<Request [b'POST']>
+
+2025-02-13 15:24:57,498 - AGENT OUTPUT:
+receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Date', b'Thu, 13 Feb 2025 20:24:57 GMT'), (b'Content-Type', b'application/json; charset=UTF-8'), (b'Transfer-Encoding', b'chunked'), (b'Connection', b'keep-alive'), (b'X-Remote-F', b'71.63.55.174'), (b'X-Remote-P', b'172.68.70.65'), (b'X-Payment-Claim-Surcharge', b'eyJzY2hlbWEiOiAiMC4wLjEiLCJhbW91bnQiOiAxMDAwMDB9'), (b'X-Upstream', b'unix:/100'), (b'X-Edge', b'001'), (b'X-RateLimit-Key', b'71.63.55.174'), (b'Access-Control-Allow-Origin', b'*'), (b'X-By', b'@XRPLF'), (b'X-Conn', b'close'), (b'cf-cache-status', b'DYNAMIC'), (b'Report-To', b'{"endpoints":[{"url":"https:\\/\\/a.nel.cloudflare.com\\/report\\/v4?s=azbxg7a24atGrf%2BbBGkGT8Q17TussNGgL8N4P%2BX5IX0SGwZY2ugooX97HCIYyh7u6tISPYVJboMhDGNp1q7qx%2Bqy2s5fgzkucf1KvPte2qlgtvcR8jbM1ndOCbZ0xZsloA%3D%3D"}],"group":"cf-nel","max_age":604800}'), (b'NEL', b'{"success_fraction":0,"report_to":"cf-nel","max_age":604800}'), (b'Strict-Transport-Security', b'max-age=0; includeSubDomains; preload'), (b'X-Content-Type-Options', b'nosniff'), (b'Server', b'cloudflare'), (b'CF-RAY', b'91178b7e2ef1bf6d-ATL'), (b'Content-Encoding', b'gzip'), (b'server-timing', b'cfL4;desc="?proto=TCP&rtt=30456&min_rtt=27875&rtt_var=12297&sent=5&recv=7&lost=0&retrans=0&sent_bytes=2851&recv_bytes=991&delivery_rate=103892&cwnd=250&unsent_bytes=0&cid=e8e995812ccd8271&ts=284&x=0"')])
+
+2025-02-13 15:24:57,501 - AGENT OUTPUT:
+HTTP Request: POST https://xrplcluster.com "HTTP/1.1 200 OK"
+
+2025-02-13 15:24:57,501 - AGENT OUTPUT:
+receive_response_body.started request=<Request [b'POST']>
+
+2025-02-13 15:24:57,501 - AGENT OUTPUT:
+receive_response_body.complete
+
+2025-02-13 15:24:57,501 - AGENT OUTPUT:
+response_closed.started
+
+2025-02-13 15:24:57,502 - AGENT OUTPUT:
+response_closed.complete
+
+2025-02-13 15:24:57,502 - AGENT OUTPUT:
+close.started
+
+2025-02-13 15:24:57,502 - AGENT OUTPUT:
+close.complete
+
+2025-02-13 15:24:57,503 - AGENT OUTPUT:
+127.0.0.1 - - [13/Feb/2025 15:24:57] "POST /prompt HTTP/1.1" 200 -
+
+2025-02-13 15:29:40,398 - AGENT OUTPUT:
+Collection morphware_store already exists, returning existing collection.
+
+2025-02-13 15:29:40,399 - AGENT OUTPUT:
+MorphwareKnowledgeTool initialized successfully
+
+2025-02-13 15:29:40,423 - AGENT OUTPUT:
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5050
+ * Running on http://192.168.1.138:5050
+
+2025-02-13 15:29:40,423 - AGENT OUTPUT:
+[33mPress CTRL+C to quit[0m
+
+2025-02-13 15:29:42,600 - AGENT OUTPUT:
+Appending user message to memory: what is the xrp balance of rHzykWRVdAfEHk6c5fQxyYYHF9waQXN5Dz
+
+
+
+2025-02-13 15:29:42,600 - AGENT OUTPUT:
+Starting Agent Workflow
+
+2025-02-13 15:29:42,600 - AGENT OUTPUT:
+Inferencing Branch: ['start', 'xrpl_tool_1', 'end']
+
+2025-02-13 15:29:42,600 - AGENT OUTPUT:
+XRPLToolAgent: Received query for tool inference
+
+2025-02-13 15:29:42,604 - AGENT OUTPUT:
+Starting new HTTPS connection (1): app.morphware.com:443
+
+2025-02-13 15:29:43,372 - AGENT OUTPUT:
+https://app.morphware.com:443 "POST /ollama/api/generate HTTP/1.1" 200 None
+
+2025-02-13 15:29:44,099 - AGENT OUTPUT:
+Initial text to clean: ```json
+{
+  "selected_tool": "XRPLGetBalance",
+  "reasoning": "The user query asks for the XRP balance of a specific XRPL account, which directly corresponds to the functionality provided by the XRPLGetBalance tool.",
+  "formatted_input": "rHzykWRVdAfEHk6c5fQxyYYHF9waQXN5Dz"
+}
+```
+
+2025-02-13 15:29:44,099 - AGENT OUTPUT:
+Final cleaned text: {
+  "selected_tool": "XRPLGetBalance",
+  "reasoning": "The user query asks for the XRP balance of a specific XRPL account, which directly corresponds to the functionality provided by the XRPLGetBalance tool.",
+  "formatted_input": "rHzykWRVdAfEHk6c5fQxyYYHF9waQXN5Dz"
+}
+
+2025-02-13 15:29:44,099 - AGENT OUTPUT:
+XRPLToolAgent: Executing tool 'XRPLGetBalance'
+
+2025-02-13 15:29:44,100 - AGENT OUTPUT:
+Using selector: KqueueSelector
+
+2025-02-13 15:29:44,144 - AGENT OUTPUT:
+connect_tcp.started host='s1.ripple.com' port=51234 local_address=None timeout=10.0 socket_options=None
+
+2025-02-13 15:29:44,297 - AGENT OUTPUT:
+connect_tcp.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x14bb6e450>
+
+2025-02-13 15:29:44,297 - AGENT OUTPUT:
+start_tls.started ssl_context=<ssl.SSLContext object at 0x14ba9a0f0> server_hostname='s1.ripple.com' timeout=10.0
+
+2025-02-13 15:29:44,399 - AGENT OUTPUT:
+start_tls.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x13fb749d0>
+
+2025-02-13 15:29:44,399 - AGENT OUTPUT:
+send_request_headers.started request=<Request [b'POST']>
+
+2025-02-13 15:29:44,400 - AGENT OUTPUT:
+send_request_headers.complete
+
+2025-02-13 15:29:44,401 - AGENT OUTPUT:
+send_request_body.started request=<Request [b'POST']>
+
+2025-02-13 15:29:44,401 - AGENT OUTPUT:
+send_request_body.complete
+
+2025-02-13 15:29:44,401 - AGENT OUTPUT:
+receive_response_headers.started request=<Request [b'POST']>
+
+2025-02-13 15:29:44,576 - AGENT OUTPUT:
+receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Server', b'clio-server-2.3.1'), (b'Content-Type', b'application/json'), (b'Content-Length', b'451')])
+
+2025-02-13 15:29:44,578 - AGENT OUTPUT:
+HTTP Request: POST https://s1.ripple.com:51234/ "HTTP/1.1 200 OK"
+
+2025-02-13 15:29:44,579 - AGENT OUTPUT:
+receive_response_body.started request=<Request [b'POST']>
+
+2025-02-13 15:29:44,579 - AGENT OUTPUT:
+receive_response_body.complete
+
+2025-02-13 15:29:44,580 - AGENT OUTPUT:
+response_closed.started
+
+2025-02-13 15:29:44,580 - AGENT OUTPUT:
+response_closed.complete
+
+2025-02-13 15:29:44,580 - AGENT OUTPUT:
+close.started
+
+2025-02-13 15:29:44,581 - AGENT OUTPUT:
+close.complete
+
+2025-02-13 15:29:44,583 - AGENT OUTPUT:
+127.0.0.1 - - [13/Feb/2025 15:29:44] "POST /prompt HTTP/1.1" 200 -
+
+2025-02-13 15:41:33,789 - AGENT OUTPUT:
+Collection morphware_store already exists, returning existing collection.
+
+2025-02-13 15:41:33,791 - AGENT OUTPUT:
+MorphwareKnowledgeTool initialized successfully
+
+2025-02-13 15:41:33,817 - AGENT OUTPUT:
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5050
+ * Running on http://192.168.1.138:5050
+
+2025-02-13 15:41:33,817 - AGENT OUTPUT:
+[33mPress CTRL+C to quit[0m
+
+2025-02-13 15:41:41,906 - AGENT OUTPUT:
+Appending user message to memory: get the wallet balance of raaFKKmgf6CRZttTVABeTcsqzRQ51bNR6Q
+
+
+
+2025-02-13 15:41:41,906 - AGENT OUTPUT:
+Starting Agent Workflow
+
+2025-02-13 15:41:41,906 - AGENT OUTPUT:
+Inferencing Branch: ['start', 'xrpl_tool_1', 'end']
+
+2025-02-13 15:41:41,907 - AGENT OUTPUT:
+XRPLToolAgent: Received query for tool inference
+
+2025-02-13 15:41:41,910 - AGENT OUTPUT:
+Starting new HTTPS connection (1): app.morphware.com:443
+
+2025-02-13 15:41:42,738 - AGENT OUTPUT:
+https://app.morphware.com:443 "POST /ollama/api/generate HTTP/1.1" 200 None
+
+2025-02-13 15:41:43,392 - AGENT OUTPUT:
+Initial text to clean: ```json
+{
+  "selected_tool": "XRPLAccountInfo",
+  "reasoning": "The user query requests the wallet balance of a specific XRPL account address, which can be retrieved using the XRPLAccountInfo tool.",
+  "formatted_input": "raaFKKmgf6CRZttTVABeTcsqzRQ51bNR6Q"
+}
+```
+
+2025-02-13 15:41:43,392 - AGENT OUTPUT:
+Final cleaned text: {
+  "selected_tool": "XRPLAccountInfo",
+  "reasoning": "The user query requests the wallet balance of a specific XRPL account address, which can be retrieved using the XRPLAccountInfo tool.",
+  "formatted_input": "raaFKKmgf6CRZttTVABeTcsqzRQ51bNR6Q"
+}
+
+2025-02-13 15:41:43,393 - AGENT OUTPUT:
+XRPLToolAgent: Executing tool 'XRPLAccountInfo'
+
+2025-02-13 15:41:43,394 - AGENT OUTPUT:
+Using selector: KqueueSelector
+
+2025-02-13 15:41:43,421 - AGENT OUTPUT:
+connect_tcp.started host='s1.ripple.com' port=51234 local_address=None timeout=10.0 socket_options=None
+
+2025-02-13 15:41:43,569 - AGENT OUTPUT:
+connect_tcp.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x12eaac610>
+
+2025-02-13 15:41:43,569 - AGENT OUTPUT:
+start_tls.started ssl_context=<ssl.SSLContext object at 0x1495a5fd0> server_hostname='s1.ripple.com' timeout=10.0
+
+2025-02-13 15:41:43,661 - AGENT OUTPUT:
+start_tls.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x11e137010>
+
+2025-02-13 15:41:43,661 - AGENT OUTPUT:
+send_request_headers.started request=<Request [b'POST']>
+
+2025-02-13 15:41:43,662 - AGENT OUTPUT:
+send_request_headers.complete
+
+2025-02-13 15:41:43,662 - AGENT OUTPUT:
+send_request_body.started request=<Request [b'POST']>
+
+2025-02-13 15:41:43,662 - AGENT OUTPUT:
+send_request_body.complete
+
+2025-02-13 15:41:43,662 - AGENT OUTPUT:
+receive_response_headers.started request=<Request [b'POST']>
+
+2025-02-13 15:41:43,838 - AGENT OUTPUT:
+receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Server', b'clio-server-2.3.1'), (b'Content-Type', b'application/json'), (b'Content-Length', b'599')])
+
+2025-02-13 15:41:43,839 - AGENT OUTPUT:
+HTTP Request: POST https://s1.ripple.com:51234/ "HTTP/1.1 200 OK"
+
+2025-02-13 15:41:43,840 - AGENT OUTPUT:
+receive_response_body.started request=<Request [b'POST']>
+
+2025-02-13 15:41:43,840 - AGENT OUTPUT:
+receive_response_body.complete
+
+2025-02-13 15:41:43,840 - AGENT OUTPUT:
+response_closed.started
+
+2025-02-13 15:41:43,840 - AGENT OUTPUT:
+response_closed.complete
+
+2025-02-13 15:41:43,841 - AGENT OUTPUT:
+close.started
+
+2025-02-13 15:41:43,841 - AGENT OUTPUT:
+close.complete
+
+2025-02-13 15:41:43,842 - AGENT OUTPUT:
+127.0.0.1 - - [13/Feb/2025 15:41:43] "POST /prompt HTTP/1.1" 200 -
+
+2025-02-13 15:44:19,746 - AGENT OUTPUT:
+Collection morphware_store already exists, returning existing collection.
+
+2025-02-13 15:44:19,748 - AGENT OUTPUT:
+MorphwareKnowledgeTool initialized successfully
+
+2025-02-13 15:44:19,769 - AGENT OUTPUT:
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5050
+ * Running on http://192.168.1.138:5050
+
+2025-02-13 15:44:19,769 - AGENT OUTPUT:
+[33mPress CTRL+C to quit[0m
+
+2025-02-13 15:44:21,829 - AGENT OUTPUT:
+Appending user message to memory: get the wallet balance of raaFKKmgf6CRZttTVABeTcsqzRQ51bNR6Q
+
+
+
+2025-02-13 15:44:21,829 - AGENT OUTPUT:
+Starting Agent Workflow
+
+2025-02-13 15:44:21,829 - AGENT OUTPUT:
+Inferencing Branch: ['start', 'xrpl_tool_1', 'end']
+
+2025-02-13 15:44:21,829 - AGENT OUTPUT:
+XRPLToolAgent: Received query for tool inference
+
+2025-02-13 15:44:21,834 - AGENT OUTPUT:
+Starting new HTTPS connection (1): app.morphware.com:443
+
+2025-02-13 15:44:22,484 - AGENT OUTPUT:
+https://app.morphware.com:443 "POST /ollama/api/generate HTTP/1.1" 200 None
+
+2025-02-13 15:44:23,248 - AGENT OUTPUT:
+Initial text to clean: ```json
+{
+  "selected_tool": "XRPLAccountInfo",
+  "reasoning": "The user query requests to get the wallet balance of a specific XRPL account address, which aligns with the functionality provided by the XRPLAccountInfo tool.",
+  "formatted_input": "raaFKKmgf6CRZttTVABeTcsqzRQ51bNR6Q"
+}
+```
+
+2025-02-13 15:44:23,249 - AGENT OUTPUT:
+Final cleaned text: {
+  "selected_tool": "XRPLAccountInfo",
+  "reasoning": "The user query requests to get the wallet balance of a specific XRPL account address, which aligns with the functionality provided by the XRPLAccountInfo tool.",
+  "formatted_input": "raaFKKmgf6CRZttTVABeTcsqzRQ51bNR6Q"
+}
+
+2025-02-13 15:44:23,249 - AGENT OUTPUT:
+XRPLToolAgent: Executing tool 'XRPLAccountInfo'
+
+2025-02-13 15:44:23,251 - AGENT OUTPUT:
+Error processing request: type object 'Config' has no attribute 'XRPL_ENDPOINT'
+Traceback (most recent call last):
+  File "/Users/pumba/Documents/Engagements/Morphware/xrpl-agents/src/agent/agent.py", line 123, in process_request
+    user_input, metadata_output, context, output_response = self.workflow.agents[agent_id].agent.run(user_input=user_input,
+                                                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/pumba/Documents/Engagements/Morphware/xrpl-agents/src/agent/agents/XRPLToolAgent.py", line 91, in run
+    tool_response = tool.run(inference_result.get("formatted_input"))
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/pumba/Documents/Engagements/Morphware/xrpl-agents/env/lib/python3.11/site-packages/langchain_core/tools/base.py", line 725, in run
+    raise error_to_raise
+  File "/Users/pumba/Documents/Engagements/Morphware/xrpl-agents/env/lib/python3.11/site-packages/langchain_core/tools/base.py", line 694, in run
+    response = context.run(self._run, *tool_args, **tool_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/pumba/Documents/Engagements/Morphware/xrpl-agents/src/tools/xrpl/xrpl_get_account_info.py", line 22, in _run
+    client = JsonRpcClient(Config.XRPL_ENDPOINT)
+                           ^^^^^^^^^^^^^^^^^^^^
+AttributeError: type object 'Config' has no attribute 'XRPL_ENDPOINT'
+2025-02-13 15:44:23,253 - AGENT OUTPUT:
+Appending AI message to memory: Error occurred: Error processing request: type object 'Config' has no attribute 'XRPL_ENDPOINT'
+
+
+
+2025-02-13 15:44:23,254 - AGENT OUTPUT:
+127.0.0.1 - - [13/Feb/2025 15:44:23] "POST /prompt HTTP/1.1" 200 -
+
+2025-02-13 15:45:07,820 - AGENT OUTPUT:
+Collection morphware_store already exists, returning existing collection.
+
+2025-02-13 15:45:07,822 - AGENT OUTPUT:
+MorphwareKnowledgeTool initialized successfully
+
+2025-02-13 15:45:07,848 - AGENT OUTPUT:
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5050
+ * Running on http://192.168.1.138:5050
+
+2025-02-13 15:45:07,848 - AGENT OUTPUT:
+[33mPress CTRL+C to quit[0m
+
+2025-02-13 15:45:09,344 - AGENT OUTPUT:
+Appending user message to memory: get the wallet balance of raaFKKmgf6CRZttTVABeTcsqzRQ51bNR6Q
+
+
+
+2025-02-13 15:45:09,344 - AGENT OUTPUT:
+Starting Agent Workflow
+
+2025-02-13 15:45:09,344 - AGENT OUTPUT:
+Inferencing Branch: ['start', 'xrpl_tool_1', 'end']
+
+2025-02-13 15:45:09,344 - AGENT OUTPUT:
+XRPLToolAgent: Received query for tool inference
+
+2025-02-13 15:45:09,349 - AGENT OUTPUT:
+Starting new HTTPS connection (1): app.morphware.com:443
+
+2025-02-13 15:45:09,999 - AGENT OUTPUT:
+https://app.morphware.com:443 "POST /ollama/api/generate HTTP/1.1" 200 None
+
+2025-02-13 15:45:10,660 - AGENT OUTPUT:
+Initial text to clean: ```json
+{
+  "selected_tool": "XRPLAccountInfo",
+  "reasoning": "The user query requests the wallet balance of a specific XRPL account address, which can be retrieved using the XRPLAccountInfo tool.",
+  "formatted_input": "raaFKKmgf6CRZttTVABeTcsqzRQ51bNR6Q"
+}
+```
+
+2025-02-13 15:45:10,661 - AGENT OUTPUT:
+Final cleaned text: {
+  "selected_tool": "XRPLAccountInfo",
+  "reasoning": "The user query requests the wallet balance of a specific XRPL account address, which can be retrieved using the XRPLAccountInfo tool.",
+  "formatted_input": "raaFKKmgf6CRZttTVABeTcsqzRQ51bNR6Q"
+}
+
+2025-02-13 15:45:10,661 - AGENT OUTPUT:
+XRPLToolAgent: Executing tool 'XRPLAccountInfo'
+
+2025-02-13 15:45:10,663 - AGENT OUTPUT:
+Using selector: KqueueSelector
+
+2025-02-13 15:45:10,709 - AGENT OUTPUT:
+connect_tcp.started host='xrplcluster.com' port=443 local_address=None timeout=10.0 socket_options=None
+
+2025-02-13 15:45:10,783 - AGENT OUTPUT:
+connect_tcp.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x16ddf6c10>
+
+2025-02-13 15:45:10,783 - AGENT OUTPUT:
+start_tls.started ssl_context=<ssl.SSLContext object at 0x16dd2a060> server_hostname='xrplcluster.com' timeout=10.0
+
+2025-02-13 15:45:10,843 - AGENT OUTPUT:
+start_tls.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x16a295350>
+
+2025-02-13 15:45:10,843 - AGENT OUTPUT:
+send_request_headers.started request=<Request [b'POST']>
+
+2025-02-13 15:45:10,843 - AGENT OUTPUT:
+send_request_headers.complete
+
+2025-02-13 15:45:10,843 - AGENT OUTPUT:
+send_request_body.started request=<Request [b'POST']>
+
+2025-02-13 15:45:10,844 - AGENT OUTPUT:
+send_request_body.complete
+
+2025-02-13 15:45:10,844 - AGENT OUTPUT:
+receive_response_headers.started request=<Request [b'POST']>
+
+2025-02-13 15:45:11,118 - AGENT OUTPUT:
+receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Date', b'Thu, 13 Feb 2025 20:45:11 GMT'), (b'Content-Type', b'application/json; charset=UTF-8'), (b'Transfer-Encoding', b'chunked'), (b'Connection', b'keep-alive'), (b'X-Remote-F', b'71.63.55.174'), (b'X-Remote-P', b'172.68.71.103'), (b'X-Upstream', b'unix:/102'), (b'X-Edge', b'001'), (b'X-RateLimit-Key', b'71.63.55.174'), (b'Access-Control-Allow-Origin', b'*'), (b'X-By', b'@XRPLF'), (b'X-Conn', b'close'), (b'cf-cache-status', b'DYNAMIC'), (b'Report-To', b'{"endpoints":[{"url":"https:\\/\\/a.nel.cloudflare.com\\/report\\/v4?s=tGQ4e%2FaYzPNmfhlBZB0SMTlQOlWazXrPdFGlzdhhHzmFNO%2FaF%2BXZw2999nOuywbJyddTu2eihyg7LCn0MV8PF6MJMG%2FbPMTSkSI2PUbjoIfAc8SPMg6IVBfUA3sYmwqLfQ%3D%3D"}],"group":"cf-nel","max_age":604800}'), (b'NEL', b'{"success_fraction":0,"report_to":"cf-nel","max_age":604800}'), (b'Strict-Transport-Security', b'max-age=0; includeSubDomains; preload'), (b'X-Content-Type-Options', b'nosniff'), (b'Server', b'cloudflare'), (b'CF-RAY', b'9117a91f3eb7bf69-ATL'), (b'Content-Encoding', b'gzip'), (b'server-timing', b'cfL4;desc="?proto=TCP&rtt=40408&min_rtt=34375&rtt_var=17200&sent=4&recv=7&lost=0&retrans=0&sent_bytes=2851&recv_bytes=1018&delivery_rate=84247&cwnd=231&unsent_bytes=0&cid=4ad003bc823ec104&ts=283&x=0"')])
+
+2025-02-13 15:45:11,121 - AGENT OUTPUT:
+HTTP Request: POST https://xrplcluster.com "HTTP/1.1 200 OK"
+
+2025-02-13 15:45:11,122 - AGENT OUTPUT:
+receive_response_body.started request=<Request [b'POST']>
+
+2025-02-13 15:45:11,122 - AGENT OUTPUT:
+receive_response_body.complete
+
+2025-02-13 15:45:11,123 - AGENT OUTPUT:
+response_closed.started
+
+2025-02-13 15:45:11,123 - AGENT OUTPUT:
+response_closed.complete
+
+2025-02-13 15:45:11,124 - AGENT OUTPUT:
+close.started
+
+2025-02-13 15:45:11,124 - AGENT OUTPUT:
+close.complete
+
+2025-02-13 15:45:11,126 - AGENT OUTPUT:
+127.0.0.1 - - [13/Feb/2025 15:45:11] "POST /prompt HTTP/1.1" 200 -
+
+2025-02-13 15:45:31,007 - AGENT OUTPUT:
+Appending user message to memory: get the wallet balance of rHzykWRVdAfEHk6c5fQxyYYHF9waQXN5Dz
+
+
+
+2025-02-13 15:45:31,007 - AGENT OUTPUT:
+Starting Agent Workflow
+
+2025-02-13 15:45:31,007 - AGENT OUTPUT:
+Inferencing Branch: ['start', 'xrpl_tool_1', 'end']
+
+2025-02-13 15:45:31,007 - AGENT OUTPUT:
+XRPLToolAgent: Received query for tool inference
+
+2025-02-13 15:45:31,009 - AGENT OUTPUT:
+Starting new HTTPS connection (1): app.morphware.com:443
+
+2025-02-13 15:45:31,574 - AGENT OUTPUT:
+https://app.morphware.com:443 "POST /ollama/api/generate HTTP/1.1" 200 None
+
+2025-02-13 15:45:32,312 - AGENT OUTPUT:
+Initial text to clean: ```json
+{
+  "selected_tool": "XRPLAccountInfo",
+  "reasoning": "The user query requests the wallet balance of a specific XRPL account address, which can be retrieved using the XRPLAccountInfo tool.",
+  "formatted_input": "rHzykWRVdAfEHk6c5fQxyYYHF9waQXN5Dz"
+}
+```
+
+2025-02-13 15:45:32,313 - AGENT OUTPUT:
+Final cleaned text: {
+  "selected_tool": "XRPLAccountInfo",
+  "reasoning": "The user query requests the wallet balance of a specific XRPL account address, which can be retrieved using the XRPLAccountInfo tool.",
+  "formatted_input": "rHzykWRVdAfEHk6c5fQxyYYHF9waQXN5Dz"
+}
+
+2025-02-13 15:45:32,313 - AGENT OUTPUT:
+XRPLToolAgent: Executing tool 'XRPLAccountInfo'
+
+2025-02-13 15:45:32,315 - AGENT OUTPUT:
+Using selector: KqueueSelector
+
+2025-02-13 15:45:32,328 - AGENT OUTPUT:
+connect_tcp.started host='xrplcluster.com' port=443 local_address=None timeout=10.0 socket_options=None
+
+2025-02-13 15:45:32,364 - AGENT OUTPUT:
+connect_tcp.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x16ddddf90>
+
+2025-02-13 15:45:32,364 - AGENT OUTPUT:
+start_tls.started ssl_context=<ssl.SSLContext object at 0x16dd2a0f0> server_hostname='xrplcluster.com' timeout=10.0
+
+2025-02-13 15:45:32,406 - AGENT OUTPUT:
+start_tls.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x16a0f9790>
+
+2025-02-13 15:45:32,406 - AGENT OUTPUT:
+send_request_headers.started request=<Request [b'POST']>
+
+2025-02-13 15:45:32,407 - AGENT OUTPUT:
+send_request_headers.complete
+
+2025-02-13 15:45:32,407 - AGENT OUTPUT:
+send_request_body.started request=<Request [b'POST']>
+
+2025-02-13 15:45:32,407 - AGENT OUTPUT:
+send_request_body.complete
+
+2025-02-13 15:45:32,407 - AGENT OUTPUT:
+receive_response_headers.started request=<Request [b'POST']>
+
+2025-02-13 15:45:32,656 - AGENT OUTPUT:
+receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Date', b'Thu, 13 Feb 2025 20:45:32 GMT'), (b'Content-Type', b'application/json; charset=UTF-8'), (b'Transfer-Encoding', b'chunked'), (b'Connection', b'keep-alive'), (b'X-Remote-F', b'71.63.55.174'), (b'X-Remote-P', b'172.68.71.53'), (b'X-Upstream', b'unix:/104'), (b'X-Edge', b'001'), (b'X-RateLimit-Key', b'71.63.55.174'), (b'Access-Control-Allow-Origin', b'*'), (b'X-By', b'@XRPLF'), (b'X-Conn', b'close'), (b'cf-cache-status', b'DYNAMIC'), (b'Report-To', b'{"endpoints":[{"url":"https:\\/\\/a.nel.cloudflare.com\\/report\\/v4?s=17RbXobxGTT9vXSBOGBztirbnyId3HZP7dLdtFCWIih1CUIrg5gDid0C1mVU89ZC7wDzC%2BZC0HqNipHK2YHS8vbHyjowcwnXJ1gjVwyazpM7uUubeMP7RVNrOLQWSpRymw%3D%3D"}],"group":"cf-nel","max_age":604800}'), (b'NEL', b'{"success_fraction":0,"report_to":"cf-nel","max_age":604800}'), (b'Strict-Transport-Security', b'max-age=0; includeSubDomains; preload'), (b'X-Content-Type-Options', b'nosniff'), (b'Server', b'cloudflare'), (b'CF-RAY', b'9117a9a5fb75bfcc-ATL'), (b'Content-Encoding', b'gzip'), (b'server-timing', b'cfL4;desc="?proto=TCP&rtt=31622&min_rtt=28495&rtt_var=12919&sent=5&recv=6&lost=0&retrans=0&sent_bytes=2851&recv_bytes=1018&delivery_rate=101631&cwnd=248&unsent_bytes=0&cid=388315bffffde94f&ts=257&x=0"')])
+
+2025-02-13 15:45:32,659 - AGENT OUTPUT:
+HTTP Request: POST https://xrplcluster.com "HTTP/1.1 200 OK"
+
+2025-02-13 15:45:32,659 - AGENT OUTPUT:
+receive_response_body.started request=<Request [b'POST']>
+
+2025-02-13 15:45:32,660 - AGENT OUTPUT:
+receive_response_body.complete
+
+2025-02-13 15:45:32,660 - AGENT OUTPUT:
+response_closed.started
+
+2025-02-13 15:45:32,660 - AGENT OUTPUT:
+response_closed.complete
+
+2025-02-13 15:45:32,661 - AGENT OUTPUT:
+close.started
+
+2025-02-13 15:45:32,661 - AGENT OUTPUT:
+close.complete
+
+2025-02-13 15:45:32,663 - AGENT OUTPUT:
+127.0.0.1 - - [13/Feb/2025 15:45:32] "POST /prompt HTTP/1.1" 200 -
+
+2025-02-13 15:46:46,646 - AGENT OUTPUT:
+Collection morphware_store already exists, returning existing collection.
+
+2025-02-13 15:46:46,648 - AGENT OUTPUT:
+MorphwareKnowledgeTool initialized successfully
+
+2025-02-13 15:46:46,673 - AGENT OUTPUT:
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5050
+ * Running on http://192.168.1.138:5050
+
+2025-02-13 15:46:46,673 - AGENT OUTPUT:
+[33mPress CTRL+C to quit[0m
+
+2025-02-13 15:46:48,897 - AGENT OUTPUT:
+Appending user message to memory: get the wallet balance of rHzykWRVdAfEHk6c5fQxyYYHF9waQXN5Dz
+
+
+
+2025-02-13 15:46:48,897 - AGENT OUTPUT:
+Starting Agent Workflow
+
+2025-02-13 15:46:48,897 - AGENT OUTPUT:
+Inferencing Branch: ['start', 'xrpl_tool_1', 'end']
+
+2025-02-13 15:46:48,897 - AGENT OUTPUT:
+XRPLToolAgent: Received query for tool inference
+
+2025-02-13 15:46:48,901 - AGENT OUTPUT:
+Starting new HTTPS connection (1): app.morphware.com:443
+
+2025-02-13 15:46:49,537 - AGENT OUTPUT:
+https://app.morphware.com:443 "POST /ollama/api/generate HTTP/1.1" 200 None
+
+2025-02-13 15:46:50,224 - AGENT OUTPUT:
+Initial text to clean: ```json
+{
+  "selected_tool": "XRPLAccountInfo",
+  "reasoning": "The user query requests the wallet balance of a specific XRPL account address, which can be retrieved using the XRPLAccountInfo tool.",
+  "formatted_input": "rHzykWRVdAfEHk6c5fQxyYYHF9waQXN5Dz"
+}
+```
+
+2025-02-13 15:46:50,225 - AGENT OUTPUT:
+Final cleaned text: {
+  "selected_tool": "XRPLAccountInfo",
+  "reasoning": "The user query requests the wallet balance of a specific XRPL account address, which can be retrieved using the XRPLAccountInfo tool.",
+  "formatted_input": "rHzykWRVdAfEHk6c5fQxyYYHF9waQXN5Dz"
+}
+
+2025-02-13 15:46:50,225 - AGENT OUTPUT:
+XRPLToolAgent: Executing tool 'XRPLAccountInfo'
+
+2025-02-13 15:46:50,226 - AGENT OUTPUT:
+Using selector: KqueueSelector
+
+2025-02-13 15:46:50,258 - AGENT OUTPUT:
+connect_tcp.started host='xrplcluster.com' port=443 local_address=None timeout=10.0 socket_options=None
+
+2025-02-13 15:46:50,289 - AGENT OUTPUT:
+connect_tcp.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x120dc1410>
+
+2025-02-13 15:46:50,289 - AGENT OUTPUT:
+start_tls.started ssl_context=<ssl.SSLContext object at 0x131b9e060> server_hostname='xrplcluster.com' timeout=10.0
+
+2025-02-13 15:46:50,327 - AGENT OUTPUT:
+start_tls.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x131a2cc90>
+
+2025-02-13 15:46:50,327 - AGENT OUTPUT:
+send_request_headers.started request=<Request [b'POST']>
+
+2025-02-13 15:46:50,328 - AGENT OUTPUT:
+send_request_headers.complete
+
+2025-02-13 15:46:50,328 - AGENT OUTPUT:
+send_request_body.started request=<Request [b'POST']>
+
+2025-02-13 15:46:50,328 - AGENT OUTPUT:
+send_request_body.complete
+
+2025-02-13 15:46:50,328 - AGENT OUTPUT:
+receive_response_headers.started request=<Request [b'POST']>
+
+2025-02-13 15:46:50,657 - AGENT OUTPUT:
+receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Date', b'Thu, 13 Feb 2025 20:46:50 GMT'), (b'Content-Type', b'application/json; charset=UTF-8'), (b'Transfer-Encoding', b'chunked'), (b'Connection', b'keep-alive'), (b'X-Remote-F', b'71.63.55.174'), (b'X-Remote-P', b'172.68.71.113'), (b'X-Upstream', b'unix:/104'), (b'X-Edge', b'001'), (b'X-RateLimit-Key', b'71.63.55.174'), (b'Access-Control-Allow-Origin', b'*'), (b'X-By', b'@XRPLF'), (b'X-Conn', b'close'), (b'cf-cache-status', b'DYNAMIC'), (b'Report-To', b'{"endpoints":[{"url":"https:\\/\\/a.nel.cloudflare.com\\/report\\/v4?s=91br9W25yF%2F2GA3heFg7TfHJJK06fnO1r1JjuGnBBqFnVrn%2Bw1XaApigizgRJWQ3E60X6yD4Ot0B%2BLl%2BKWJBuaf7H177HoFE6P73uxGQTcjuKixdHCH4djhAOec2BQ96%2Fg%3D%3D"}],"group":"cf-nel","max_age":604800}'), (b'NEL', b'{"success_fraction":0,"report_to":"cf-nel","max_age":604800}'), (b'Strict-Transport-Security', b'max-age=0; includeSubDomains; preload'), (b'X-Content-Type-Options', b'nosniff'), (b'Server', b'cloudflare'), (b'CF-RAY', b'9117ab8cfac1bcf0-ATL'), (b'Content-Encoding', b'gzip'), (b'server-timing', b'cfL4;desc="?proto=TCP&rtt=29373&min_rtt=28491&rtt_var=11314&sent=4&recv=7&lost=0&retrans=0&sent_bytes=2851&recv_bytes=1018&delivery_rate=101646&cwnd=247&unsent_bytes=0&cid=5d88fd002863f9f5&ts=274&x=0"')])
+
+2025-02-13 15:46:50,659 - AGENT OUTPUT:
+HTTP Request: POST https://xrplcluster.com "HTTP/1.1 200 OK"
+
+2025-02-13 15:46:50,659 - AGENT OUTPUT:
+receive_response_body.started request=<Request [b'POST']>
+
+2025-02-13 15:46:50,660 - AGENT OUTPUT:
+receive_response_body.complete
+
+2025-02-13 15:46:50,660 - AGENT OUTPUT:
+response_closed.started
+
+2025-02-13 15:46:50,660 - AGENT OUTPUT:
+response_closed.complete
+
+2025-02-13 15:46:50,661 - AGENT OUTPUT:
+close.started
+
+2025-02-13 15:46:50,661 - AGENT OUTPUT:
+close.complete
+
+2025-02-13 15:46:50,662 - AGENT OUTPUT:
+127.0.0.1 - - [13/Feb/2025 15:46:50] "POST /prompt HTTP/1.1" 200 -
+
+2025-02-13 15:47:51,599 - AGENT OUTPUT:
+Collection morphware_store already exists, returning existing collection.
+
+2025-02-13 15:47:51,600 - AGENT OUTPUT:
+MorphwareKnowledgeTool initialized successfully
+
+2025-02-13 15:47:51,623 - AGENT OUTPUT:
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5050
+ * Running on http://192.168.1.138:5050
+
+2025-02-13 15:47:51,623 - AGENT OUTPUT:
+[33mPress CTRL+C to quit[0m
+
+2025-02-13 15:47:52,303 - AGENT OUTPUT:
+Appending user message to memory: get the wallet balance of rHzykWRVdAfEHk6c5fQxyYYHF9waQXN5Dz
+
+
+
+2025-02-13 15:47:52,304 - AGENT OUTPUT:
+Starting Agent Workflow
+
+2025-02-13 15:47:52,304 - AGENT OUTPUT:
+Inferencing Branch: ['start', 'xrpl_tool_1', 'end']
+
+2025-02-13 15:47:52,304 - AGENT OUTPUT:
+XRPLToolAgent: Received query for tool inference
+
+2025-02-13 15:47:52,308 - AGENT OUTPUT:
+Starting new HTTPS connection (1): app.morphware.com:443
+
+2025-02-13 15:47:52,985 - AGENT OUTPUT:
+https://app.morphware.com:443 "POST /ollama/api/generate HTTP/1.1" 200 None
+
+2025-02-13 15:47:53,706 - AGENT OUTPUT:
+Initial text to clean: ```json
+{
+  "selected_tool": "XRPLAccountInfo",
+  "reasoning": "The user query requests the wallet balance of a specific XRPL account address, which can be retrieved using the XRPLAccountInfo tool.",
+  "formatted_input": "rHzykWRVdAfEHk6c5fQxyYYHF9waQXN5Dz"
+}
+```
+
+2025-02-13 15:47:53,707 - AGENT OUTPUT:
+Final cleaned text: {
+  "selected_tool": "XRPLAccountInfo",
+  "reasoning": "The user query requests the wallet balance of a specific XRPL account address, which can be retrieved using the XRPLAccountInfo tool.",
+  "formatted_input": "rHzykWRVdAfEHk6c5fQxyYYHF9waQXN5Dz"
+}
+
+2025-02-13 15:47:53,707 - AGENT OUTPUT:
+XRPLToolAgent: Executing tool 'XRPLAccountInfo'
+
+2025-02-13 15:47:53,708 - AGENT OUTPUT:
+Using selector: KqueueSelector
+
+2025-02-13 15:47:53,755 - AGENT OUTPUT:
+connect_tcp.started host='xrplcluster.com' port=443 local_address=None timeout=10.0 socket_options=None
+
+2025-02-13 15:47:53,786 - AGENT OUTPUT:
+connect_tcp.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x1614ca890>
+
+2025-02-13 15:47:53,787 - AGENT OUTPUT:
+start_tls.started ssl_context=<ssl.SSLContext object at 0x16279e060> server_hostname='xrplcluster.com' timeout=10.0
+
+2025-02-13 15:47:53,826 - AGENT OUTPUT:
+start_tls.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x16148bb90>
+
+2025-02-13 15:47:53,826 - AGENT OUTPUT:
+send_request_headers.started request=<Request [b'POST']>
+
+2025-02-13 15:47:53,826 - AGENT OUTPUT:
+send_request_headers.complete
+
+2025-02-13 15:47:53,826 - AGENT OUTPUT:
+send_request_body.started request=<Request [b'POST']>
+
+2025-02-13 15:47:53,826 - AGENT OUTPUT:
+send_request_body.complete
+
+2025-02-13 15:47:53,826 - AGENT OUTPUT:
+receive_response_headers.started request=<Request [b'POST']>
+
+2025-02-13 15:47:54,079 - AGENT OUTPUT:
+receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Date', b'Thu, 13 Feb 2025 20:47:54 GMT'), (b'Content-Type', b'application/json; charset=UTF-8'), (b'Transfer-Encoding', b'chunked'), (b'Connection', b'keep-alive'), (b'X-Remote-F', b'71.63.55.174'), (b'X-Remote-P', b'172.71.22.196'), (b'X-Upstream', b'unix:/100'), (b'X-Edge', b'001'), (b'X-RateLimit-Key', b'71.63.55.174'), (b'Access-Control-Allow-Origin', b'*'), (b'X-By', b'@XRPLF'), (b'X-Conn', b'close'), (b'cf-cache-status', b'DYNAMIC'), (b'Report-To', b'{"endpoints":[{"url":"https:\\/\\/a.nel.cloudflare.com\\/report\\/v4?s=7PMUOvTUfKEB%2BQrIWvL8coqp%2F8AlkbNt8J%2Bo%2FW0gIsuL6oWUd5O1r3ZgIF4%2FgPuJ1%2BG8pI%2B6nSqdHr1U4tLAO7tPen0n4271XvePBS0e3L3Y2zvMd3UVgwRKt0cv8q8OEw%3D%3D"}],"group":"cf-nel","max_age":604800}'), (b'NEL', b'{"success_fraction":0,"report_to":"cf-nel","max_age":604800}'), (b'Strict-Transport-Security', b'max-age=0; includeSubDomains; preload'), (b'X-Content-Type-Options', b'nosniff'), (b'Server', b'cloudflare'), (b'CF-RAY', b'9117ad19de48b06e-ATL'), (b'Content-Encoding', b'gzip'), (b'server-timing', b'cfL4;desc="?proto=TCP&rtt=32446&min_rtt=29346&rtt_var=11034&sent=5&recv=8&lost=0&retrans=0&sent_bytes=2851&recv_bytes=1018&delivery_rate=98654&cwnd=235&unsent_bytes=0&cid=fbe8317d23c2b7e2&ts=255&x=0"')])
+
+2025-02-13 15:47:54,082 - AGENT OUTPUT:
+HTTP Request: POST https://xrplcluster.com "HTTP/1.1 200 OK"
+
+2025-02-13 15:47:54,083 - AGENT OUTPUT:
+receive_response_body.started request=<Request [b'POST']>
+
+2025-02-13 15:47:54,083 - AGENT OUTPUT:
+receive_response_body.complete
+
+2025-02-13 15:47:54,084 - AGENT OUTPUT:
+response_closed.started
+
+2025-02-13 15:47:54,084 - AGENT OUTPUT:
+response_closed.complete
+
+2025-02-13 15:47:54,085 - AGENT OUTPUT:
+close.started
+
+2025-02-13 15:47:54,085 - AGENT OUTPUT:
+close.complete
+
+2025-02-13 15:47:54,087 - AGENT OUTPUT:
+127.0.0.1 - - [13/Feb/2025 15:47:54] "POST /prompt HTTP/1.1" 200 -
+
+2025-02-13 15:50:30,536 - AGENT OUTPUT:
+Collection morphware_store already exists, returning existing collection.
+
+2025-02-13 15:50:30,537 - AGENT OUTPUT:
+MorphwareKnowledgeTool initialized successfully
+
+2025-02-13 15:50:30,569 - AGENT OUTPUT:
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5050
+ * Running on http://192.168.1.138:5050
+
+2025-02-13 15:50:30,569 - AGENT OUTPUT:
+[33mPress CTRL+C to quit[0m
+
+2025-02-13 15:50:31,496 - AGENT OUTPUT:
+Appending user message to memory: get the wallet balance of rHzykWRVdAfEHk6c5fQxyYYHF9waQXN5Dz
+
+
+
+2025-02-13 15:50:31,496 - AGENT OUTPUT:
+Starting Agent Workflow
+
+2025-02-13 15:50:31,496 - AGENT OUTPUT:
+Inferencing Branch: ['start', 'xrpl_tool_1', 'end']
+
+2025-02-13 15:50:31,496 - AGENT OUTPUT:
+XRPLToolAgent: Received query for tool inference
+
+2025-02-13 15:50:31,501 - AGENT OUTPUT:
+Starting new HTTPS connection (1): app.morphware.com:443
+
+2025-02-13 15:50:32,088 - AGENT OUTPUT:
+https://app.morphware.com:443 "POST /ollama/api/generate HTTP/1.1" 200 None
+
+2025-02-13 15:50:32,837 - AGENT OUTPUT:
+Initial text to clean: ```json
+{
+  "selected_tool": "XRPLAccountInfo",
+  "reasoning": "The user query requests the wallet balance of a specific XRPL account address, which can be retrieved using the XRPLAccountInfo tool.",
+  "formatted_input": "rHzykWRVdAfEHk6c5fQxyYYHF9waQXN5Dz"
+}
+```
+
+2025-02-13 15:50:32,839 - AGENT OUTPUT:
+Final cleaned text: {
+  "selected_tool": "XRPLAccountInfo",
+  "reasoning": "The user query requests the wallet balance of a specific XRPL account address, which can be retrieved using the XRPLAccountInfo tool.",
+  "formatted_input": "rHzykWRVdAfEHk6c5fQxyYYHF9waQXN5Dz"
+}
+
+2025-02-13 15:50:32,839 - AGENT OUTPUT:
+XRPLToolAgent: Executing tool 'XRPLAccountInfo'
+
+2025-02-13 15:50:32,840 - AGENT OUTPUT:
+Using selector: KqueueSelector
+
+2025-02-13 15:50:32,888 - AGENT OUTPUT:
+connect_tcp.started host='xrplcluster.com' port=443 local_address=None timeout=10.0 socket_options=None
+
+2025-02-13 15:50:32,930 - AGENT OUTPUT:
+connect_tcp.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x16af5d0d0>
+
+2025-02-13 15:50:32,930 - AGENT OUTPUT:
+start_tls.started ssl_context=<ssl.SSLContext object at 0x16b09e060> server_hostname='xrplcluster.com' timeout=10.0
+
+2025-02-13 15:50:32,972 - AGENT OUTPUT:
+start_tls.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x16ab97850>
+
+2025-02-13 15:50:32,972 - AGENT OUTPUT:
+send_request_headers.started request=<Request [b'POST']>
+
+2025-02-13 15:50:32,973 - AGENT OUTPUT:
+send_request_headers.complete
+
+2025-02-13 15:50:32,973 - AGENT OUTPUT:
+send_request_body.started request=<Request [b'POST']>
+
+2025-02-13 15:50:32,973 - AGENT OUTPUT:
+send_request_body.complete
+
+2025-02-13 15:50:32,973 - AGENT OUTPUT:
+receive_response_headers.started request=<Request [b'POST']>
+
+2025-02-13 15:50:33,219 - AGENT OUTPUT:
+receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Date', b'Thu, 13 Feb 2025 20:50:33 GMT'), (b'Content-Type', b'application/json; charset=UTF-8'), (b'Transfer-Encoding', b'chunked'), (b'Connection', b'keep-alive'), (b'X-Remote-F', b'71.63.55.174'), (b'X-Remote-P', b'108.162.238.13'), (b'X-Upstream', b'unix:/102'), (b'X-Edge', b'001'), (b'X-RateLimit-Key', b'71.63.55.174'), (b'Access-Control-Allow-Origin', b'*'), (b'X-By', b'@XRPLF'), (b'X-Conn', b'close'), (b'cf-cache-status', b'DYNAMIC'), (b'Report-To', b'{"endpoints":[{"url":"https:\\/\\/a.nel.cloudflare.com\\/report\\/v4?s=GERmb9M%2B6kDjMHi1yp4tXZbpGHpbXS0s9%2Fkl3oyd70Ak3%2Ba8hS7PvIxyIQasaY2flw8vOhhANs62URBrcmdTfeaFyT6ch0PViYjv8530sHlGr1SnM%2F3gtaCxKT%2BuGcRm7Q%3D%3D"}],"group":"cf-nel","max_age":604800}'), (b'NEL', b'{"success_fraction":0,"report_to":"cf-nel","max_age":604800}'), (b'Strict-Transport-Security', b'max-age=0; includeSubDomains; preload'), (b'X-Content-Type-Options', b'nosniff'), (b'Server', b'cloudflare'), (b'CF-RAY', b'9117b0fc792ced83-ATL'), (b'Content-Encoding', b'gzip'), (b'server-timing', b'cfL4;desc="?proto=TCP&rtt=32796&min_rtt=27562&rtt_var=14074&sent=5&recv=7&lost=0&retrans=0&sent_bytes=2852&recv_bytes=1018&delivery_rate=105072&cwnd=250&unsent_bytes=0&cid=b46c965dd9b69282&ts=249&x=0"')])
+
+2025-02-13 15:50:33,221 - AGENT OUTPUT:
+HTTP Request: POST https://xrplcluster.com "HTTP/1.1 200 OK"
+
+2025-02-13 15:50:33,222 - AGENT OUTPUT:
+receive_response_body.started request=<Request [b'POST']>
+
+2025-02-13 15:50:33,223 - AGENT OUTPUT:
+receive_response_body.complete
+
+2025-02-13 15:50:33,223 - AGENT OUTPUT:
+response_closed.started
+
+2025-02-13 15:50:33,223 - AGENT OUTPUT:
+response_closed.complete
+
+2025-02-13 15:50:33,223 - AGENT OUTPUT:
+close.started
+
+2025-02-13 15:50:33,224 - AGENT OUTPUT:
+close.complete
+
+2025-02-13 15:50:33,226 - AGENT OUTPUT:
+127.0.0.1 - - [13/Feb/2025 15:50:33] "POST /prompt HTTP/1.1" 200 -
+
+2025-02-13 15:50:42,523 - AGENT OUTPUT:
+Appending user message to memory: get the xrp balance of rHzykWRVdAfEHk6c5fQxyYYHF9waQXN5Dz
+
+
+
+2025-02-13 15:50:42,523 - AGENT OUTPUT:
+Starting Agent Workflow
+
+2025-02-13 15:50:42,523 - AGENT OUTPUT:
+Inferencing Branch: ['start', 'xrpl_tool_1', 'end']
+
+2025-02-13 15:50:42,523 - AGENT OUTPUT:
+XRPLToolAgent: Received query for tool inference
+
+2025-02-13 15:50:42,525 - AGENT OUTPUT:
+Starting new HTTPS connection (1): app.morphware.com:443
+
+2025-02-13 15:50:43,216 - AGENT OUTPUT:
+https://app.morphware.com:443 "POST /ollama/api/generate HTTP/1.1" 200 None
+
+2025-02-13 15:50:43,862 - AGENT OUTPUT:
+Initial text to clean: ```json
+{
+  "selected_tool": "XRPLAccountInfo",
+  "reasoning": "The user query asks to get the XRP balance of a specific XRPL account address, which requires retrieving account information from the XRPL.",
+  "formatted_input": "rHzykWRVdAfEHk6c5fQxyYYHF9waQXN5Dz"
+}
+```
+
+2025-02-13 15:50:43,865 - AGENT OUTPUT:
+Final cleaned text: {
+  "selected_tool": "XRPLAccountInfo",
+  "reasoning": "The user query asks to get the XRP balance of a specific XRPL account address, which requires retrieving account information from the XRPL.",
+  "formatted_input": "rHzykWRVdAfEHk6c5fQxyYYHF9waQXN5Dz"
+}
+
+2025-02-13 15:50:43,865 - AGENT OUTPUT:
+XRPLToolAgent: Executing tool 'XRPLAccountInfo'
+
+2025-02-13 15:50:43,866 - AGENT OUTPUT:
+Using selector: KqueueSelector
+
+2025-02-13 15:50:43,879 - AGENT OUTPUT:
+connect_tcp.started host='xrplcluster.com' port=443 local_address=None timeout=10.0 socket_options=None
+
+2025-02-13 15:50:43,915 - AGENT OUTPUT:
+connect_tcp.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x16b152490>
+
+2025-02-13 15:50:43,915 - AGENT OUTPUT:
+start_tls.started ssl_context=<ssl.SSLContext object at 0x16b09e0f0> server_hostname='xrplcluster.com' timeout=10.0
+
+2025-02-13 15:50:43,961 - AGENT OUTPUT:
+start_tls.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x16b151c10>
+
+2025-02-13 15:50:43,961 - AGENT OUTPUT:
+send_request_headers.started request=<Request [b'POST']>
+
+2025-02-13 15:50:43,962 - AGENT OUTPUT:
+send_request_headers.complete
+
+2025-02-13 15:50:43,962 - AGENT OUTPUT:
+send_request_body.started request=<Request [b'POST']>
+
+2025-02-13 15:50:43,962 - AGENT OUTPUT:
+send_request_body.complete
+
+2025-02-13 15:50:43,962 - AGENT OUTPUT:
+receive_response_headers.started request=<Request [b'POST']>
+
+2025-02-13 15:50:44,211 - AGENT OUTPUT:
+receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Date', b'Thu, 13 Feb 2025 20:50:44 GMT'), (b'Content-Type', b'application/json; charset=UTF-8'), (b'Transfer-Encoding', b'chunked'), (b'Connection', b'keep-alive'), (b'X-Remote-F', b'71.63.55.174'), (b'X-Remote-P', b'172.68.71.104'), (b'X-Upstream', b'unix:/105'), (b'X-Edge', b'001'), (b'X-RateLimit-Key', b'71.63.55.174'), (b'Access-Control-Allow-Origin', b'*'), (b'X-By', b'@XRPLF'), (b'X-Conn', b'close'), (b'cf-cache-status', b'DYNAMIC'), (b'Report-To', b'{"endpoints":[{"url":"https:\\/\\/a.nel.cloudflare.com\\/report\\/v4?s=qOGa0%2FTJnh%2FRhV34uPGdIRRoPW7rLnkESJ77Av0TNjQnMbvcwtkwgrmXqlkIM1GDJsqbKcErmWNJbz54qkYq%2B6OmEMzW9rJUdqVmqBfNm5uX6s%2Fo%2F3m3KHgvTtVMDrGVsQ%3D%3D"}],"group":"cf-nel","max_age":604800}'), (b'NEL', b'{"success_fraction":0,"report_to":"cf-nel","max_age":604800}'), (b'Strict-Transport-Security', b'max-age=0; includeSubDomains; preload'), (b'X-Content-Type-Options', b'nosniff'), (b'Server', b'cloudflare'), (b'CF-RAY', b'9117b1412fe0bcc8-ATL'), (b'Content-Encoding', b'gzip'), (b'server-timing', b'cfL4;desc="?proto=TCP&rtt=33365&min_rtt=28586&rtt_var=14133&sent=5&recv=7&lost=0&retrans=0&sent_bytes=2850&recv_bytes=1018&delivery_rate=101308&cwnd=243&unsent_bytes=0&cid=48d861f3f21ab5db&ts=257&x=0"')])
+
+2025-02-13 15:50:44,213 - AGENT OUTPUT:
+HTTP Request: POST https://xrplcluster.com "HTTP/1.1 200 OK"
+
+2025-02-13 15:50:44,213 - AGENT OUTPUT:
+receive_response_body.started request=<Request [b'POST']>
+
+2025-02-13 15:50:44,214 - AGENT OUTPUT:
+receive_response_body.complete
+
+2025-02-13 15:50:44,214 - AGENT OUTPUT:
+response_closed.started
+
+2025-02-13 15:50:44,214 - AGENT OUTPUT:
+response_closed.complete
+
+2025-02-13 15:50:44,215 - AGENT OUTPUT:
+close.started
+
+2025-02-13 15:50:44,215 - AGENT OUTPUT:
+close.complete
+
+2025-02-13 15:50:44,217 - AGENT OUTPUT:
+127.0.0.1 - - [13/Feb/2025 15:50:44] "POST /prompt HTTP/1.1" 200 -
+

@@ -33,7 +33,6 @@ class Config:
     TELEGRAM_API_ID=os.getenv("TELEGRAM_API_ID", "")
     TELEGRAM_API_HASH=os.getenv("TELEGRAM_API_HASH", "")
     TELEGRAM_SESSION_NAME=os.getenv("TELEGRAM_SESSION_NAME", "")
-
     TWITTER_API_KEY=os.getenv("TWITTER_API_KEY", "")
     TWITTER_API_SECRET=os.getenv("TWITTER_API_SECRET", "")
     TWITTER_ACCESS_TOKEN=os.getenv("TWITTER_ACCESS_TOKEN", "")
@@ -43,19 +42,22 @@ class Config:
     TWITTER_CONSUMER_SECRET=os.getenv("TWITTER_CONSUMER_SECRET", "")
     TWITTER_OAUTH=os.getenv("TWITTER_OAUTH", "")
     TWITTER_OAUTH_CLIENT_SECRET=os.getenv("TWITTER_OAUTH_CLIENT_SECRET", "")
+    XRPL_ENDPOINT = os.getenv("XRPL_ENDPOINT", "https://s.altnet.rippletest.net:51234")
+    WALLET_ENABLED=os.getenv("WALLET_ENABLED", "true").lower() == "true"
 
     # Just incase to disable anonymized telemetry from Chroma
     os.environ["ANONYMIZED_TELEMETRY"] = "False"
 
-    # init XRP Wallet
-    XRPL_WALLET_SECRET = os.getenv("XRPL_WALLET_SECRET", 'sEd7ifJUaDCfH9wEy78EX4SfyA9vv7E')
-    XRPL_ENDPOINT = os.getenv("XRPL_ENDPOINT", "https://s.altnet.rippletest.net:51234")
-    if XRPL_WALLET_SECRET:
-        XRP_WALLET = Wallet.from_seed(XRPL_WALLET_SECRET)
-    else:
-        client = JsonRpcClient(XRPL_ENDPOINT)
-        XRP_WALLET = generate_faucet_wallet(client=JsonRpcClient(XRPL_ENDPOINT))
+    if WALLET_ENABLED:
+        # init XRP Wallet
+        
+        XRPL_WALLET_SECRET = os.getenv("XRPL_WALLET_SECRET", 'sEd7ifJUaDCfH9wEy78EX4SfyA9vv7E')
 
+        if XRPL_WALLET_SECRET:
+            XRP_WALLET = Wallet.from_seed(XRPL_WALLET_SECRET)
+        else:
+            client = JsonRpcClient(XRPL_ENDPOINT)
+            XRP_WALLET = generate_faucet_wallet(client=JsonRpcClient(XRPL_ENDPOINT))
 
     # Kafka Settings
     if KAFKA.lower() == "true":

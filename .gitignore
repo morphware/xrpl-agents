@@ -13,3 +13,7 @@ src/main_stable.py
 telegram.py.txt
 app.log
 *.bin
+logs/morphware_db.log
+ripple-test.py
+ripple-test2.py
+agent_output.log
