@@ -48,14 +48,19 @@ class Config:
     os.environ["ANONYMIZED_TELEMETRY"] = "False"
 
     # init XRP Wallet
-    XRPL_WALLET_SECRET = os.getenv("XRPL_WALLET_SECRET", 'sEd7ifJUaDCfH9wEy78EX4SfyA9vv7E')
     XRPL_ENDPOINT = os.getenv("XRPL_ENDPOINT", "https://s.altnet.rippletest.net:51234")
-    if XRPL_WALLET_SECRET:
-        XRP_WALLET = Wallet.from_seed(XRPL_WALLET_SECRET)
-    else:
-        client = JsonRpcClient(XRPL_ENDPOINT)
-        XRP_WALLET = generate_faucet_wallet(client=JsonRpcClient(XRPL_ENDPOINT))
+    WALLET_ENABLED=os.getenv("WALLET_ENABLED", "true").lower() == "true"
 
+    if WALLET_ENABLED:
+        # init XRP Wallet
+        
+        XRPL_WALLET_SECRET = os.getenv("XRPL_WALLET_SECRET", 'sEd7ifJUaDCfH9wEy78EX4SfyA9vv7E')
+
+        if XRPL_WALLET_SECRET:
+            XRP_WALLET = Wallet.from_seed(XRPL_WALLET_SECRET)
+        else:
+            client = JsonRpcClient(XRPL_ENDPOINT)
+            XRP_WALLET = generate_faucet_wallet(client=JsonRpcClient(XRPL_ENDPOINT))
 
     # Kafka Settings
     if KAFKA.lower() == "true":
