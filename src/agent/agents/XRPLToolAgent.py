@@ -41,11 +41,15 @@ class XRPLToolAgent:
             decide which tool from the following list should be executed.\n\n
             List of available tools:\n{tools_list}\n\n
             User Query: {input}\n\n
-            Your response should be a JSON object with the keys:\n
+            Your response should be a JSON object of a list with the keys:\n
             '  "selected_tool": a string representing the tool name to use (or null if none),\n'
             '  "reasoning": a brief explanation of your decision.\n\n'
             '  "formatted_input": the input text formatted for the selected tool.\n\n'
-            Output ONLY valid JSON with no additional text."""
+            Output ONLY valid JSON with no additional text.
+            If there are multiplle tools neeeded, add them to the list.
+            If a tool needs to be repeated, add it multiple times to the list.
+            
+            """
         
         prompt = ChatPromptTemplate.from_messages([
             SystemMessagePromptTemplate.from_template(prompt_template)
@@ -81,22 +85,37 @@ class XRPLToolAgent:
         context.append({"role": "system", "content": "Starting XRPL tool inference"})
         
         inference_result = self.infer_tool(user_input)
-        selected_tool_name = inference_result.get("selected_tool")
+        selected_tool_names = [inference_res.get("selected_tool") for inference_res in inference_result]
         
-        if selected_tool_name:
+        if len(selected_tool_names) > 0:
             # Find the selected tool by name (case insensitive)
-            tool = next((t for t in self.tools if t.name.lower() == selected_tool_name.lower()), None)
-            if tool:
-                self.logger.info(f"XRPLToolAgent: Executing tool '{tool.name}'")
-                tool_response = tool.run(inference_result.get("formatted_input"))
-                context.append({
-                    "role": "system",
-                    "content": f"Executed tool '{tool.name}' with response: {tool_response}"
-                })
-                output_response = {"status": True, "output": tool_response, "inference": inference_result}
-            else:
-                self.logger.error(f"Tool '{selected_tool_name}' not found among registered tools")
-                output_response = {"status": False, "output": f"Tool '{selected_tool_name}' not available", "inference": inference_result}
+            for selected_tool_name, inference_res in zip(selected_tool_names, inference_result):
+                tool = next((t for t in self.tools if t.name.lower() == selected_tool_name.lower()), None)
+                if tool:
+                    self.logger.info(f"XRPLToolAgent: Executing tool '{tool.name}'")
+                    status, tool_response = tool.run(inference_res.get("formatted_input"))
+                    context.append({
+                        "role": "system",
+                        "content": f"Executed tool '{tool.name}' with response: {tool_response}"
+                    })
+                    output_response = {"status": status, "output": tool_response, "inference": inference_result}
+                else:
+                    self.logger.error(f"Tool '{selected_tool_name}' not found among registered tools")
+                    output_response = {"status": False, "output": f"Tool '{selected_tool_name}' not available", "inference": inference_result}
+            
+            
+            # tool = next((t for t in self.tools if t.name.lower() == selected_tool_name.lower()), None)
+            # if tool:
+            #     self.logger.info(f"XRPLToolAgent: Executing tool '{tool.name}'")
+            #     tool_response = tool.run(inference_result.get("formatted_input"))
+            #     context.append({
+            #         "role": "system",
+            #         "content": f"Executed tool '{tool.name}' with response: {tool_response}"
+            #     })
+            #     output_response = {"status": True, "output": tool_response, "inference": inference_result}
+            # else:
+            #     self.logger.error(f"Tool '{selected_tool_name}' not found among registered tools")
+            #     output_response = {"status": False, "output": f"Tool '{selected_tool_name}' not available", "inference": inference_result}
         else:
             self.logger.info("No specific tool selected; using default LLM response")
             # Fallback: use the LLM directly for a response.
@@ -111,8 +130,8 @@ class XRPLToolAgent:
         logger.debug(f"Initial text to clean: {text}")
         
         text = text.strip()
-        start = text.find('{')
-        end = text.rfind('}')
+        start = text.find('[')
+        end = text.rfind(']')
         
         if start != -1 and end != -1:
             text = text[start:end+1]
