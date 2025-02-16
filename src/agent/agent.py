@@ -64,22 +64,6 @@ class MultiAgentSystem:
         self.agent_paths = AgentsWorkflow.map_agent_paths(agent_workflow_list=self.agent_workflow_list)
         print(f"Agent Workflow: {self.agent_workflow_list}")
         print(f"Agent Paths: {self.agent_paths}")
-    def model_reinitialize(self, model: str, tools=None):
-        """Reinitialize the LLM model if needed."""
-        if tools:
-            self.tools = tools
-            self.tool_names = [tool.name for tool in tools]
-            self.tool_descriptions = [tool.description for tool in tools]
-            self.tool_instructions = get_tool_instructions(self.tool_names, self.tool_descriptions)
-        self.llm = self._initialize_llm()
-        self.prompt_filter.reinitialize(base_url=Config.OLLAMA_API_BASE, api_key=Config.MORPHWARE_API_KEY, model=model, tools=None)
-        self.planner.reinitialize(base_url=Config.OLLAMA_API_BASE, api_key=Config.MORPHWARE_API_KEY, model=model, tools=['MorphwareKnowledgeTool'])
-        self.executor.reinitialize(base_url=Config.OLLAMA_API_BASE, api_key=Config.MORPHWARE_API_KEY, model=model, tools=self.tool_names)
-        if Config.REVIEWER_AGENT_ENABLED:
-            self.reviewer.reinitialize(base_url=Config.OLLAMA_API_BASE, api_key=Config.MORPHWARE_API_KEY, model=model, tools=None)
-        self.direct_llm.reinitialize(base_url=Config.OLLAMA_API_BASE, api_key=Config.MORPHWARE_API_KEY, model=model, tools=None)
-        self.direct_tool.reinitialize(base_url=Config.OLLAMA_API_BASE, api_key=Config.MORPHWARE_API_KEY, model=model, tools=None)
-        Config.OLLAMA_MODEL = model
 
     def process_request(self, user_input: str) -> Dict[str, Any]:
        

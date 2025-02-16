@@ -86,42 +86,43 @@ class XRPLToolAgent:
         
         inference_result = self.infer_tool(user_input)
         selected_tool_names = [inference_res.get("selected_tool") for inference_res in inference_result]
-        
+        tool_responses = []
+        output_response = {"status": True}
         if len(selected_tool_names) > 0:
             # Find the selected tool by name (case insensitive)
-            for selected_tool_name, inference_res in zip(selected_tool_names, inference_result):
+            for selected_tool_name, inference_res, tool_idx in zip(selected_tool_names, inference_result, range(len(selected_tool_names))):
                 tool = next((t for t in self.tools if t.name.lower() == selected_tool_name.lower()), None)
                 if tool:
-                    self.logger.info(f"XRPLToolAgent: Executing tool '{tool.name}'")
+                    self.logger.info(f"XRPLToolAgent: Executing tool '{tool.name}' in step {tool_idx+1}")
                     status, tool_response = tool.run(inference_res.get("formatted_input"))
+                    status_str = "succeeded" if status else "failed"
+                    output = f"Step {tool_idx+1} - Executed tool {tool.name} which ({status_str}) with the response: \n{tool_response}\n"
+                    tool_responses.append(output)
                     context.append({
                         "role": "system",
-                        "content": f"Executed tool '{tool.name}' with response: {tool_response}"
+                        "content": output
                     })
-                    output_response = {"status": status, "output": tool_response, "inference": inference_result}
+                    
+                    # output_response = {"status": status, "output": tool_response, "inference": inference_result}
                 else:
                     self.logger.error(f"Tool '{selected_tool_name}' not found among registered tools")
-                    output_response = {"status": False, "output": f"Tool '{selected_tool_name}' not available", "inference": inference_result}
+                    tool_responses.append(f"Step {tool_idx+1} - Tool '{selected_tool_name}' not available")
+                    output_response["status"] = False
             
-            
-            # tool = next((t for t in self.tools if t.name.lower() == selected_tool_name.lower()), None)
-            # if tool:
-            #     self.logger.info(f"XRPLToolAgent: Executing tool '{tool.name}'")
-            #     tool_response = tool.run(inference_result.get("formatted_input"))
-            #     context.append({
-            #         "role": "system",
-            #         "content": f"Executed tool '{tool.name}' with response: {tool_response}"
-            #     })
-            #     output_response = {"status": True, "output": tool_response, "inference": inference_result}
-            # else:
-            #     self.logger.error(f"Tool '{selected_tool_name}' not found among registered tools")
-            #     output_response = {"status": False, "output": f"Tool '{selected_tool_name}' not available", "inference": inference_result}
+            # Generate a summary of tool responses using the LLM
+            summary_input = " ".join(tool_responses) if tool_responses else "No tool responses executed."
+            summary_prompt = f"Summarize briefly if each step succeeded of failed: \n\n{summary_input}"
+            summary_output = self.llm.invoke(input=[{"role": "user", "content": summary_prompt}])
+
+            # Append the summary to output_response
+            output_response.update({"output": summary_output,"inference": inference_result})
         else:
             self.logger.info("No specific tool selected; using default LLM response")
             # Fallback: use the LLM directly for a response.
-            default_response = self.llm.generate([{"role": "user", "content": user_input}])
+            default_response = self.llm.invoke(input=[{"role": "user", "content": user_input}])
             context.append({"role": "system", "content": "Default LLM response used"})
             output_response = {"status": True, "output": default_response, "inference": inference_result}
+
 
         return user_input, inference_result, context, output_response
 
