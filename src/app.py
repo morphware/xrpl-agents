@@ -1,6 +1,3 @@
-
-
-
 from flask import Flask, request, jsonify
 import os, sys
 
@@ -10,13 +7,9 @@ project_root = os.path.dirname(src_dir)
 sys.path.append(project_root)
 
 from src.config import Config
-from src.utils.logger import setup_logger, chat_ui_logger
+from src.utils.logger import setup_logger
 from src.tools import discover_tools
 from src.agent.agent import MultiAgentSystem
-from memory import GlobalMemory
-from src.agent.agent_loader import Agent, AgentStruct, AgentsWorkflow
-import requests
-import json
 from src.utils.kafka import send_to_kafka
 import time
 import uuid

@@ -1,21 +1,9 @@
-from dataclasses import dataclass
-from typing import List, Dict, Any, Optional
-from langchain.agents import AgentType, initialize_agent, Tool
-from langchain.memory import ConversationBufferMemory
-from langchain.prompts import MessagesPlaceholder, ChatPromptTemplate, SystemMessagePromptTemplate, HumanMessagePromptTemplate
-from langchain.chains import LLMChain
-from langchain_community.llms import Ollama
+from typing import Dict, Any
 from src.memory import GlobalMemory
 from src.config import Config
-from src.tools import discover_tools
 from src.utils.logger import setup_debug_logging
-from src.agent.agents.ExecutorAgent import ExecutorAgent
-from src.agent.agents.PlannerAgent import PlannerAgent
-from src.agent.agents.ReviewerAgent import ReviewerAgent
-from src.agent.agents.DirectLLMChain import DirectLLMChain
-from src.agent.agents.FilterPromptLLM import PromptFilter
-from .prompts import create_chat_prompt, get_tool_instructions
-from src.agent.agent_loader import AgentStruct, Agent, AgentsWorkflow
+from .prompts import get_tool_instructions
+from src.agent.agent_loader import AgentsWorkflow
 import logging
 import time
 import json
@@ -32,28 +20,11 @@ def debug_separator(title: str = None):
         print(f"== {title} ==")
     print("="*50)
 
-
-
-    
-
-
-
-
 class MultiAgentSystem:
-    def _initialize_llm(self):
-        """Initialize the LLM based on configuration."""
-        return Ollama(
-            base_url=Config.OLLAMA_API_BASE,
-            model=Config.OLLAMA_MODEL,
-            headers={"Authorization": f"Bearer {Config.MORPHWARE_API_KEY}"},
-            temperature=0.1,
-        )
-
 
     def __init__(self, workflow, tools):
         debug_separator("Initializing Multi-Agent Degen System")
         self.tools = tools
-        self.llm = self._initialize_llm()
         self.memory = GlobalMemory()
         self.tool_names = [tool.name for tool in tools]
         self.tool_descriptions = [tool.description for tool in tools]
@@ -111,7 +82,7 @@ class MultiAgentSystem:
                     metrics["eval_duration"] += time.time_ns() - eval_start
 
                     metadata.update({agent_id: metadata_output})
-                    context.append({"role": agent_id, "content": f"Agent Analysis: {str(metadata_output)}"})
+                    context.append({"role": agent_id, "content": f"Agent Analysis: {str(output_response.get('output'))}"})
                     previous_agent = agent_id
                 if agent_id == 'end':
                     if output_response.get("status", True):
