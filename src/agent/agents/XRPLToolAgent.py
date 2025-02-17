@@ -3,7 +3,7 @@ import logging
 from typing import List, Any, Optional
 from langchain.prompts.chat import ChatPromptTemplate, SystemMessagePromptTemplate, HumanMessagePromptTemplate
 from langchain.agents import Tool
-from langchain_community.llms import Ollama
+from langchain_ollama import OllamaLLM
 from src.memory import GlobalMemory
 from langchain.chains import LLMChain
 import logging, re
@@ -20,38 +20,56 @@ class XRPLToolAgent:
     """
     def __init__(
         self,
-        llm: Ollama,
+        llm: OllamaLLM,
         memory: GlobalMemory,
         tools: List[Tool],
         agent_id: str,
-        system_prompt: Optional[str] = None
+        system_prompt: Optional[str] = None,
+        backstory: Optional[str] = None
     ):
         self.llm = llm
         self.memory = memory
         self.tools = tools
         self.agent_id = agent_id
         self.system_prompt = system_prompt
+        self.backstory = backstory
         self.logger = logging.getLogger(__name__)
         self.chain = self._setup_chain()
 
     def _setup_chain(self):
         # Create a prompt template that instructs the LLM to select a tool.
-        prompt_template = """
-            You are an XRPL tool selection assistant. Given the user query below, 
-            decide which tool from the following list should be executed.\n\n
-            List of available tools:\n{tools_list}\n\n
-            User Query: {input}\n\n
-            Your response should be a JSON object of a list with the keys:\n
-            '  "selected_tool": a string representing the tool name to use (or null if none),\n'
-            '  "reasoning": a brief explanation of your decision.\n\n'
-            '  "formatted_input": the input text formatted for the selected tool.\n\n'
-            Output ONLY valid JSON with no additional text.
-            If there are multiplle tools neeeded, add them to the list.
-            If a tool needs to be repeated, add it multiple times to the list.
-            
-            """
+        if self.backstory:
+            backstory_template = "This is your agent backstory: \n\n" + self.backstory + "\n\n"
+        else:
+            backstory_template = ""
+        if self.system_prompt:
+            prompt_template = backstory_template + self.system_prompt
+        else:
+            prompt_template = backstory_template + """
+                Given the user query below, 
+                decide which tool from the following list should be executed.\n\n
+                List of available tools:\n{tools_list}\n\n
+                User Query: {input}\n\n
+                Your response should be a JSON object of a list with the keys:\n
+                '  "selected_tool": a string representing the tool name to use (or null if none),\n'
+                '  "reasoning": a brief explanation of your decision.\n\n'
+                '  "formatted_input": the input text formatted for the selected tool.\n\n'
+                Output ONLY valid JSON with no additional text.
+                If there are multiplle tools neeeded, add them to the list.
+                If a tool needs to be repeated, add it multiple times to the list.
+                If the query part of the query is a question, make the selected tool 'direct_llm'.
+                Please follow the tools order based on the query, if the query begins with a question, the first tool should be 'direct_llm'.
+                use direct_llm multiple times if needed.
+                If unsure about the tool to use, use 'direct_llm' to get a response from the LLM.
+                
+
+                Previous conversation context:
+                {chat_history}
+                
+                """
         
         prompt = ChatPromptTemplate.from_messages([
+            
             SystemMessagePromptTemplate.from_template(prompt_template)
         ])
         return LLMChain(
@@ -69,7 +87,8 @@ class XRPLToolAgent:
         # Generate a response using the LLM
         result = self.chain.run(
                 input=user_input,
-                tools_list=tools_list
+                tools_list=tools_list,
+                chat_history=self.memory.get_conversation_context()
             )
         cleaned_json = self._clean_json_string(result)
         try:
@@ -91,17 +110,29 @@ class XRPLToolAgent:
         if len(selected_tool_names) > 0:
             # Find the selected tool by name (case insensitive)
             for selected_tool_name, inference_res, tool_idx in zip(selected_tool_names, inference_result, range(len(selected_tool_names))):
-                tool = next((t for t in self.tools if t.name.lower() == selected_tool_name.lower()), None)
+                if selected_tool_name is None:
+                    self.logger.error("Selected tool name is None in inference result.")
+                    tool = None
+                else:
+                    tool = next((t for t in self.tools if t.name.lower() == selected_tool_name.lower()), None)
                 if tool:
                     self.logger.info(f"XRPLToolAgent: Executing tool '{tool.name}' in step {tool_idx+1}")
-                    status, tool_response = tool.run(inference_res.get("formatted_input"))
-                    status_str = "succeeded" if status else "failed"
-                    output = f"Step {tool_idx+1} - Executed tool {tool.name} which ({status_str}) with the response: \n{tool_response}\n"
+                    if tool.name == "direct_llm":
+                        tool_response = self.llm.invoke(input=[{"role": "system", "content": self.backstory}]+    
+                                                            self.memory.chat_memory.messages+
+                                                            [{"role": "user", "content": inference_res.get("formatted_input")}])
+
+                        output = f"Step {tool_idx+1} - \n{tool_response}\n"
+                    else:
+                        status, tool_response = tool.run(inference_res.get("formatted_input"))
+                        status_str = "succeeded" if status else "failed"
+                        output = f"Step {tool_idx+1} - Executed tool {tool.name} which ({status_str}) with the response: \n{tool_response}\n"
                     tool_responses.append(output)
                     context.append({
                         "role": "system",
                         "content": output
                     })
+                    self.memory.append_ai_message(output)
                     
                     # output_response = {"status": status, "output": tool_response, "inference": inference_result}
                 else:
@@ -110,16 +141,16 @@ class XRPLToolAgent:
                     output_response["status"] = False
             
             # Generate a summary of tool responses using the LLM
-            summary_input = " ".join(tool_responses) if tool_responses else "No tool responses executed."
-            summary_prompt = f"Summarize briefly if each step succeeded of failed: \n\n{summary_input}"
-            summary_output = self.llm.invoke(input=[{"role": "user", "content": summary_prompt}])
+            summary_input = "\n\n".join(tool_responses) if tool_responses else "No tool responses executed."
+            # summary_prompt = f"format each step nicely: \n\n{summary_input}"
+            # summary_output = self.llm.invoke(input=[{"role": "user", "content": summary_prompt}])
 
             # Append the summary to output_response
-            output_response.update({"output": summary_output,"inference": inference_result})
+            output_response.update({"output": summary_input,"inference": inference_result})
         else:
             self.logger.info("No specific tool selected; using default LLM response")
             # Fallback: use the LLM directly for a response.
-            default_response = self.llm.invoke(input=[{"role": "user", "content": user_input}])
+            default_response = self.llm.invoke(input=[{"role": "system", "content": self.backstory},{"role": "user", "content": user_input}])
             context.append({"role": "system", "content": "Default LLM response used"})
             output_response = {"status": True, "output": default_response, "inference": inference_result}
 
@@ -152,7 +183,7 @@ class XRPLToolAgent:
 # Example usage (for testing purposes only)
 if __name__ == "__main__":
     # This is a placeholder. Replace with actual imports and instances.
-    dummy_llm = Ollama(model="llama3.3:70b-instruct-q8_0", api_base="https://app.morphware.com/ollama")
+    dummy_llm = OllamaLLM(model="llama3.3:70b-instruct-q8_0", api_base="https://app.morphware.com/ollama")
     dummy_memory = GlobalMemory()
     # Assume you have some tool instances that implement the Tool interface
     dummy_tools = []  

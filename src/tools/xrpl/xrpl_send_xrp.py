@@ -53,7 +53,7 @@ class XRPLSendXrpTool(BaseCustomTool, BaseTool):
             except tx.XRPLReliableSubmissionException as e:    
                 response = f"Submit failed: {str(e)}"
                 return False, response
-            response = f"Transaction Successfull: {json.dumps(output.result.get('tx_json'))}"
+            response = f"Transaction Successfull: sent {amount_xrp} XRP to {destination} at time {output.result['close_time_iso']} , transaction hash: {output.result['hash']}"
             return True, response
         except Exception as e:
             return False, f"Error sending XRP: {str(e)}"
