@@ -49,7 +49,7 @@ def ping():
 
 @app.route('/prompt', methods=['POST'])
 # Example usage:
-# curl -X POST http://localhost:5000/prompt -H "Authorization: Bearer MW_API_KEY_HERE" -H "Content-Type: application/json" -d '{"prompt": "What is the price of XRP?"}'
+# curl -X POST http://localhost:5050/prompt -H "Authorization: Bearer MW_API_KEY_HERE" -H "Content-Type: application/json" -d '{"prompt": "What is the price of XRP?"}'
 def handle_prompt():
     '''
     Handle user prompt and return response from agents
