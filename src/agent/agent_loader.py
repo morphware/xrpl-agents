@@ -1,25 +1,15 @@
 from pydantic import BaseModel
 from src.memory import GlobalMemory
-from langchain_community.llms import Ollama
+from langchain_ollama import OllamaLLM
 from src.tools import discover_tools
 from src.config import Config
 from typing import Dict
-from .prompts import create_chat_prompt, get_tool_instructions
-from agent.agents.ExecutorAgent import ExecutorAgent
-from agent.agents.ReviewerAgent import ReviewerAgent
-from agent.agents.PlannerAgent import PlannerAgent
-from agent.agents.DirectLLMChain import DirectLLMChain
-from agent.agents.FilterPromptLLM import PromptFilter
-from agent.agents.DirectToolLLM import DirectToolLLM
+from .prompts import get_tool_instructions
+from agent.agents.XRPLToolAgent import XRPLToolAgent
 import json
 
 AGENT_TYPES = {
-    "prompt_filter": PromptFilter,
-    "executor": ExecutorAgent,
-    "reviewer": ReviewerAgent,
-    "planner": PlannerAgent,
-    "direct_llm": DirectLLMChain,
-    "direct_tool": DirectToolLLM
+    "xrpl_tool": XRPLToolAgent
 }
 
 class AgentStruct(BaseModel):
@@ -27,6 +17,7 @@ class AgentStruct(BaseModel):
     model: str
     tools: list[str] = []
     system_prompt: str | None = None
+    backstory: str | None = None
     id: str
     input: list[str] = []
     output: list[str] = []
@@ -50,18 +41,19 @@ class Agent:
         self.tool_instructions = get_tool_instructions(self.tool_names, self.tool_descriptions)
         self.agent_id = agent.id
         self.system_prompt = agent.system_prompt
+        self.backstory = agent.backstory
         self.input = agent.input
         self.output = agent.output
         self.priority = agent.priority
-        self.agent = AGENT_TYPES[agent.type](llm=self.llm, memory=global_memory, tools=self.tools, system_prompt=agent.system_prompt, agent_id=agent.id)
+        self.agent = AGENT_TYPES[agent.type](llm=self.llm, memory=global_memory, tools=self.tools, system_prompt=agent.system_prompt, backstory=agent.backstory, agent_id=agent.id)
     
     
-    def _initialize_llm(self, base_url: str, model: str, api_key: str) -> Ollama:
+    def _initialize_llm(self, base_url: str, model: str, api_key: str) -> OllamaLLM:
         """Initialize the LLM based on configuration."""
-        return Ollama(
+        return OllamaLLM(
             base_url=base_url,
             model=model,
-            headers={"Authorization": f"Bearer {api_key}"},
+            client_kwargs={'headers': {"Authorization": f"Bearer {api_key}"}},
             temperature=0.1,
         )
     

@@ -1,0 +1,298 @@
+2025-02-13 16:30:18,715 - AGENT OUTPUT:
+Collection morphware_store already exists, returning existing collection.
+
+2025-02-13 16:30:18,717 - AGENT OUTPUT:
+MorphwareKnowledgeTool initialized successfully
+
+2025-02-13 16:30:18,743 - AGENT OUTPUT:
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5050
+ * Running on http://192.168.1.138:5050
+
+2025-02-13 16:30:18,743 - AGENT OUTPUT:
+[33mPress CTRL+C to quit[0m
+
+2025-02-13 16:30:21,443 - AGENT OUTPUT:
+Appending user message to memory: get the xrp balance of rHzykWRVdAfEHk6c5fQxyYYHF9waQXN5Dz
+
+
+
+2025-02-13 16:30:21,443 - AGENT OUTPUT:
+Starting Agent Workflow
+
+2025-02-13 16:30:21,443 - AGENT OUTPUT:
+Inferencing Branch: ['start', 'xrpl_tool_1', 'end']
+
+2025-02-13 16:30:21,443 - AGENT OUTPUT:
+XRPLToolAgent: Received query for tool inference
+
+2025-02-13 16:30:21,447 - AGENT OUTPUT:
+Starting new HTTPS connection (1): app.morphware.com:443
+
+2025-02-13 16:30:22,124 - AGENT OUTPUT:
+https://app.morphware.com:443 "POST /ollama/api/generate HTTP/1.1" 200 None
+
+2025-02-13 16:30:22,964 - AGENT OUTPUT:
+Initial text to clean: ```json
+[
+    {
+        "selected_tool": null,
+        "reasoning": "The task requires retrieving the XRP balance of a specific account on the XRPL network. This typically involves querying the XRPL ledger using an API or tool designed for such operations. However, without access to a specific list of tools that can perform this action, it is not possible to select one from the provided options.",
+        "formatted_input": null
+    }
+]
+```
+
+2025-02-13 16:30:22,965 - AGENT OUTPUT:
+Final cleaned text: [
+    {
+        "selected_tool": null,
+        "reasoning": "The task requires retrieving the XRP balance of a specific account on the XRPL network. This typically involves querying the XRPL ledger using an API or tool designed for such operations. However, without access to a specific list of tools that can perform this action, it is not possible to select one from the provided options.",
+        "formatted_input": null
+    }
+]
+
+2025-02-13 16:30:22,965 - AGENT OUTPUT:
+Tool 'None' not found among registered tools
+
+2025-02-13 16:30:22,967 - AGENT OUTPUT:
+127.0.0.1 - - [13/Feb/2025 16:30:22] "POST /prompt HTTP/1.1" 200 -
+
+2025-02-13 16:31:29,415 - AGENT OUTPUT:
+Collection morphware_store already exists, returning existing collection.
+
+2025-02-13 16:31:29,417 - AGENT OUTPUT:
+MorphwareKnowledgeTool initialized successfully
+
+2025-02-13 16:31:29,446 - AGENT OUTPUT:
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5050
+ * Running on http://192.168.1.138:5050
+
+2025-02-13 16:31:29,446 - AGENT OUTPUT:
+[33mPress CTRL+C to quit[0m
+
+2025-02-13 16:31:36,238 - AGENT OUTPUT:
+Appending user message to memory: get the xrp balance of rHzykWRVdAfEHk6c5fQxyYYHF9waQXN5Dz
+
+
+
+2025-02-13 16:31:36,238 - AGENT OUTPUT:
+Starting Agent Workflow
+
+2025-02-13 16:31:36,238 - AGENT OUTPUT:
+Inferencing Branch: ['start', 'xrpl_tool_1', 'end']
+
+2025-02-13 16:31:36,238 - AGENT OUTPUT:
+XRPLToolAgent: Received query for tool inference
+
+2025-02-13 16:31:36,243 - AGENT OUTPUT:
+Starting new HTTPS connection (1): app.morphware.com:443
+
+2025-02-13 16:31:36,969 - AGENT OUTPUT:
+https://app.morphware.com:443 "POST /ollama/api/generate HTTP/1.1" 200 None
+
+2025-02-13 16:31:37,901 - AGENT OUTPUT:
+Initial text to clean: ```json
+[
+    {
+        "selected_tool": null,
+        "reasoning": "The user query requires retrieving the XRP balance of a specific account on the XRPL network. This task typically involves querying the XRPL ledger using an API or tool designed for interacting with the XRPL, such as xrpl.js or similar libraries. However, since no specific tools are listed in the provided context, and assuming none of the available tools directly support this functionality, no tool can be selected.",
+        "formatted_input": null
+    }
+]
+```
+
+2025-02-13 16:31:37,902 - AGENT OUTPUT:
+Final cleaned text: [
+    {
+        "selected_tool": null,
+        "reasoning": "The user query requires retrieving the XRP balance of a specific account on the XRPL network. This task typically involves querying the XRPL ledger using an API or tool designed for interacting with the XRPL, such as xrpl.js or similar libraries. However, since no specific tools are listed in the provided context, and assuming none of the available tools directly support this functionality, no tool can be selected.",
+        "formatted_input": null
+    }
+]
+
+2025-02-13 16:31:37,902 - AGENT OUTPUT:
+Tool 'None' not found among registered tools
+
+2025-02-13 16:31:37,905 - AGENT OUTPUT:
+127.0.0.1 - - [13/Feb/2025 16:31:37] "POST /prompt HTTP/1.1" 200 -
+
+2025-02-13 16:34:32,720 - AGENT OUTPUT:
+Collection morphware_store already exists, returning existing collection.
+
+2025-02-13 16:34:32,722 - AGENT OUTPUT:
+MorphwareKnowledgeTool initialized successfully
+
+2025-02-13 16:34:32,747 - AGENT OUTPUT:
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5050
+ * Running on http://192.168.1.138:5050
+
+2025-02-13 16:34:32,747 - AGENT OUTPUT:
+[33mPress CTRL+C to quit[0m
+
+2025-02-13 16:34:33,396 - AGENT OUTPUT:
+Appending user message to memory: get the xrp balance of rHzykWRVdAfEHk6c5fQxyYYHF9waQXN5Dz
+
+
+
+2025-02-13 16:34:33,396 - AGENT OUTPUT:
+Starting Agent Workflow
+
+2025-02-13 16:34:33,396 - AGENT OUTPUT:
+Inferencing Branch: ['start', 'xrpl_tool_1', 'end']
+
+2025-02-13 16:34:33,396 - AGENT OUTPUT:
+XRPLToolAgent: Received query for tool inference
+
+2025-02-13 16:34:33,402 - AGENT OUTPUT:
+Starting new HTTPS connection (1): app.morphware.com:443
+
+2025-02-13 16:34:34,028 - AGENT OUTPUT:
+https://app.morphware.com:443 "POST /ollama/api/generate HTTP/1.1" 200 None
+
+2025-02-13 16:34:34,818 - AGENT OUTPUT:
+Initial text to clean: ```json
+[
+    {
+        "selected_tool": null,
+        "reasoning": "The task requires retrieving the XRP balance of a specific account on the XRPL network. This operation typically involves querying the XRPL ledger using an API or tool that can access and interpret blockchain data. However, without specifying available tools in the list, it's not possible to select one.",
+        "formatted_input": null
+    }
+]
+```
+
+2025-02-13 16:34:34,819 - AGENT OUTPUT:
+Final cleaned text: [
+    {
+        "selected_tool": null,
+        "reasoning": "The task requires retrieving the XRP balance of a specific account on the XRPL network. This operation typically involves querying the XRPL ledger using an API or tool that can access and interpret blockchain data. However, without specifying available tools in the list, it's not possible to select one.",
+        "formatted_input": null
+    }
+]
+
+2025-02-13 16:34:34,820 - AGENT OUTPUT:
+Tool 'None' not found among registered tools
+
+2025-02-13 16:34:34,822 - AGENT OUTPUT:
+127.0.0.1 - - [13/Feb/2025 16:34:34] "POST /prompt HTTP/1.1" 200 -
+
+2025-02-13 16:35:31,751 - AGENT OUTPUT:
+Collection morphware_store already exists, returning existing collection.
+
+2025-02-13 16:35:31,752 - AGENT OUTPUT:
+MorphwareKnowledgeTool initialized successfully
+
+2025-02-13 16:35:31,777 - AGENT OUTPUT:
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5050
+ * Running on http://192.168.1.138:5050
+
+2025-02-13 16:35:31,777 - AGENT OUTPUT:
+[33mPress CTRL+C to quit[0m
+
+2025-02-13 16:35:32,705 - AGENT OUTPUT:
+Appending user message to memory: get the xrp balance of rHzykWRVdAfEHk6c5fQxyYYHF9waQXN5Dz
+
+
+
+2025-02-13 16:35:32,706 - AGENT OUTPUT:
+Starting Agent Workflow
+
+2025-02-13 16:35:32,706 - AGENT OUTPUT:
+Inferencing Branch: ['start', 'xrpl_tool_1', 'end']
+
+2025-02-13 16:35:32,706 - AGENT OUTPUT:
+XRPLToolAgent: Received query for tool inference
+
+2025-02-13 16:35:32,710 - AGENT OUTPUT:
+Starting new HTTPS connection (1): app.morphware.com:443
+
+2025-02-13 16:35:33,312 - AGENT OUTPUT:
+https://app.morphware.com:443 "POST /ollama/api/generate HTTP/1.1" 200 None
+
+2025-02-13 16:35:34,202 - AGENT OUTPUT:
+Initial text to clean: ```json
+[
+    {
+        "selected_tool": "XRPLAccountInfo",
+        "reasoning": "The user query requests the XRP balance of a specific XRPL account. The 'XRPLAccountInfo' tool is designed to retrieve account information, including balances, from the XRPL.",
+        "formatted_input": "rHzykWRVdAfEHk6c5fQxyYYHF9waQXN5Dz"
+    }
+]
+```
+
+2025-02-13 16:35:34,204 - AGENT OUTPUT:
+Final cleaned text: [
+    {
+        "selected_tool": "XRPLAccountInfo",
+        "reasoning": "The user query requests the XRP balance of a specific XRPL account. The 'XRPLAccountInfo' tool is designed to retrieve account information, including balances, from the XRPL.",
+        "formatted_input": "rHzykWRVdAfEHk6c5fQxyYYHF9waQXN5Dz"
+    }
+]
+
+2025-02-13 16:35:34,204 - AGENT OUTPUT:
+XRPLToolAgent: Executing tool 'XRPLAccountInfo'
+
+2025-02-13 16:35:34,206 - AGENT OUTPUT:
+Using selector: KqueueSelector
+
+2025-02-13 16:35:34,257 - AGENT OUTPUT:
+connect_tcp.started host='xrplcluster.com' port=443 local_address=None timeout=10.0 socket_options=None
+
+2025-02-13 16:35:34,353 - AGENT OUTPUT:
+connect_tcp.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x1596634d0>
+
+2025-02-13 16:35:34,354 - AGENT OUTPUT:
+start_tls.started ssl_context=<ssl.SSLContext object at 0x1597b1d90> server_hostname='xrplcluster.com' timeout=10.0
+
+2025-02-13 16:35:34,406 - AGENT OUTPUT:
+start_tls.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x1584d4a50>
+
+2025-02-13 16:35:34,407 - AGENT OUTPUT:
+send_request_headers.started request=<Request [b'POST']>
+
+2025-02-13 16:35:34,407 - AGENT OUTPUT:
+send_request_headers.complete
+
+2025-02-13 16:35:34,407 - AGENT OUTPUT:
+send_request_body.started request=<Request [b'POST']>
+
+2025-02-13 16:35:34,408 - AGENT OUTPUT:
+send_request_body.complete
+
+2025-02-13 16:35:34,408 - AGENT OUTPUT:
+receive_response_headers.started request=<Request [b'POST']>
+
+2025-02-13 16:35:34,949 - AGENT OUTPUT:
+receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Date', b'Thu, 13 Feb 2025 21:35:34 GMT'), (b'Content-Type', b'application/json; charset=UTF-8'), (b'Transfer-Encoding', b'chunked'), (b'Connection', b'keep-alive'), (b'X-Remote-F', b'71.63.55.174'), (b'X-Remote-P', b'172.71.194.184'), (b'X-Upstream', b'unix:/101'), (b'X-Edge', b'001'), (b'X-RateLimit-Key', b'71.63.55.174'), (b'Access-Control-Allow-Origin', b'*'), (b'X-By', b'@XRPLF'), (b'X-Conn', b'close'), (b'cf-cache-status', b'DYNAMIC'), (b'Report-To', b'{"endpoints":[{"url":"https:\\/\\/a.nel.cloudflare.com\\/report\\/v4?s=2%2BY7MXflMheEj0cKYeTJ1Qw3VNfRkiMnXByxpvQAzMYw1ZX%2B9QIZ10yNpDImMEqWiKZeDh%2BwLEDkOBm%2Fa4GIegwrg7N3Oez3a45CIPPItuVQvmNcos3LeCbWrkTWVXf5Uw%3D%3D"}],"group":"cf-nel","max_age":604800}'), (b'NEL', b'{"success_fraction":0,"report_to":"cf-nel","max_age":604800}'), (b'Strict-Transport-Security', b'max-age=0; includeSubDomains; preload'), (b'X-Content-Type-Options', b'nosniff'), (b'Server', b'cloudflare'), (b'CF-RAY', b'9117f2f06da0d6e7-IAD'), (b'Content-Encoding', b'gzip'), (b'server-timing', b'cfL4;desc="?proto=TCP&rtt=36739&min_rtt=23961&rtt_var=18113&sent=4&recv=7&lost=0&retrans=0&sent_bytes=2851&recv_bytes=1018&delivery_rate=120863&cwnd=180&unsent_bytes=0&cid=165fa0fac056de92&ts=437&x=0"')])
+
+2025-02-13 16:35:34,952 - AGENT OUTPUT:
+HTTP Request: POST https://xrplcluster.com "HTTP/1.1 200 OK"
+
+2025-02-13 16:35:34,952 - AGENT OUTPUT:
+receive_response_body.started request=<Request [b'POST']>
+
+2025-02-13 16:35:34,953 - AGENT OUTPUT:
+receive_response_body.complete
+
+2025-02-13 16:35:34,953 - AGENT OUTPUT:
+response_closed.started
+
+2025-02-13 16:35:34,953 - AGENT OUTPUT:
+response_closed.complete
+
+2025-02-13 16:35:34,954 - AGENT OUTPUT:
+close.started
+
+2025-02-13 16:35:34,954 - AGENT OUTPUT:
+close.complete
+
+2025-02-13 16:35:34,956 - AGENT OUTPUT:
+127.0.0.1 - - [13/Feb/2025 16:35:34] "POST /prompt HTTP/1.1" 200 -
+

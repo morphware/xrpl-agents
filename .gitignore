@@ -13,3 +13,7 @@ src/main_stable.py
 telegram.py.txt
 app.log
 *.bin
+agent_output.log
+ripple-test.py
+ripple-test2.py
+logs/

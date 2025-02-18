@@ -6,9 +6,15 @@ from langchain.tools import BaseTool
 logger = setup_logger(__name__, 'logs/direct_llm.log')
 
 class DirectLLMTool(BaseCustomTool, BaseTool):
-    """Tool for handling direct LLM interactions when no other tools are needed."""
+    """
+    Tool for handling direct LLM interactions when no other tools are needed.
+    Input should be query.
+    """
     name: ClassVar[str] = "direct_llm"
-    description: ClassVar[str] = "Use this tool for queries that require direct LLM response without need for other tools."
+    description: ClassVar[str] = (
+        "Use this tool for queries that require direct LLM response without need for other tools. "
+        "Input should be query. "
+        )
     
     def _run(self, tool_input: str) -> str:
         """Execute the direct LLM interaction."""
@@ -16,8 +22,8 @@ class DirectLLMTool(BaseCustomTool, BaseTool):
         
         try:
             logger.info("Returning direct LLM input for processing")
-            return tool_input
+            return True, tool_input
                 
         except Exception as e:
             logger.error(f"Error in direct LLM processing: {str(e)}", exc_info=True)
-            return f"Error in direct LLM processing: {str(e)}"
+            return False, f"Error in direct LLM processing: {str(e)}"

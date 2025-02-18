@@ -6,8 +6,6 @@ from config import Config
 from pydantic import BaseModel, ConfigDict
 from typing import Optional, Union
 import uuid
-from src.utils.mw_api_handler import create_chats_message_payload
-
 
 
 class APIHandler(logging.Handler):

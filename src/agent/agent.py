@@ -1,21 +1,9 @@
-from dataclasses import dataclass
-from typing import List, Dict, Any, Optional
-from langchain.agents import AgentType, initialize_agent, Tool
-from langchain.memory import ConversationBufferMemory
-from langchain.prompts import MessagesPlaceholder, ChatPromptTemplate, SystemMessagePromptTemplate, HumanMessagePromptTemplate
-from langchain.chains import LLMChain
-from langchain_community.llms import Ollama
+from typing import Dict, Any
 from src.memory import GlobalMemory
 from src.config import Config
-from src.tools import discover_tools
 from src.utils.logger import setup_debug_logging
-from src.agent.agents.ExecutorAgent import ExecutorAgent
-from src.agent.agents.PlannerAgent import PlannerAgent
-from src.agent.agents.ReviewerAgent import ReviewerAgent
-from src.agent.agents.DirectLLMChain import DirectLLMChain
-from src.agent.agents.FilterPromptLLM import PromptFilter
-from .prompts import create_chat_prompt, get_tool_instructions
-from src.agent.agent_loader import AgentStruct, Agent, AgentsWorkflow
+from .prompts import get_tool_instructions
+from src.agent.agent_loader import AgentsWorkflow
 import logging
 import time
 import json
@@ -32,28 +20,11 @@ def debug_separator(title: str = None):
         print(f"== {title} ==")
     print("="*50)
 
-
-
-    
-
-
-
-
 class MultiAgentSystem:
-    def _initialize_llm(self):
-        """Initialize the LLM based on configuration."""
-        return Ollama(
-            base_url=Config.OLLAMA_API_BASE,
-            model=Config.OLLAMA_MODEL,
-            headers={"Authorization": f"Bearer {Config.MORPHWARE_API_KEY}"},
-            temperature=0.1,
-        )
-
 
     def __init__(self, workflow, tools):
         debug_separator("Initializing Multi-Agent Degen System")
         self.tools = tools
-        self.llm = self._initialize_llm()
         self.memory = GlobalMemory()
         self.tool_names = [tool.name for tool in tools]
         self.tool_descriptions = [tool.description for tool in tools]
@@ -64,22 +35,6 @@ class MultiAgentSystem:
         self.agent_paths = AgentsWorkflow.map_agent_paths(agent_workflow_list=self.agent_workflow_list)
         print(f"Agent Workflow: {self.agent_workflow_list}")
         print(f"Agent Paths: {self.agent_paths}")
-    def model_reinitialize(self, model: str, tools=None):
-        """Reinitialize the LLM model if needed."""
-        if tools:
-            self.tools = tools
-            self.tool_names = [tool.name for tool in tools]
-            self.tool_descriptions = [tool.description for tool in tools]
-            self.tool_instructions = get_tool_instructions(self.tool_names, self.tool_descriptions)
-        self.llm = self._initialize_llm()
-        self.prompt_filter.reinitialize(base_url=Config.OLLAMA_API_BASE, api_key=Config.MORPHWARE_API_KEY, model=model, tools=None)
-        self.planner.reinitialize(base_url=Config.OLLAMA_API_BASE, api_key=Config.MORPHWARE_API_KEY, model=model, tools=['MorphwareKnowledgeTool'])
-        self.executor.reinitialize(base_url=Config.OLLAMA_API_BASE, api_key=Config.MORPHWARE_API_KEY, model=model, tools=self.tool_names)
-        if Config.REVIEWER_AGENT_ENABLED:
-            self.reviewer.reinitialize(base_url=Config.OLLAMA_API_BASE, api_key=Config.MORPHWARE_API_KEY, model=model, tools=None)
-        self.direct_llm.reinitialize(base_url=Config.OLLAMA_API_BASE, api_key=Config.MORPHWARE_API_KEY, model=model, tools=None)
-        self.direct_tool.reinitialize(base_url=Config.OLLAMA_API_BASE, api_key=Config.MORPHWARE_API_KEY, model=model, tools=None)
-        Config.OLLAMA_MODEL = model
 
     def process_request(self, user_input: str) -> Dict[str, Any]:
        
@@ -127,7 +82,7 @@ class MultiAgentSystem:
                     metrics["eval_duration"] += time.time_ns() - eval_start
 
                     metadata.update({agent_id: metadata_output})
-                    context.append({"role": agent_id, "content": f"Agent Analysis: {str(metadata_output)}"})
+                    context.append({"role": agent_id, "content": f"Agent Analysis: {str(output_response.get('output'))}"})
                     previous_agent = agent_id
                 if agent_id == 'end':
                     if output_response.get("status", True):

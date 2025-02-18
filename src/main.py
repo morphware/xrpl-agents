@@ -15,7 +15,6 @@ from src.tools import discover_tools
 from src.agent.agent import MultiAgentSystem
 from memory import GlobalMemory
 from src.utils.kafka import send_to_kafka
-from src.utils.mw_api_handler import create_chat_init_message_payload
 
 
 os.environ["ANONYMIZED_TELEMETRY"] = "False"
@@ -43,33 +42,23 @@ def format_response(response_text):
 def main():
     try:
         Config.validate()
-        
-        # Initialize the shared memory
-        #conversation_memory = GlobalMemory()
-        
         # Initialize tools
         tools = discover_tools()
-        
-        # Initialize the multi-agent system with shared memory
-        agent_system = MultiAgentSystem(tools=tools)
-        print("Welcome to Morphware! Type 'quit' to exit.")
-        
+        print([tool.name for tool in tools])
 
-        # Initialize the chat if needed
-        # if os.getenv("CHAT_UUID", None) is None:
-        #     response = agent_system.process_request(Config.PROMPT)
-        #     init_payload, init_headers = create_chat_init_message_payload(Config.PROMPT, Config.CHAT_UUID, Config.CHAT_INIT_ENDPOINT, api_key=Config.MORPHWARE_API_KEY)
-        #     req_res = requests.post(Config.CHAT_INIT_ENDPOINT, data=json.dumps(init_payload), headers=init_headers)
-        #     # Config.CHAT_UUID = chat_uuid
-        #     chat_ui = chat_ui_logger("chat_ui", Config.CHATS_ENDPOINT, Config.MORPHWARE_API_KEY, Config.CHAT_UUID)
-        #     chat_ui.info([None, response])
-        # else:
+        # Initialize workflow
+        workflow = Config.AGENT_WORKFLOW_FILE
+        agent_system = MultiAgentSystem(workflow=workflow, tools=tools)
+
+        print("Welcome to Morphware! Type 'quit' to exit.")
+
         chat_ui = chat_ui_logger("chat_ui", Config.CHATS_ENDPOINT, Config.MORPHWARE_API_KEY, Config.CHAT_UUID)
 
         running = True
         while running:
             try:
                 if Config.KAFKA.lower() == "true":
+                    # Use Kafka Messaging stream to receive and send messages
                     message = Config.get_kafka_messages(Config.kafka_in)
                     if not message:
                         time.sleep(1)
@@ -101,6 +90,7 @@ def main():
                                 logger.error(f"Error processing message: {str(e)}", exc_info=True)
                                 print("\nAn error occurred. Please try again.")
                 else:
+                    # Use command line interface to receive and send messages
                     try:
                         user_input = input("\nYou: ").strip()
                         if user_input.lower() in ["quit", "exit"]:

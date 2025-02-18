@@ -3,6 +3,9 @@ from dotenv import load_dotenv
 import logging
 import json
 import uuid
+from xrpl.wallet import Wallet
+from xrpl.wallet.wallet_generation import generate_faucet_wallet
+from xrpl.clients import JsonRpcClient
 load_dotenv()
 
 class Config:
@@ -18,6 +21,7 @@ class Config:
     MORPHWARE_EMBEDDINGS_API_BASE = os.getenv("MORPHWARE_EMBEDDINGS_API_BASE", "https://app.morphware.com/ollama/api/embed")
     MORPHWARE_EMBEDDINGS_MODEL = os.getenv("MORPHWARE_EMBEDDINGS_MODEL", "nomic-embed-text:latest")
     MORPHWARE_FILTER_MODEL = os.getenv("MORPHWARE_FILTER_MODEL", "llama3.1:latest")
+    AGENT_WORKFLOW_FILE = os.getenv("AGENT_WORKFLOW_FILE", "XRPL.json.json")
 
     KAFKA_BOOTSTRAP_SERVERS = os.getenv("KAFKA_BOOTSTRAP_SERVERS", "morphware-cluster-kafka-plain-bootstrap.kafka.svc:9092")
     USER = os.getenv("USER", "morphware")
@@ -43,6 +47,21 @@ class Config:
 
     # Just incase to disable anonymized telemetry from Chroma
     os.environ["ANONYMIZED_TELEMETRY"] = "False"
+
+    # init XRP Wallet
+    XRPL_ENDPOINT = os.getenv("XRPL_ENDPOINT", "https://s.altnet.rippletest.net:51234")
+    WALLET_ENABLED=os.getenv("WALLET_ENABLED", "true").lower() == "true"
+
+    if WALLET_ENABLED:
+        # init XRP Wallet
+        
+        XRPL_WALLET_SECRET = os.getenv("XRPL_WALLET_SECRET", 'sEd7ifJUaDCfH9wEy78EX4SfyA9vv7E')
+
+        if XRPL_WALLET_SECRET:
+            XRP_WALLET = Wallet.from_seed(XRPL_WALLET_SECRET)
+        else:
+            client = JsonRpcClient(XRPL_ENDPOINT)
+            XRP_WALLET = generate_faucet_wallet(client=JsonRpcClient(XRPL_ENDPOINT))
 
     # Kafka Settings
     if KAFKA.lower() == "true":
