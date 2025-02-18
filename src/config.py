@@ -21,6 +21,7 @@ class Config:
     MORPHWARE_EMBEDDINGS_API_BASE = os.getenv("MORPHWARE_EMBEDDINGS_API_BASE", "https://app.morphware.com/ollama/api/embed")
     MORPHWARE_EMBEDDINGS_MODEL = os.getenv("MORPHWARE_EMBEDDINGS_MODEL", "nomic-embed-text:latest")
     MORPHWARE_FILTER_MODEL = os.getenv("MORPHWARE_FILTER_MODEL", "llama3.1:latest")
+    AGENT_WORKFLOW_FILE = os.getenv("AGENT_WORKFLOW_FILE", "XRPL.json.json")
 
     KAFKA_BOOTSTRAP_SERVERS = os.getenv("KAFKA_BOOTSTRAP_SERVERS", "morphware-cluster-kafka-plain-bootstrap.kafka.svc:9092")
     USER = os.getenv("USER", "morphware")

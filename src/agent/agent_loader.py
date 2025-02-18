@@ -5,22 +5,10 @@ from src.tools import discover_tools
 from src.config import Config
 from typing import Dict
 from .prompts import get_tool_instructions
-from agent.agents.ExecutorAgent import ExecutorAgent
-from agent.agents.ReviewerAgent import ReviewerAgent
-from agent.agents.PlannerAgent import PlannerAgent
-from agent.agents.DirectLLMChain import DirectLLMChain
-from agent.agents.FilterPromptLLM import PromptFilter
-from agent.agents.DirectToolLLM import DirectToolLLM
 from agent.agents.XRPLToolAgent import XRPLToolAgent
 import json
 
 AGENT_TYPES = {
-    "prompt_filter": PromptFilter,
-    "executor": ExecutorAgent,
-    "reviewer": ReviewerAgent,
-    "planner": PlannerAgent,
-    "direct_llm": DirectLLMChain,
-    "direct_tool": DirectToolLLM,
     "xrpl_tool": XRPLToolAgent
 }
 
