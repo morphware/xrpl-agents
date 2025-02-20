@@ -9,6 +9,8 @@ from xrpl import transaction as tx
 from xrpl.wallet import Wallet
 from ..base import BaseCustomTool
 from ...config import Config
+from ...utils.kafka import send_to_kafka, get_kafka_messages, get_kafka_latest_message
+import time
 
 class XRPLSendXrpTool(BaseCustomTool, BaseTool):
     """
@@ -46,15 +48,17 @@ class XRPLSendXrpTool(BaseCustomTool, BaseTool):
                 destination=destination,
                 amount=amount_drops
             )
-
-            # Create a wallet instance, set with the current sequence
-            try:    
-                output = tx.submit_and_wait(payment, client, Config.XRP_WALLET)    
-            except tx.XRPLReliableSubmissionException as e:    
-                response = f"Submit failed: {str(e)}"
+            payment_req = payment.to_xrpl()
+            send_to_kafka(producer=Config.kafka_out, topic=Config.KAFKA_TX_TOPIC, message=payment_req)
+            response = get_kafka_latest_message(Config.kafka_tx)
+            if isinstance(response, Exception):
+                return False, f"Error processing message: {str(response)}"                   
+            if "Successful" in response:
+                response = f"Transaction Successfull: sent {amount_xrp} XRP to {destination} " # at time {output.result['close_time_iso']} , transaction hash: {output.result['hash']}"
+                return True, response
+            else:
+                response = f"Transaction Failed: {response}"
                 return False, response
-            response = f"Transaction Successfull: sent {amount_xrp} XRP to {destination} at time {output.result['close_time_iso']} , transaction hash: {output.result['hash']}"
-            return True, response
         except Exception as e:
             return False, f"Error sending XRP: {str(e)}"
 

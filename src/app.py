@@ -68,7 +68,7 @@ def handle_prompt():
         response = agent_system.process_request(user_input)
         if Config.KAFKA.lower() == "true":
             # Send user input and agent response to Kafka Stream if enabled
-            send_to_kafka(Config.kafka_in, Config.KAFKA_IN_TOPIC, user_input)
+            send_to_kafka(Config.kafka_out, Config.KAFKA_IN_TOPIC, user_input)
             send_to_kafka(Config.kafka_out, Config.KAFKA_OUT_TOPIC, response.get('response', ''))
         return jsonify({"response": response})
     except Exception as e:

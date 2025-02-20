@@ -26,6 +26,7 @@ class Config:
     KAFKA_BOOTSTRAP_SERVERS = os.getenv("KAFKA_BOOTSTRAP_SERVERS", "morphware-cluster-kafka-plain-bootstrap.kafka.svc:9092")
     USER = os.getenv("USER", "morphware")
     CHAT_UUID = os.getenv("CHAT_UUID", str(uuid.uuid4()))
+    print(CHAT_UUID)
     KAFKA = os.getenv("KAFKA", "true")
 
     SERPER_API_KEY = os.getenv("SERPER_API_KEY")
@@ -70,10 +71,11 @@ class Config:
         KAFKA_IN_TOPIC = CHAT_UUID + "_IN"
         KAFKA_OUT_TOPIC = CHAT_UUID + "_OUT"
         KAFKA_LOGS_TOPIC = CHAT_UUID + "_LOGS"
+        KAFKA_TX_TOPIC = CHAT_UUID + "_TX"
         KAFKA_HEARTBEAT_TOPIC = CHAT_UUID + "_HEARTBEAT"
         kafka_logger = create_kafka_producer(KAFKA_BOOTSTRAP_SERVERS)
-        kafka_in = create_kafka_consumer(KAFKA_BOOTSTRAP_SERVERS, "degen_agent")
-        kafka_in = consume_from_kafka(kafka_in, KAFKA_IN_TOPIC)
+        kafka_in = consume_from_kafka(create_kafka_consumer(KAFKA_BOOTSTRAP_SERVERS, "agent"), KAFKA_IN_TOPIC)
+        kafka_tx = consume_from_kafka(create_kafka_consumer(KAFKA_BOOTSTRAP_SERVERS, "agent"), KAFKA_TX_TOPIC)   
         kafka_out = create_kafka_producer(KAFKA_BOOTSTRAP_SERVERS)
         kafka_heartbeat = create_kafka_producer(KAFKA_BOOTSTRAP_SERVERS)
     else:
