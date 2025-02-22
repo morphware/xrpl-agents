@@ -66,7 +66,7 @@ class XRPLGetXRPBalanceTool(BaseCustomTool, BaseTool):
             str: Formatted balance response or error message
         """
         # Clean the input
-        if tool_input == "user_account_address":
+        if "user_account_address" in tool_input:
             address = Config.XRP_WALLET.address
         else:
             address = tool_input.strip()
