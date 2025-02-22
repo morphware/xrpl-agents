@@ -17,6 +17,8 @@ class XRPLGetXRPBalanceTool(BaseCustomTool, BaseTool):
     description: ClassVar[str] = (
         "Retrieve the XRP balance of an XRPL account. "
         "Input should be the account address."
+        "If the input is for users address, input 'user_account_address'."
+        
     )
 
     def __init__(self):
@@ -66,7 +68,7 @@ class XRPLGetXRPBalanceTool(BaseCustomTool, BaseTool):
             str: Formatted balance response or error message
         """
         # Clean the input
-        if "user_account_address" in tool_input:
+        if "user_account_address" in tool_input.lower():
             address = Config.XRP_WALLET.address
         else:
             address = tool_input.strip()
