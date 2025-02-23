@@ -9,6 +9,8 @@ from xrpl.wallet import Wallet
 from xrpl.models.transactions import NFTokenCreateOffer
 from xrpl import transaction as tx
 from ..base import BaseCustomTool
+from ...utils.kafka import send_to_kafka, get_kafka_latest_message
+import uuid
 
 import xrpl.utils
 
@@ -63,8 +65,29 @@ class XRPLCreateBuyOfferTool(BaseCustomTool, BaseTool):
             )
 
             try:
-                response = tx.submit_and_wait(buy_offer_tx, client, Config.XRP_WALLET)
-                return True, str(response.result)
+                buy_offer_req = buy_offer_tx.to_xrpl()
+                message_id = str(uuid.uuid4())
+                send_to_kafka(
+                    producer=Config.kafka_out,
+                    topic=Config.KAFKA_TX_TOPIC + "_IN",
+                    message=buy_offer_req,
+                    key=message_id
+                )
+                response, key = get_kafka_latest_message(
+                    Config.consume_from_kafka(Config.kafka_tx, Config.KAFKA_TX_TOPIC + "_OUT"),
+                    message_id=message_id
+                )
+                if isinstance(response, Exception):
+                    return False, f"Error processing message: {str(response)}"
+                if "Successful" in response:
+                    response = (
+                        f"Buy Offer created successfully - nftoken id: {nftoken_id}, amount: {amount}, "
+                        f"owner: {owner}, destination: {destination}, expiration: {expiration}"
+                    )
+                    return True, response
+                else:
+                    response = f"Create Buy Offer failed: {response}"
+                    return False, response
             except tx.XRPLReliableSubmissionException as e:
                 return False, f"Submit failed: {e}"
         except Exception as e:

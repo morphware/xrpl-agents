@@ -8,6 +8,8 @@ from xrpl.models.transactions import NFTokenCancelOffer
 from xrpl import transaction as tx
 from ...config import Config
 from ..base import BaseCustomTool
+from ...utils.kafka import send_to_kafka, get_kafka_latest_message
+import uuid
 
 class XRPLCancelOfferTool(BaseCustomTool, BaseTool):
     """
@@ -32,8 +34,24 @@ class XRPLCancelOfferTool(BaseCustomTool, BaseTool):
             )
 
             try:
-                response = tx.submit_and_wait(cancel_offer_tx, client, Config.XRP_WALLET.address)
-                return True, str(response.result)
+                cancel_offer_req = cancel_offer_tx.to_xrpl()
+                message_id = str(uuid.uuid4())
+                send_to_kafka(
+                    producer=Config.kafka_out,
+                    topic=Config.KAFKA_TX_TOPIC + "_IN",
+                    message=cancel_offer_req,
+                    key=message_id
+                )
+                response, key = get_kafka_latest_message(
+                    Config.consume_from_kafka(Config.kafka_tx, Config.KAFKA_TX_TOPIC + "_OUT"),
+                    message_id=message_id
+                )
+                if isinstance(response, Exception):
+                    return False, f"Error processing message: {str(response)}"
+                if "Successful" in response:
+                    return True, f"Cancel offer successful - offer id: {offer_id}"
+                else:
+                    return False, f"Cancel offer failed: {response}"
             except tx.XRPLReliableSubmissionException as e:
                 return False, f"Submit failed: {e}"
         except Exception as e:
