@@ -2,8 +2,8 @@
     {
         "type": "xrpl_tool",
         "model": "phi4:latest",
-        "tools": ["XRPLGetXRPBalance","XRPLAccountInfo","XRPLSendXRP",
-            "XRPLCreateSellOffer","XRPLCreateBuyOffer","XRPLCancelOffer",
+        "tools": ["XRPLGetXRPBalance","XRPLAccountInfo","XRPLSendXRP", "XRPLGetLatestTransaction",
+            "XRPLCreateSellOffer","XRPLCreateBuyOffer","XRPLCancelOffer", "XRPLGetWalletTokenBalances",
             "XRPLAcceptSellOffer","XRPLAcceptBuyOffer","XRPLGetOffers","XRPLTokenPrice",
             "direct_llm"],
         "system_prompt": "",

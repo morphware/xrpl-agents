@@ -18,6 +18,7 @@ class XRPLAccountInfoTool(BaseCustomTool, BaseTool):
         "Retrieve account information from the XRPL. "
         "Input should be a valid XRPL account address."
         "If the input is for users address, input 'user_account_address'."
+        "This does not get token balances, only XRP balance."
 
     )
     def _run(self, tool_input: str) -> str:

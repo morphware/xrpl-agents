@@ -7,19 +7,17 @@ from xrpl.models import AccountInfo
 from xrpl.wallet import Wallet
 from ...config import Config
 from ..base import BaseCustomTool
+from xrpl.account import get_latest_transaction
 
-class XRPLGetXRPBalanceTool(BaseCustomTool, BaseTool):
+class XRPLGetLatestTransactionTool(BaseCustomTool, BaseTool):
     """
-    Tool for retrieving the XRP balance of an XRPL account.
+    Tool for retrieving the latest transaction of an XRPL account.
     Input should be a valid XRPL account address.
     """
-    name: ClassVar[str] = "XRPLGetXRPBalance"
+    name: ClassVar[str] = "XRPLGetLatestTransaction"
     description: ClassVar[str] = (
-        "Retrieve the XRP balance of an XRPL account. "
+        "Retrieve the latest transaction of an XRPL account. "
         "Input should be the account address."
-        "If the input is for users address, input 'user_account_address'."
-        "This does not get token balances, only XRP balance."
-        
     )
 
     def __init__(self):
@@ -33,43 +31,32 @@ class XRPLGetXRPBalanceTool(BaseCustomTool, BaseTool):
             len(address) >= 25 and 
             len(address) <= 35
         )
-
-    def _get_balance(self, address: str) -> tuple[float, str]:
+    
+    def _get_latest_transaction(self, address: str) -> tuple[dict, str]:
         """
-        Get the balance for an XRPL address.
-        Returns tuple of (balance_in_xrp, error_message)
+        Get the latest transaction for an XRPL address.
+        Returns tuple of (transaction_data, error_message)
         """
         try:
             # Create account info request
-            acct_info = AccountInfo(
-                account=address,
-                ledger_index="validated"
-            )
-            
-            # Send request and get response
             client = JsonRpcClient(Config.XRPL_ENDPOINT)
-            response = client.request(acct_info)
+            transaction = get_latest_transaction(account=address, client=client)
             
-            # Extract balance from account data
-            if response.status == "success" and "account_data" in response.result:
-                balance_drops = int(response.result["account_data"]["Balance"])
-                return (balance_drops / 1_000_000, "")
-            else:
-                return (0.0, "No account data found")
+            return (transaction, "")
                 
         except Exception as e:
-            return (0.0, str(e))
-
+            return (None, str(e))
+    
     def _run(self, tool_input: str) -> str:
         """
-        Run the tool to get XRP balance for an address.
+        Run the tool to get the latest transaction for an address.
         Args:
             tool_input (str): XRPL account address
         Returns:
-            str: Formatted balance response or error message
+            str: Formatted transaction response or error message
         """
         # Clean the input
-        if "user_account_address" in tool_input.lower():
+        if tool_input == "user_account_address":
             address = Config.XRP_WALLET.address
         else:
             address = tool_input.strip()
@@ -79,20 +66,20 @@ class XRPLGetXRPBalanceTool(BaseCustomTool, BaseTool):
             return False, f"Invalid XRPL address format: {address}"
 
         # Get the balance
-        balance, error = self._get_balance(address)
+        transaction, error = self._get_latest_transaction(address)
         
         # Handle the response
         if error:
-            return False, f"Error retrieving balance for {address}: {error}"
+            return False, f"Error retrieving latest transaction for {address}: {error}"
         
-        return True, f"Balance for account {address}: {balance:.6f} XRP"
-
+        return True, f"Latest transaction for account {address}: {transaction}"
+    
     async def _arun(self, tool_input: str) -> str:
         """Async execution is not supported."""
-        raise NotImplementedError("Async execution is not supported for XRPLGetXRPBalanceTool.")
+        raise NotImplementedError("Async execution is not supported for XRPLGetLatestTransactionTool.")
 
 if __name__ == "__main__":
-    tool = XRPLGetXRPBalanceTool()
+    tool = XRPLGetLatestTransactionTool()
     # Example usage:
     account_address = "rHzykWRVdAfEHk6c5fQxyYYHF9waQXN5Dz"
     result = tool._run(account_address)

@@ -23,28 +23,17 @@ def main():
     consumer = consume_from_kafka(consumer, TEST_TOPIC + "_IN")
     consume_timestamp = time.time() * 1000
     
-    # Standard test messages
-    test_messages = [
-        "Transaction Successful",
-        "Transaction Failed",
-        "Transaction Successful, 0.1 XRP sent",
-        "Transaction Successful",
-        "Transaction Failed",
-        "Transaction Successful, 0.1 XRP sent",
-        "Transaction Successful",
-        "Transaction Failed",
-        "Transaction Successful, 0.1 XRP sent"
-    ]
-    for message in test_messages:
-
+    while True:
         # Allow some time for threads to process messages
         response, key = get_kafka_latest_message(consumer, timestamp=consume_timestamp)
         message_id = key
         print(f"Received message: {response}")
-        # Send standard test messages
+        user_message = input(f"Enter message to send for transaction {message_id}, (or type 'quit' to exit): ")
+        if user_message.lower() == 'quit':
+            break
         try:
-            send_to_kafka(producer, TEST_TOPIC + "_OUT", message, key=message_id)
-            print(f"Sent message: {message}")
+            send_to_kafka(producer, TEST_TOPIC + "_OUT", user_message, key=message_id)
+            print(f"Sent message: {user_message}")
         except Exception as e:
             print(f"Error sending message: {str(e)}")
             
