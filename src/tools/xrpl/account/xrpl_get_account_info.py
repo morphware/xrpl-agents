@@ -4,9 +4,9 @@ import os
 import sys
 from typing import ClassVar
 from langchain.tools import BaseTool
-from ...config import Config
+from ....config import Config
 from xrpl.models.requests import AccountInfo
-from ..base import BaseCustomTool
+from ...base import BaseCustomTool
 
 class XRPLAccountInfoTool(BaseCustomTool, BaseTool):
     """

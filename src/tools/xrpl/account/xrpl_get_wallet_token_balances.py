@@ -1,8 +1,8 @@
 from typing import ClassVar
 from xrpl.clients import JsonRpcClient
 from xrpl.models.requests.account_lines import AccountLines
-from ...config import Config
-from ..base import BaseCustomTool
+from ....config import Config
+from ...base import BaseCustomTool
 from langchain.tools import BaseTool
 
 class XRPLGetWalletTokenBalancesTool(BaseCustomTool, BaseTool):
@@ -22,6 +22,8 @@ class XRPLGetWalletTokenBalancesTool(BaseCustomTool, BaseTool):
 
     def _validate_address(self, address: str) -> bool:
         """Check if address appears to be a valid XRPL address."""
+        if "user_account_address" in address.lower():
+            address = Config.XRP_WALLET.address
         return isinstance(address, str) and address.startswith("r") and 25 <= len(address) <= 35
     
     def _hex_to_currency(self, code: str) -> str:
@@ -46,7 +48,9 @@ class XRPLGetWalletTokenBalancesTool(BaseCustomTool, BaseTool):
             wallet_address = parts[1]
         else:
             return False, "Input must be either a wallet address or 'TOKEN, wallet_address'."
-        
+        if "user_account_address" in wallet_address.lower():
+            wallet_address = Config.XRP_WALLET.address
+
         if not self._validate_address(wallet_address):
             return False, f"Invalid XRPL wallet address: {wallet_address}"
         

@@ -6,9 +6,9 @@ from xrpl.clients import JsonRpcClient
 from xrpl.wallet import Wallet
 from xrpl.models.transactions import NFTokenCancelOffer
 from xrpl import transaction as tx
-from ...config import Config
-from ..base import BaseCustomTool
-from ...utils.kafka import send_to_kafka, get_kafka_latest_message
+from ....config import Config
+from ...base import BaseCustomTool
+from ....utils.kafka import send_to_kafka, get_kafka_latest_message
 import uuid
 
 class XRPLCancelOfferTool(BaseCustomTool, BaseTool):
@@ -40,7 +40,7 @@ class XRPLCancelOfferTool(BaseCustomTool, BaseTool):
                     producer=Config.kafka_out,
                     topic=Config.KAFKA_TX_TOPIC + "_IN",
                     message=cancel_offer_req,
-                    key=message_id
+                    key=Config.REQUEST_ID
                 )
                 response, key = get_kafka_latest_message(
                     Config.consume_from_kafka(Config.kafka_tx, Config.KAFKA_TX_TOPIC + "_OUT"),

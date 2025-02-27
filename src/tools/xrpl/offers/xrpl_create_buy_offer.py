@@ -3,13 +3,13 @@ import sys
 from datetime import datetime
 from typing import ClassVar
 from langchain.tools import BaseTool
-from ...config import Config
+from ....config import Config
 from xrpl.clients import JsonRpcClient
 from xrpl.wallet import Wallet
 from xrpl.models.transactions import NFTokenCreateOffer
 from xrpl import transaction as tx
-from ..base import BaseCustomTool
-from ...utils.kafka import send_to_kafka, get_kafka_latest_message
+from ...base import BaseCustomTool
+from ....utils.kafka import send_to_kafka, get_kafka_latest_message
 import uuid
 
 import xrpl.utils
@@ -71,7 +71,7 @@ class XRPLCreateBuyOfferTool(BaseCustomTool, BaseTool):
                     producer=Config.kafka_out,
                     topic=Config.KAFKA_TX_TOPIC + "_IN",
                     message=buy_offer_req,
-                    key=message_id
+                    key=Config.REQUEST_ID
                 )
                 response, key = get_kafka_latest_message(
                     Config.consume_from_kafka(Config.kafka_tx, Config.KAFKA_TX_TOPIC + "_OUT"),

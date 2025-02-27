@@ -7,9 +7,9 @@ from xrpl.clients import JsonRpcClient
 from xrpl.models.transactions import Payment
 from xrpl import transaction as tx
 from xrpl.wallet import Wallet
-from ..base import BaseCustomTool
-from ...config import Config
-from ...utils.kafka import send_to_kafka, get_kafka_messages, get_kafka_latest_message
+from ...base import BaseCustomTool
+from ....config import Config
+from ....utils.kafka import send_to_kafka, get_kafka_messages, get_kafka_latest_message
 import time, uuid
 
 class XRPLSendXrpTool(BaseCustomTool, BaseTool):
@@ -50,7 +50,7 @@ class XRPLSendXrpTool(BaseCustomTool, BaseTool):
             )
             payment_req = payment.to_xrpl()
             message_id = str(uuid.uuid4())
-            send_to_kafka(producer=Config.kafka_out, topic=Config.KAFKA_TX_TOPIC + "_IN", message=payment_req, key=message_id)
+            send_to_kafka(producer=Config.kafka_out, topic=Config.KAFKA_TX_TOPIC + "_IN", message=payment_req, key=Config.REQUEST_ID)
             response, key = get_kafka_latest_message(Config.consume_from_kafka(Config.kafka_tx, Config.KAFKA_TX_TOPIC + "_OUT") ,message_id=message_id)
             if isinstance(response, Exception):
                 return False, f"Error processing message: {str(response)}"                   
