@@ -84,7 +84,7 @@ def main():
                                 print(f"Final Response: {formatted_response['response']['response']}")
                                 
                                 # Send formatted response to Kafka
-                                send_to_kafka(Config.kafka_out, Config.KAFKA_OUT_TOPIC, formatted_response)
+                                send_to_kafka(Config.kafka_out, Config.KAFKA_OUT_TOPIC, formatted_response, key=Config.REQUEST_ID)
                                 chat_ui.info([user_input, formatted_response["response"]])
                             except Exception as e:
                                 logger.error(f"Error processing message: {str(e)}", exc_info=True)

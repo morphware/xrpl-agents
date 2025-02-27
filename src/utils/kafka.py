@@ -45,7 +45,7 @@ def consume_from_kafka(consumer, topic):
     return consumer
 
 def get_kafka_messages(consumer):
-    messages = consumer.poll(timeout_ms=0)
+    messages = consumer.poll(timeout_ms=1000)
     return messages
 
 def get_kafka_latest_message(kafka_in, timestamp=time.time()*1000, message_id=None):
@@ -56,6 +56,7 @@ def get_kafka_latest_message(kafka_in, timestamp=time.time()*1000, message_id=No
     while waiting:
         message = get_kafka_messages(kafka_in)
         if not message:
+            time.sleep(0.1)
             continue
         else:
             for topic_partition, records in message.items():
@@ -76,7 +77,6 @@ def get_kafka_latest_message(kafka_in, timestamp=time.time()*1000, message_id=No
                         print(f"Error processing message: {str(e)}")
     try:
         response = str(record.value)
-        print("Received message: " + response)
         return response, key
     except Exception as e:
         response = f"Error processing message: {str(e)}"

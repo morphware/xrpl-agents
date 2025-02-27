@@ -22,7 +22,7 @@ class Config:
     MORPHWARE_EMBEDDINGS_MODEL = os.getenv("MORPHWARE_EMBEDDINGS_MODEL", "nomic-embed-text:latest")
     MORPHWARE_FILTER_MODEL = os.getenv("MORPHWARE_FILTER_MODEL", "llama3.1:latest")
     AGENT_WORKFLOW_FILE = os.getenv("AGENT_WORKFLOW_FILE", "XRPL.json.json")
-
+    REQUEST_ID = None
     KAFKA_BOOTSTRAP_SERVERS = os.getenv("KAFKA_BOOTSTRAP_SERVERS", "morphware-cluster-kafka-plain-bootstrap.kafka.svc:9092")
     USER = os.getenv("USER", "morphware")
     CHAT_UUID = os.getenv("CHAT_UUID", str(uuid.uuid4()))
@@ -50,7 +50,7 @@ class Config:
     os.environ["ANONYMIZED_TELEMETRY"] = "False"
 
     # init XRP Wallet
-    XRPL_ENDPOINT = os.getenv("XRPL_ENDPOINT", "https://s.altnet.rippletest.net:51234")
+    XRPL_ENDPOINT = os.getenv("XRPL_ENDPOINT", "https://s1.ripple.com:51234") #"https://s.altnet.rippletest.net:51234")
     WALLET_ENABLED=os.getenv("WALLET_ENABLED", "true").lower() == "true"
 
     if WALLET_ENABLED:
@@ -63,7 +63,9 @@ class Config:
         else:
             client = JsonRpcClient(XRPL_ENDPOINT)
             XRP_WALLET = generate_faucet_wallet(client=JsonRpcClient(XRPL_ENDPOINT))
-
+    else:
+        from types import SimpleNamespace
+        XRP_WALLET = SimpleNamespace(address="rHDkTGymZL6WQbrrsxPnpeTqhcF8S44kR1")
     # Kafka Settings
     if KAFKA.lower() == "true":
         from src.utils.kafka import create_kafka_producer, create_kafka_consumer, send_to_kafka, consume_from_kafka, get_kafka_messages
@@ -93,7 +95,7 @@ class Config:
     MAX_RETRIES = 3
     REVIEW_THRESHOLD = 0.7  # Minimum score for approval
     ENABLE_FEEDBACK_LOOP = True
-    
+    PROCESS_LOCK = False
     # Debugging and Logging
     DEBUG_MODE = os.getenv("DEBUG_MODE", "false").lower() == "true"
     LOG_LEVEL = logging.DEBUG if DEBUG_MODE else logging.INFO

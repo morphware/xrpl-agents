@@ -14,7 +14,6 @@ import logging, re
 logger = logging.getLogger('src.agent.agent')
 
 
-
 class XRPLToolAgent:
     """
     A tool LLM agent that infers which XRPL-related tool to run based 
@@ -48,6 +47,12 @@ class XRPLToolAgent:
             prompt_template = backstory_template + self.system_prompt
         else:
             prompt_template = backstory_template + """
+            
+                Previous conversation context:
+                {chat_history}
+                
+                -----------------------------------------------
+                Task at hand:
                 Given the user query below, 
                 decide which tool from the following list should be executed.\n\n
                 List of available tools:\n{tools_list}\n\n
@@ -56,18 +61,24 @@ class XRPLToolAgent:
                 '  "selected_tool": a string representing the tool name to use (or null if none),\n'
                 '  "reasoning": a brief explanation of your decision.\n\n'
                 '  "formatted_input": the input text formatted for the selected tool.\n\n'
+                '  "re_evaluate": a boolean indicating if the tool should be re-evaluated based on the previous tool output.\n\n'
                 Output ONLY valid JSON with no additional text.
+                Make sure that the tool name is an exact match (case-insensitive) with the tool name in the list.
+                Do not suggest a tool that is not in the list.
+                understand the history of the conversation and the context of the query. figure out what wallet the user is asking about.
+                followup questions may be needed to clarify the user's intent. use the history of the conversation to inform your decision.
                 If there are multiplle tools neeeded, add them to the list.
+                ONLY ADD TOOLS IF THEY ARE NEEDED.
                 If a tool needs to be repeated, add it multiple times to the list.
                 If the query part of the query is a question, make the selected tool 'direct_llm'.
                 Please follow the tools order based on the query, if the query begins with a question, the first tool should be 'direct_llm'.
                 use direct_llm multiple times if needed.
                 If unsure about the tool to use, use 'direct_llm' to get a response from the LLM.
-                
-
-                Previous conversation context:
-                {chat_history}
-                
+                If the query asks for a summary of the tools, use 'summarise' to get a response from the LLM.
+                If the tool is the first in the list, set 're_evaluate' to 'False'.
+                If the following tool requires a response from the current tool, set 're_evaluate' to 'False' for the current tool and 'True for the following tool.
+                A tool can only be re-evaluated if there is a previous tool. If it is the first tool then it cannot be re-evaluated.
+                Any placeholder text for re-evaluating should have ** on either side of the text, for example **issuer_address**.
                 """
         
         prompt = ChatPromptTemplate.from_messages([
@@ -101,13 +112,40 @@ class XRPLToolAgent:
             parsed = json.loads(cleaned_json)
         return parsed
 
+    def re_eval_tool(self, user_input: str, tool_response: str, inference_res: dict) -> dict:
+        tools_list = self._get_tools_list()
+        # Combine the user input with the previous tool's output for re-evaluation.
+        # Here we assume that the previous tool's output is appended to the user input.
+        # If desired, you can change this behavior or add another parameter (e.g., previous_tool_output) instead.
+        new_input = f"Here is the original query: {user_input}, \n\nBased on the tool: \n\n{inference_res}\n\n re-evaluate the placeholders that can encapsulated in ** using the output of the previous tool: \n\n{tool_response} \n\n the response should be the same format as the original response but with the update values." 
+        # Generate a re-evaluated response using the LLM
+        new_input +="""
+            Your response should be a JSON object of a list with the keys:\n
+            '  "selected_tool": a string representing the tool name to use (or null if none),\n'
+            '  "reasoning": a brief explanation of your decision.\n\n'
+            '  "formatted_input": the input text formatted for the selected tool.\n\n'
+            '  "re_evaluate": a boolean indicating if the tool should be re-evaluated based on the previous tool output.\n\n'
+            Output ONLY valid JSON with no additional text.
+            """
+        result = self.llm.invoke(input=[{"role": "ai", "content": self.memory.get_conversation_context()}, {"role": "user", "content": new_input}])
+
+        cleaned_json = self._clean_json_string(result)
+        try:
+            parsed = json.loads(cleaned_json)
+        except json.JSONDecodeError as e:
+            logger.error(f"JSON decode error: {e}")
+            cleaned_json = re.sub(r'[^\x20-\x7E]', '', cleaned_json)
+            parsed = json.loads(cleaned_json)
+        return parsed[-1]
+
     def run(self, user_input: str, tool_list: str = None, context: List[dict] = [], metadata: Any = None) -> str:
         self.logger.info("XRPLToolAgent: Received query for tool inference")
-        send_to_kafka(Config.kafka_out, Config.KAFKA_OUT_TOPIC, "XRPLToolAgent: Received query for tool inference")
+        send_to_kafka(Config.kafka_out, Config.KAFKA_OUT_TOPIC, "XRPLToolAgent: Received query for tool inference", key=Config.REQUEST_ID)
         context.append({"role": "system", "content": "Starting XRPL tool inference"})
-        
+        SUMMARISE = False
+
         inference_result = self.infer_tool(user_input)
-        send_to_kafka(Config.kafka_out, Config.KAFKA_OUT_TOPIC, inference_result)
+        # send_to_kafka(Config.kafka_out, Config.KAFKA_OUT_TOPIC, inference_result, key=Config.REQUEST_ID)
         selected_tool_names = [inference_res.get("selected_tool") for inference_res in inference_result]
         tool_responses = []
         output_response = {"status": True}
@@ -117,11 +155,18 @@ class XRPLToolAgent:
                 if selected_tool_name is None:
                     self.logger.error("Selected tool name is None in inference result.")
                     tool = None
+                elif selected_tool_name.lower() == "summarisellm":
+                    SUMMARISE = True
+                    tool = None
                 else:
                     tool = next((t for t in self.tools if t.name.lower() == selected_tool_name.lower()), None)
                 if tool:
+                    if inference_res.get("re_evaluate") and tool_idx > 0:
+                        self.logger.info(f"XRPLToolAgent: Re-evaluating tool '{tool.name}' in step {tool_idx+1}")
+                        send_to_kafka(Config.kafka_out, Config.KAFKA_OUT_TOPIC, f"XRPLToolAgent: Re-evaluating tool '{tool.name}' in step {tool_idx+1}")
+                        inference_res = self.re_eval_tool(inference_res.get("formatted_input"), tool_responses[-1], inference_res)
                     self.logger.info(f"XRPLToolAgent: Executing tool '{tool.name}' in step {tool_idx+1}")
-                    send_to_kafka(Config.kafka_out, Config.KAFKA_OUT_TOPIC, f"XRPLToolAgent: Executing tool '{tool.name}' in step {tool_idx+1}")
+                    send_to_kafka(Config.kafka_out, Config.KAFKA_OUT_TOPIC, f"XRPLToolAgent: Executing tool '{tool.name}' in step {tool_idx+1}", key=Config.REQUEST_ID)
                     if tool.name == "direct_llm":
                         tool_response = self.llm.invoke(input=[{"role": "system", "content": self.backstory}]+    
                                                             self.memory.chat_memory.messages+
@@ -133,7 +178,7 @@ class XRPLToolAgent:
                         status_str = "succeeded" if status else "failed"
                         output = f"Step {tool_idx+1} - Executed tool {tool.name} which ({status_str}) with the response: \n{tool_response}\n"
                     tool_responses.append(output)
-                    send_to_kafka(producer=Config.kafka_out, topic=Config.KAFKA_OUT_TOPIC, message=output)
+                    send_to_kafka(producer=Config.kafka_out, topic=Config.KAFKA_OUT_TOPIC, message=output, key=Config.REQUEST_ID)
                     context.append({
                         "role": "system",
                         "content": output
@@ -143,26 +188,36 @@ class XRPLToolAgent:
                     # output_response = {"status": status, "output": tool_response, "inference": inference_result}
                 else:
                     self.logger.error(f"Tool '{selected_tool_name}' not found among registered tools")
-                    tool_responses.append(f"Step {tool_idx+1} - Tool '{selected_tool_name}' not available")
-                    output_response["status"] = False
-            
+                    tool_response = self.llm.invoke(input=[{"role": "system", "content": self.backstory}]+    
+                                    self.memory.chat_memory.messages+
+                                    [{"role": "user", "content": inference_res.get("formatted_input")}])
+
+                    output = f"Step {tool_idx+1} - \n{tool_response}\n"
+
+                    tool_responses.append(f"Step {tool_idx+1} - {output}")
+                    output_response["status"] = True
+                    send_to_kafka(producer=Config.kafka_out, topic=Config.KAFKA_OUT_TOPIC, message=output, key=Config.REQUEST_ID)
             # Generate a summary of tool responses using the LLM
-            summary_input = "\n\n".join(tool_responses) if tool_responses else "No tool responses executed."
-            summary_prompt = f"format each step nicely and summarize the results: \n\n{summary_input}"
-            summary_output = self.llm.invoke(input=[{"role": "user", "content": summary_prompt}])
-            context.append({"role": "system", "content": summary_output})
-            send_to_kafka(producer=Config.kafka_out, topic=Config.KAFKA_OUT_TOPIC, message=summary_output)
+            summary_output = "\n\n".join(tool_responses) if tool_responses else "No tool responses executed."
+            if SUMMARISE:
+                summary_prompt = f"briefly summarize the results: \n\n{summary_output}"
+                summary_output = self.llm.invoke(input=[{"role": "user", "content": summary_prompt}])
+                context.append({"role": "system", "content": summary_output})
+                send_to_kafka(producer=Config.kafka_out, topic=Config.KAFKA_OUT_TOPIC, message=summary_output, key=Config.REQUEST_ID)
             # Append the summary to output_response
-            output_response.update({"output": summary_output,"inference": inference_result})
+            output_response.update({"output": summary_output,"inference": tool_responses})
         else:
             self.logger.info("No specific tool selected; using default LLM response")
             # Fallback: use the LLM directly for a response.
-            default_response = self.llm.invoke(input=[{"role": "system", "content": self.backstory},{"role": "user", "content": user_input}])
-            context.append({"role": "system", "content": "Default LLM response used"})
-            output_response = {"status": True, "output": default_response, "inference": inference_result}
+            default_response = self.llm.invoke(input=[{"role": "system", "content": self.backstory},{"role": "ai", "content": self.memory.get_conversation_context()},{"role": "user", "content": user_input}])
+            context.append({"role": "system", "content": default_response})
+            self.memory.append_ai_message(default_response)
+
+            output_response = {"status": True, "output": default_response, "inference": tool_responses}
+            send_to_kafka(producer=Config.kafka_out, topic=Config.KAFKA_OUT_TOPIC, message=default_response, key=Config.REQUEST_ID)
 
 
-        return user_input, inference_result, context, output_response
+        return user_input, tool_responses, context, output_response
 
     def _clean_json_string(self, text: str) -> str:
         """Clean up the text to extract valid JSON."""

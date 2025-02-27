@@ -90,12 +90,13 @@ class MultiAgentSystem:
                         break
 
             metrics["total_duration"] = time.time_ns() - start_time
+            Config.PROCESS_LOCK = False
             return {
                 "model": Config.OLLAMA_MODEL,
                 "created_at": time.strftime("%Y-%m-%dT%H:%M:%S.%fZ", time.gmtime()),
                 "response": response_text,
                 "done": True,
-                "context": context,
+                # "context": context,
                 **metrics
             }
                     
@@ -105,12 +106,13 @@ class MultiAgentSystem:
             self.memory.append_ai_message(f"Error occurred: {error_msg}")
             context.append({"role": "system", "content": f"Error: {error_msg}"})
             metrics["total_duration"] = time.time_ns() - start_time
+            Config.PROCESS_LOCK = False
             return {
                 "model": Config.OLLAMA_MODEL,
                 "created_at": time.strftime("%Y-%m-%dT%H:%M:%S.%fZ", time.gmtime()),
                 "response": error_msg,
                 "done": True,
-                "context": context,
+                # "context": context,
                 "chat_id": Config.CHAT_UUID,
                 **metrics
             }

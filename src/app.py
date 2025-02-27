@@ -10,21 +10,14 @@ from src.config import Config
 from src.utils.logger import setup_logger
 from src.tools import discover_tools
 from src.agent.agent import MultiAgentSystem
-from src.utils.kafka import send_to_kafka
-import time
+import threading
 import uuid
-
 # Initialize logger
 logger = setup_logger("logs", 'app.log', Config.kafka_logger, Config.KAFKA_LOGS_TOPIC)
 app = Flask(__name__)
 
-# Initialize tools
-tools = discover_tools()
-print([tool.name for tool in tools])
-
 # Initialize workflow
-workflow = Config.AGENT_WORKFLOW_FILE
-agent_system = MultiAgentSystem(workflow=workflow, tools=tools)
+agent_system = None
 
 @app.route('/init', methods=['POST'])
 def initialize_agents():
@@ -32,8 +25,20 @@ def initialize_agents():
     Initialize agents with a new workflow    
     '''
     try:
+        auth_header = request.headers.get('Authorization')
+
+        if not auth_header:
+            return jsonify({"error": "Authorization header missing"}), 401
+
+        Config.MORPHWARE_API_KEY = auth_header.split(' ')[-1]
+    except Exception as e:
+        return jsonify({"error": f"Invalid request format: {str(e)}"}), 400
+
+    try:
+        # Initialize tools
+        tools = discover_tools()
         global agent_system
-        agent_system = MultiAgentSystem(agent_struct=workflow, tools=tools)
+        agent_system = MultiAgentSystem(workflow=Config.AGENT_WORKFLOW_FILE, tools=tools)
 
         return jsonify({"response": "Agents initialized successfully"}), 200
     except Exception as e:
@@ -54,23 +59,29 @@ def handle_prompt():
     '''
     Handle user prompt and return response from agents
     '''
-    data = request.json
-    headers = request.headers
-    auth_header = headers.get('Authorization')
-    if not auth_header:
-        return jsonify({"error": "Authorization header missing"}), 401
-    Config.MORPHWARE_API_KEY = auth_header.split(' ')[-1]
-    user_input = data.get('prompt', '')
-    if not user_input:
-        return jsonify({"error": "No prompt provided"}), 400
+    try:
+        data = request.get_json()
+        auth_header = request.headers.get('Authorization')
+
+        if not auth_header:
+            return jsonify({"error": "Authorization header missing"}), 401
+
+        Config.MORPHWARE_API_KEY = auth_header.split(' ')[-1]
+        user_input = data.get('prompt', '').strip()
+        if not user_input:
+            return jsonify({"error": "No prompt provided"}), 400
+    except Exception as e:
+        return jsonify({"error": f"Invalid request format: {str(e)}"}), 400
 
     try:
-        response = agent_system.process_request(user_input)
-        if Config.KAFKA.lower() == "true":
-            # Send user input and agent response to Kafka Stream if enabled
-            send_to_kafka(Config.kafka_out, Config.KAFKA_IN_TOPIC, user_input)
-            send_to_kafka(Config.kafka_out, Config.KAFKA_OUT_TOPIC, response.get('response', ''))
-        return jsonify({"response": response})
+        if Config.PROCESS_LOCK:
+            return jsonify({"error": "Processing previous request. Try again later"}), 503
+        else:
+            Config.REQUEST_ID = data.get('request_id', str(uuid.uuid4()))
+            threading.Thread(target=agent_system.process_request, args=(user_input,)).start()
+            Config.PROCESS_LOCK = True
+            response = "Prompt processing initiated."
+            return jsonify({"response": response})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
