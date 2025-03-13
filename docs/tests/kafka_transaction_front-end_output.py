@@ -19,7 +19,7 @@ def main():
     
     # Create Kafka producer for standard messages
     producer = create_kafka_producer(BOOTSTRAP_SERVERS)
-    consumer = create_kafka_consumer(BOOTSTRAP_SERVERS, "chat-ui")
+    consumer = create_kafka_consumer(BOOTSTRAP_SERVERS, "chat-ui-out")
     consumer = consume_from_kafka(consumer, TEST_TOPIC)
     consume_timestamp = time.time() * 1000
     

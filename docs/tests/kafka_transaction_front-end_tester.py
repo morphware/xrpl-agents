@@ -15,12 +15,12 @@ import uuid
 def main():
     # Kafka configuration
     BOOTSTRAP_SERVERS = Config.KAFKA_BOOTSTRAP_SERVERS  # Replace with your Kafka server
-    TEST_TOPIC = Config.KAFKA_TX_TOPIC         # For standard messages
-    
+    TEST_TOPIC = Config.KAFKA_OUT_TOPIC         # For standard messages
+    RESPONSE_TOPIC = Config.KAFKA_IN_TOPIC
     # Create Kafka producer for standard messages
     producer = create_kafka_producer(BOOTSTRAP_SERVERS)
     consumer = create_kafka_consumer(BOOTSTRAP_SERVERS, "chat-ui")
-    consumer = consume_from_kafka(consumer, TEST_TOPIC + "_IN")
+    consumer = consume_from_kafka(consumer, TEST_TOPIC)
     consume_timestamp = time.time() * 1000
     
     while True:
@@ -28,12 +28,21 @@ def main():
         response, key = get_kafka_latest_message(consumer, timestamp=consume_timestamp)
         message_id = key
         print(f"Received message: {response}")
-        user_message = input(f"Enter message to send for transaction {message_id}, (or type 'quit' to exit): ")
-        if user_message.lower() == 'quit':
-            break
         try:
-            send_to_kafka(producer, TEST_TOPIC + "_OUT", user_message, key=message_id)
-            print(f"Sent message: {user_message}")
+            if response.msg_type != "tx_send_xrp":
+                print(f"Received message is not a tx_send_xrp message: {response}")
+                continue
+            tx_id = response.tx_id
+            payload = json.dumps(
+                {
+                    "msg_type": "tx_send_result",
+                    "tx_id": tx_id,
+                    "msg_key": message_id,
+                    "tx_status": "SUCCESS",
+                    "tx_hash": "0xcoolbeans"
+                }
+            )
+            send_to_kafka(producer=producer, topic=RESPONSE_TOPIC, message=payload, key=message_id, msg_type='tx_send_result')
         except Exception as e:
             print(f"Error sending message: {str(e)}")
             
