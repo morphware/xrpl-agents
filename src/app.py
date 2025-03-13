@@ -74,6 +74,8 @@ def handle_prompt():
         return jsonify({"error": f"Invalid request format: {str(e)}"}), 400
 
     try:
+        if agent_system is None:
+            initialize_agents()
         if Config.PROCESS_LOCK:
             return jsonify({"error": "Processing previous request. Try again later"}), 503
         else:

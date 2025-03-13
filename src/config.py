@@ -73,13 +73,14 @@ class Config:
         KAFKA_IN_TOPIC = CHAT_UUID + "_IN"
         KAFKA_OUT_TOPIC = CHAT_UUID + "_OUT"
         KAFKA_LOGS_TOPIC = CHAT_UUID + "_LOGS"
-        KAFKA_TX_TOPIC = CHAT_UUID + "_TX"
+        # KAFKA_TX_TOPIC = CHAT_UUID + "_TX"
         KAFKA_HEARTBEAT_TOPIC = CHAT_UUID + "_HEARTBEAT"
         kafka_logger = create_kafka_producer(KAFKA_BOOTSTRAP_SERVERS)
         kafka_in = consume_from_kafka(create_kafka_consumer(KAFKA_BOOTSTRAP_SERVERS, "agent"), KAFKA_IN_TOPIC)
-        kafka_tx = consume_from_kafka(create_kafka_consumer(KAFKA_BOOTSTRAP_SERVERS, "agent"), KAFKA_TX_TOPIC)   
+        # kafka_tx = consume_from_kafka(create_kafka_consumer(KAFKA_BOOTSTRAP_SERVERS, "agent"), KAFKA_TX_TOPIC)   
         kafka_out = create_kafka_producer(KAFKA_BOOTSTRAP_SERVERS)
         kafka_heartbeat = create_kafka_producer(KAFKA_BOOTSTRAP_SERVERS)
+        
     else:
         KAFKA_IN_TOPIC = None
         KAFKA_OUT_TOPIC = None
