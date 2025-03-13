@@ -8,12 +8,12 @@ from xrpl.clients import JsonRpcClient
 from xrpl.models.requests import NFTBuyOffers, NFTSellOffers
 from ...base import BaseCustomTool
 
-class XRPLGetOffersTool(BaseCustomTool, BaseTool):
+class XRPLGetNFTOffersTool(BaseCustomTool, BaseTool):
     """
     Tool for getting buy and sell offers for an NFT on the XRPL testnet.
     Input should be the NFT ID.
     """
-    name: ClassVar[str] = "XRPLGetOffers"
+    name: ClassVar[str] = "XRPLGetNFTOffers"
     description: ClassVar[str] = (
         "Get buy and sell offers for an NFT on the XRPL. "
         "Input should be the NFT ID."
@@ -46,7 +46,7 @@ class XRPLGetOffersTool(BaseCustomTool, BaseTool):
 
 if __name__ == "__main__":
     # Example usage:
-    tool = XRPLGetOffersTool()
+    tool = XRPLGetNFTOffersTool()
     example_input = ""  # Replace with a real NFT ID
     result = tool._run(example_input)
     print(result)

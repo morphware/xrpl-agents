@@ -9,7 +9,7 @@ from xrpl.wallet import Wallet
 from xrpl.models.transactions import NFTokenCreateOffer
 from xrpl import transaction as tx
 from ...base import BaseCustomTool
-import uuid
+import uuid, json
 from ....utils.kafka import send_to_kafka, get_kafka_latest_message
 
 import xrpl.utils
@@ -63,13 +63,26 @@ class XRPLCreateSellOfferTool(BaseCustomTool, BaseTool):
             )
 
             try:
-                sell_offer_req = sell_offer_tx.to_xrpl()
-                message_id = str(uuid.uuid4())
-                send_to_kafka(producer=Config.kafka_out, topic=Config.KAFKA_TX_TOPIC + "_IN", message=sell_offer_req, key=Config.REQUEST_ID)
-                response, key = get_kafka_latest_message(Config.consume_from_kafka(Config.kafka_tx, Config.KAFKA_TX_TOPIC + "_OUT"), message_id=message_id)
+                tx_id = str(uuid.uuid4())
+                # Create XrpTransactionRequest object with attributes
+                payload = json.dumps(
+                    {
+                        "msg_type": "tx_send_xrp",
+                        "tx_id": tx_id,
+                        "transaction": sell_offer_tx.blob()
+                    }
+                )
+                send_to_kafka(producer=Config.kafka_out, topic=Config.KAFKA_OUT_TOPIC, message=payload, key=Config.REQUEST_ID, msg_type='tx_send_xrp')
+                match = False
+                while not match:
+                    response, key = get_kafka_latest_message(Config.consume_from_kafka(Config.kafka_in, Config.KAFKA_IN_TOPIC) ,message_id=Config.REQUEST_ID)
+                    if tx_id == response.tx_id:
+                        match = True
+                    else:    
+                        match = False
                 if isinstance(response, Exception):
-                    return False, f"Error processing message: {str(response)}"                   
-                if "Successful" in response:
+                    return False, f"Error processing message: {str(response)}"
+                if "SUCCESS" in response.tx_status:
                     response = f"Sell Offer created successfully - nftoken id: {nftoken_id}, amount: {amount}, destination: {destination}, expiration: {expiration}"
                     return True, response
                 else:

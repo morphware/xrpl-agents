@@ -20,6 +20,7 @@ class XRPLSendTokenTool(BaseCustomTool, BaseTool):
         "destination_address, amount, token_code, issuer"
     If both issuer or token_code is not provided, this will fail.
     If only one is provided, the tool will attempt to find the issuer address in the users wallet.
+    If only the token_code is provided, the tool will attempt to find the issuer address using the XRPLGetWalletTokensList tool
     """
     name: ClassVar[str] = "XRPLSendToken"
     description: ClassVar[str] = (
@@ -80,25 +81,27 @@ class XRPLSendTokenTool(BaseCustomTool, BaseTool):
                 }
             )
 
-            payment_req = payment.to_xrpl()
-            message_id = str(uuid.uuid4())
-            
-            send_to_kafka(
-                producer=Config.kafka_out, 
-                topic=Config.KAFKA_TX_TOPIC + "_IN", 
-                message=payment_req, 
-                key=Config.REQUEST_ID
+            tx_id = str(uuid.uuid4())
+            # Create XrpTransactionRequest object with attributes
+            payload = json.dumps(
+                {
+                    "msg_type": "tx_send_xrp",
+                    "tx_id": tx_id,
+                    "transaction": payment.blob()
+                }
             )
             
-            response, key = get_kafka_latest_message(
-                Config.consume_from_kafka(Config.kafka_tx, Config.KAFKA_TX_TOPIC + "_OUT"),
-                message_id=message_id
-            )
-            
+            send_to_kafka(producer=Config.kafka_out, topic=Config.KAFKA_OUT_TOPIC, message=payload, key=Config.REQUEST_ID, msg_type='tx_send_xrp')
+            match = False
+            while not match:
+                response, key = get_kafka_latest_message(Config.consume_from_kafka(Config.kafka_in, Config.KAFKA_IN_TOPIC) ,message_id=Config.REQUEST_ID)
+                if tx_id == response.tx_id:
+                    match = True
+                else:    
+                    match = False
             if isinstance(response, Exception):
-                return False, f"Error processing message: {str(response)}"
-                
-            if "Successful" in response:
+                return False, f"Error processing message: {str(response)}"                   
+            if "SUCCESS" in response.tx_status:
                 response = f"Transaction Successful: sent {amount} {token_code} to {destination}"
                 return True, response
             else:

@@ -27,8 +27,6 @@ class XRPLGetXRPBalanceTool(BaseCustomTool, BaseTool):
 
     def _validate_address(self, address: str) -> bool:
         """Validate if the input looks like a proper XRPL address."""
-        if "user_account_address" in address.lower():
-            address = Config.XRP_WALLET.address
         return (
             isinstance(address, str) and 
             address.startswith('r') and 
@@ -73,7 +71,9 @@ class XRPLGetXRPBalanceTool(BaseCustomTool, BaseTool):
         # Clean the input
 
         address = tool_input.strip()
-        
+        if "user_account_address" in address.lower():
+            address = Config.XRP_WALLET.address
+
         # Validate address format
         if not self._validate_address(address):
             return False, f"Invalid XRPL address format: {address}"
