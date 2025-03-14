@@ -57,6 +57,7 @@ class XRPLToolAgent:
                 Given the user query below, 
                 decide which tool from the following list should be executed.\n\n
                 List of available tools:\n{tools_list}\n\n
+                Thier descriptions:\n{tools_descriptions}\n\n
                 User Query: {input}\n\n
                 Your response should be a JSON object of a list with the keys:\n
                 '  "selected_tool": a string representing the tool name to use (or null if none),\n'
@@ -67,12 +68,13 @@ class XRPLToolAgent:
                 Make sure that the tool name is an exact match (case-insensitive) with the tool name in the list.
                 Do not suggest a tool that is not in the list.
                 understand the history of the conversation and the context of the query. figure out what wallet the user is asking about.
+                if the tool requires the users wallet address, format the input as 'user_account_address'
                 followup questions may be needed to clarify the user's intent. use the history of the conversation to inform your decision.
                 If there are multiplle tools neeeded, add them to the list.
                 ONLY ADD TOOLS IF THEY ARE NEEDED.
                 If a tool needs to be repeated, add it multiple times to the list.
                 If the query part of the query is a question, make the selected tool 'direct_llm'.
-                Please follow the tools order based on the query, if the query begins with a question, the first tool should be 'direct_llm'.
+                If the query begins with a question, the first tool should be 'direct_llm'.
                 use direct_llm multiple times if needed.
                 If unsure about the tool to use, use 'direct_llm' to get a response from the LLM.
                 If the query asks for a summary of the tools, use 'summarise' to get a response from the LLM.
@@ -92,16 +94,27 @@ class XRPLToolAgent:
             verbose=False
         )
 
-    def _get_tools_list(self) -> str:
+    def _get_tools_list_descriptions(self, select_tools: List=None) -> str:
         # Generate a list of available tools with their descriptions.
+        if select_tools:
+            return "\n".join([f"- {tool.name}: {tool.description}" for tool in self.tools if tool.name in select_tools])
         return "\n".join([f"- {tool.name}: {tool.description}" for tool in self.tools])
+
+    def _get_tools_list(self, select_tools: List=None) -> str:
+        # Generate a list of available tools with their descriptions.
+        if select_tools:
+            return "\n".join([f"- {tool.name}" for tool in self.tools if tool.name in select_tools])
+        return "\n".join([f"- {tool.name}" for tool in self.tools])
+
 
     def infer_tool(self, user_input: str) -> dict:
         tools_list = self._get_tools_list()
+        tools_descriptions = self._get_tools_list_descriptions()
         # Generate a response using the LLM
         result = self.chain.run(
                 input=user_input,
                 tools_list=tools_list,
+                tools_descriptions=tools_descriptions,
                 chat_history=self.memory.get_conversation_context()
             )
         cleaned_json = self._clean_json_string(result)
@@ -114,11 +127,13 @@ class XRPLToolAgent:
         return parsed
 
     def re_eval_tool(self, user_input: str, tool_response: str, inference_res: dict) -> dict:
-        tools_list = self._get_tools_list()
+        tools_list = self._get_tools_list(select_tools=[inference_res.get("selected_tool")])
+        tools_descriptions = self._get_tools_list_descriptions(select_tools=[inference_res.get("selected_tool")])
         # Combine the user input with the previous tool's output for re-evaluation.
         # Here we assume that the previous tool's output is appended to the user input.
         # If desired, you can change this behavior or add another parameter (e.g., previous_tool_output) instead.
-        new_input = f"Here is the original query: {user_input}, \n\nBased on the tool: \n\n{inference_res}\n\n re-evaluate the placeholders that can encapsulated in ** using the output of the previous tool: \n\n{tool_response} \n\n the response should be the same format as the original response but with the update values." 
+        new_input = f"Here is the original query: {user_input}, \n\nThis is the tool description: {tools_descriptions} \n\nBased on the tool format: \n\n{inference_res}\n\n re-evaluate the placeholders that can encapsulated in ** using the output of the previous tool: \n\n{tool_response} \n\n the response should be the same format as the original response but with the update values." 
+        
         # Generate a re-evaluated response using the LLM
         new_input +="""
             Your response should be a JSON object of a list with the keys:\n
@@ -127,6 +142,8 @@ class XRPLToolAgent:
             '  "formatted_input": the input text formatted for the selected tool.\n\n'
             '  "re_evaluate": a boolean indicating if the tool should be re-evaluated based on the previous tool output.\n\n'
             Output ONLY valid JSON with no additional text.
+            Use the tool description to understand the context of the query and the output of the previous tool to update the placeholders.
+            Check again to make sure the formatted_input is correct, and all expected values are available
             """
         result = self.llm.invoke(input=[{"role": "ai", "content": self.memory.get_conversation_context()}, {"role": "user", "content": new_input}])
 
@@ -179,7 +196,12 @@ class XRPLToolAgent:
 
                         output = f"Step {tool_idx+1} - \n{tool_response}\n"
                     else:
-                        status, tool_response = tool.run(inference_res.get("formatted_input"))
+                        try:
+                            status, tool_response = tool.run(inference_res.get("formatted_input"))
+                        except Exception as e:
+                            status = False
+                            tool_response = f"An error occurred while executing tool '{tool.name}': {str(e)}"
+                            self.logger.error(tool_response, exc_info=True)
                         status_str = "succeeded" if status else "failed"
                         output = f"Step {tool_idx+1} - Executed tool {tool.name} which ({status_str}) with the response: \n{tool_response}\n"
                     tool_responses.append(output)
