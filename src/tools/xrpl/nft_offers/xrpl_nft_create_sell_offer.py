@@ -15,14 +15,14 @@ from ....utils.kafka import send_to_kafka, get_kafka_latest_message
 import xrpl.utils
 
 
-class XRPLCreateSellOfferTool(BaseCustomTool, BaseTool):
+class XRPLNFTCreateSellOfferTool(BaseCustomTool, BaseTool):
     """
     Tool for creating an NFT sell offer on the XRPL testnet.
     Input should be a comma-separated string:
         "amount, nftoken_id, expiration_seconds, destination"
     If expiration or destination are empty strings, they will be ignored.
     """
-    name: ClassVar[str] = "XRPLCreateSellOffer"
+    name: ClassVar[str] = "XRPLNFTCreateSellOffer"
     description: ClassVar[str] = (
         "Create an NFT sell offer on the XRPL. "
         "Input should be in the format 'amount, nftoken_id, expiration_seconds, destination'. "
@@ -99,7 +99,7 @@ class XRPLCreateSellOfferTool(BaseCustomTool, BaseTool):
 if __name__ == "__main__":
     # Example usage:
     # Input format: "amount, nftoken_id, expiration_seconds, destination"
-    tool = XRPLCreateSellOfferTool()
+    tool = XRPLNFTCreateSellOfferTool()
     example_input = "1000000, 1234567890ABCDEF, 3600, rPT1Sjq2YGrBMTttX4GZHjKu9dyfzbpAYe"
     result = tool._run(example_input)
     print(result)

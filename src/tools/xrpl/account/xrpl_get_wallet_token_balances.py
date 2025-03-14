@@ -17,7 +17,8 @@ class XRPLGetWalletTokenBalancesTool(BaseCustomTool, BaseTool):
     name: ClassVar[str] = "XRPLGetWalletTokenBalances"
     description: ClassVar[str] = (
         "Retrieve the token balances of an XRPL wallet. "
-        "Input can be either a wallet address or 'TOKEN, wallet_address' to filter the results."
+        "Input can be either a wallet address or 'TOKEN, wallet_address' to filter the results. "
+        "Use this tool to check the balance of tokens in the users wallet. Do not use other tools to query token balances"
     )
 
     def _validate_address(self, address: str) -> bool:

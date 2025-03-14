@@ -31,6 +31,9 @@ class XRPLOfferCreateTool(BaseCustomTool, BaseTool):
     description: ClassVar[str] = (
         "Create an offer (buy/sell order) on the XRPL decentralized exchange. "
         "Input format: 'gets_currency, gets_issuer, gets_amount, pays_currency, pays_amount, pays_issuer, expiration_seconds'. "
+        "'gets_currency' is the currency you want to receive, 'pays_currency' is the currency you're offering. "
+        "'gets_issuer' is the issuer address for non-XRP currencies, 'pay_issuer' is the issuer address for non-XRP currencies. "
+        "'gets_amount' and 'pays_amount' are the amounts you want to receive and offer, respectively. "
         "For XRP, use 'XRP' as currency and leave issuer empty. "
         "Gets = what you want to receive, Pays = what you're offering. "
         "Expiration in seconds is optional (0 means no expiration)."

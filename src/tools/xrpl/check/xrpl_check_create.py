@@ -35,10 +35,11 @@ class XRPLCheckCreateTool(BaseCustomTool, BaseTool):
     """
     name: ClassVar[str] = "XRPLCheckCreate"
     description: ClassVar[str] = (
-        "Create a Check on the XRPL that allows the recipient to cash it for payment. "
+        "Only use this tool to Create a Check on the XRPL that allows the recipient to cash it for payment. "
         "Input format: 'destination_address, amount, currency, issuer, expiration_seconds'. "
         "If currency is XRP, leave the issuer field empty. "
         "Expiration_seconds is optional - if provided, the Check will expire that many seconds from now."
+        "This is not to view offers on the XRPL. "  
     )
 
     def _validate_address(self, address: str) -> bool:

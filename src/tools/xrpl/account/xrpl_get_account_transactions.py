@@ -10,8 +10,10 @@ class XRPLGetAccountTransactionsTool(BaseCustomTool, BaseTool):
     name: ClassVar[str] = "XRPLGetAccountTransactions"
     description: ClassVar[str] = (
         "Retrieve a number of transactions for an XRPL account. "
-        "Input should be in the format 'account_address, number_of_transactions'."
-        "if no number is provided, the default is 1."
+        "Input should be in the format 'account_address, number_of_transactions'. "
+        "If no number is provided, the default is 1. "
+        "number_of_transactions must be an integer. "
+        "e.g. 'rExampleWalletAddress1234567890, 5'"
     )
     def _hex_to_currency(self, code: str) -> str:
         if len(code) == 40:
@@ -29,8 +31,8 @@ class XRPLGetAccountTransactionsTool(BaseCustomTool, BaseTool):
 
     def _run(self, tool_input: str) -> str:
         parts = [p.strip() for p in tool_input.split(",")]
-        if len(parts) != 2:
-            return False, "Input must be in the format 'account_address, number_of_transactions'."
+        if len(parts) == 1:
+            parts.append("1")
         
         account = parts[0]
         if "user_account_address" in account.lower():
@@ -40,7 +42,11 @@ class XRPLGetAccountTransactionsTool(BaseCustomTool, BaseTool):
             return False, f"Invalid XRPL address: {account}"
         
         try:
-            limit = int(parts[1])
+            # Handle both "5" and "limit=5" formats
+            if "=" in parts[1]:
+                limit = int(parts[1].split("=")[1])
+            else:
+                limit = int(parts[1])
         except ValueError:
             return False, "The number of transactions must be an integer."
         

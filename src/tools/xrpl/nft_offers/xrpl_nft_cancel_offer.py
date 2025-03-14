@@ -11,12 +11,12 @@ from ...base import BaseCustomTool
 from ....utils.kafka import send_to_kafka, get_kafka_latest_message
 import uuid, json
 
-class XRPLCancelOfferTool(BaseCustomTool, BaseTool):
+class XRPLNFTCancelOfferTool(BaseCustomTool, BaseTool):
     """
     Tool for canceling an NFT offer on the XRPL testnet.
     Input should be the offer ID.
     """
-    name: ClassVar[str] = "XRPLCancelOffer"
+    name: ClassVar[str] = "XRPLNFTCancelOffer"
     description: ClassVar[str] = (
         "Cancel an NFT offer on the XRPL. "
         "Input should be the offer ID. "
@@ -67,7 +67,7 @@ class XRPLCancelOfferTool(BaseCustomTool, BaseTool):
 
 if __name__ == "__main__":
     # Example usage:
-    tool = XRPLCancelOfferTool()
+    tool = XRPLNFTCancelOfferTool()
     example_input = ""  # Replace with a real offer index
     result = tool._run(example_input)
     print(result)

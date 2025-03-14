@@ -11,12 +11,12 @@ from ...base import BaseCustomTool
 from ....utils.kafka import send_to_kafka, get_kafka_latest_message
 import uuid, json
 
-class XRPLAcceptSellOfferTool(BaseCustomTool, BaseTool):
+class XRPLNFTAcceptSellOfferTool(BaseCustomTool, BaseTool):
     """
     Tool for accepting an NFT sell offer on the XRPL testnet.
     Input should be the offer index.
     """
-    name: ClassVar[str] = "XRPLAcceptSellOffer"
+    name: ClassVar[str] = "XRPLNFTAcceptSellOffer"
     description: ClassVar[str] = (
         "Accept an NFT sell offer on the XRPL. "
         "Input should be the offer index. "
@@ -67,7 +67,7 @@ class XRPLAcceptSellOfferTool(BaseCustomTool, BaseTool):
 
 if __name__ == "__main__":
     # Example usage:
-    tool = XRPLAcceptSellOfferTool()
+    tool = XRPLNFTAcceptSellOfferTool()
     example_input = ""  # Replace with a real offer index
     result = tool._run(example_input)
     print(result)

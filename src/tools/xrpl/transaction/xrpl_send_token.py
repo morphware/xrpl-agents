@@ -10,6 +10,7 @@ from xrpl.wallet import Wallet
 from ...base import BaseCustomTool
 from ....config import Config
 from ....utils.kafka import send_to_kafka, get_kafka_messages, get_kafka_latest_message
+from xrpl.models.requests.account_lines import AccountLines
 import time, uuid
 import requests
 
@@ -20,15 +21,13 @@ class XRPLSendTokenTool(BaseCustomTool, BaseTool):
         "destination_address, amount, token_code, issuer"
     If both issuer or token_code is not provided, this will fail.
     If only one is provided, the tool will attempt to find the issuer address in the users wallet.
-    If only the token_code is provided, the tool will attempt to find the issuer address using the XRPLGetWalletTokensList tool
     """
     name: ClassVar[str] = "XRPLSendToken"
     description: ClassVar[str] = (
         "Send tokens on the XRPL chain. "
         "Input should be in the format 'destination_address, amount, token_code, issuer'. "
-        "If both issuer or token_code is not provided, this will fail."
-        "If only one is provided, the tool will attempt to find the issuer address in the users wallet."
-        "Please use the tool XRPLGetWalletTokenBalances to make sure the user has the tokens, and to get the issuer address or token_code if needed."
+        "If both issuer or token_code is not provided, this will fail. "
+        "If only one is provided, the tool will attempt to find the issuer address in the users wallet. "
     )
 
     def _validate_address(self, address: str) -> bool:
@@ -44,8 +43,35 @@ class XRPLSendTokenTool(BaseCustomTool, BaseTool):
         
     def _get_issuer_address(self, token_code: str) -> str:
         """Get the issuer address for the token code."""
-        
+        # Connect to the XRPL
+        client = JsonRpcClient(Config.XRPL_ENDPOINT)
 
+        account_lines_request = AccountLines(
+            account=Config.XRP_WALLET.address,
+            ledger_index="validated"
+        )
+        response = client.request(account_lines_request)
+        lines = response.result.get("lines", [])
+        if not lines:
+            return False, f"No trust lines found for account {Config.XRP_WALLET.address}."
+        for line in lines:
+            line["currency"] = self._hex_to_currency(line.get("currency", ""))
+            if token_code in line.get("currency", "").upper():
+                issuer = line.get("account", "Unknown")
+                return issuer
+        return False, f"No issuer found for token code {token_code}."       
+        
+    def _hex_to_currency(self, code: str) -> str:
+        if len(code) == 40:
+            try:
+                code_bytes = bytes.fromhex(code)
+                converted = code_bytes.decode("utf-8").rstrip("\0").strip()
+                if converted:
+                    return converted
+            except Exception:
+                pass
+        return code
+    
     def _run(self, tool_input: str) -> str:
         try:
             parts = tool_input.split(",")
@@ -65,10 +91,10 @@ class XRPLSendTokenTool(BaseCustomTool, BaseTool):
             if not self._validate_address(destination):
                 return False, f"Invalid destination address: {destination}"
             if not self._validate_address(issuer):
-                return False, f"Invalid issuer address: {issuer}"
+                issuer = self._get_issuer_address(token_code)
+                if not self._validate_address(issuer):
+                   return False, f"Invalid issuer address: {issuer}"
 
-            # Connect to the XRPL
-            client = JsonRpcClient(Config.XRPL_ENDPOINT)
 
             # Create Payment transaction
             payment = Payment(
@@ -87,7 +113,7 @@ class XRPLSendTokenTool(BaseCustomTool, BaseTool):
                 {
                     "msg_type": "tx_send_xrp",
                     "tx_id": tx_id,
-                    "transaction": payment.blob()
+                    "transaction": json.dumps(payment.to_xrpl())
                 }
             )
             

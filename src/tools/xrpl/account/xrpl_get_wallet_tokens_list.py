@@ -23,7 +23,18 @@ class XRPLGetWalletTokensListTool(BaseCustomTool, BaseTool):
             len(address) >= 25 and 
             len(address) <= 35
         )
-
+        
+    def _hex_to_currency(self, code: str) -> str:
+        if len(code) == 40:
+            try:
+                code_bytes = bytes.fromhex(code)
+                converted = code_bytes.decode("utf-8").rstrip("\0").strip()
+                if converted:
+                    return converted
+            except Exception:
+                pass
+        return code
+    
     def _run(self, tool_input: str) -> str:
         try:
             # Clean the input
@@ -51,7 +62,8 @@ class XRPLGetWalletTokensListTool(BaseCustomTool, BaseTool):
             
             # Remove duplicates and sort
             unique_currencies = sorted(set(currencies))
-
+            # Convert any hex currency codes to readable format
+            unique_currencies = [self._hex_to_currency(currency) for currency in unique_currencies]
             if not unique_currencies:
                 return False, f"No tokens found for account {address}"
 

@@ -15,14 +15,14 @@ import uuid, json
 import xrpl.utils
 
 
-class XRPLCreateBuyOfferTool(BaseCustomTool, BaseTool):
+class XRPLNFTCreateBuyOfferTool(BaseCustomTool, BaseTool):
     """
     Tool for creating an NFT buy offer on the XRPL testnet.
     Input should be a comma-separated string:
         "amount, nftoken_id, owner, expiration_seconds, destination"
     If expiration or destination are empty strings, they will be ignored.
     """
-    name: ClassVar[str] = "XRPLCreateBuyOffer"
+    name: ClassVar[str] = "XRPLNFTCreateBuyOffer"
     description: ClassVar[str] = (
         "Create an NFT buy offer on the XRPL. "
         "Input should be in the format 'amount, nftoken_id, owner, expiration_seconds, destination'. "
@@ -104,7 +104,7 @@ class XRPLCreateBuyOfferTool(BaseCustomTool, BaseTool):
 if __name__ == "__main__":
     # Example usage:
     # Input format: "amount, nftoken_id, owner, expiration_seconds, destination"
-    tool = XRPLCreateBuyOfferTool()
+    tool = XRPLNFTCreateBuyOfferTool()
     example_input = "1000000, 1234567890ABCDEF, rPT1Sjq2YGrBMTttX4GZHjKu9dyfzbpAYe, 3600, rPT1Sjq2YGrBMTttX4GZHjKu9dyfzbpAYe"
     result = tool._run(example_input)
     print(result)

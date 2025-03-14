@@ -42,6 +42,7 @@ class XRPLEscrowCreateTool(BaseCustomTool, BaseTool):
         "Leave finish_after_seconds empty for condition-only escrows. "
         "Leave condition empty for time-only escrows. "
         "Cancel_after_seconds must be greater than finish_after_seconds. "
+        "This is not to view offers on the XRPL. "
     )
 
     def _validate_address(self, address: str) -> bool:
