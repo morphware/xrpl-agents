@@ -5,8 +5,8 @@ from langchain.tools import BaseTool
 from xrpl.clients import JsonRpcClient
 from xrpl.models import AccountInfo
 from xrpl.wallet import Wallet
-from ...config import Config
-from ..base import BaseCustomTool
+from ....config import Config
+from ...base import BaseCustomTool
 
 class XRPLGetXRPBalanceTool(BaseCustomTool, BaseTool):
     """
@@ -17,6 +17,9 @@ class XRPLGetXRPBalanceTool(BaseCustomTool, BaseTool):
     description: ClassVar[str] = (
         "Retrieve the XRP balance of an XRPL account. "
         "Input should be the account address."
+        "If the input is for users address, input 'user_account_address'."
+        "This does not get token balances, only XRP balance."
+        
     )
 
     def __init__(self):
@@ -66,11 +69,11 @@ class XRPLGetXRPBalanceTool(BaseCustomTool, BaseTool):
             str: Formatted balance response or error message
         """
         # Clean the input
-        if tool_input == "user_account_address":
+
+        address = tool_input.strip()
+        if "user_account_address" in address.lower():
             address = Config.XRP_WALLET.address
-        else:
-            address = tool_input.strip()
-        
+
         # Validate address format
         if not self._validate_address(address):
             return False, f"Invalid XRPL address format: {address}"

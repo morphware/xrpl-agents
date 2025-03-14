@@ -7,8 +7,11 @@ from xrpl.clients import JsonRpcClient
 from xrpl.models.transactions import Payment
 from xrpl import transaction as tx
 from xrpl.wallet import Wallet
-from ..base import BaseCustomTool
-from ...config import Config
+from ...base import BaseCustomTool
+from ....config import Config
+from ....utils.kafka import send_to_kafka, get_kafka_messages, get_kafka_latest_message
+from ....utils.types import XrpTransactionRequest
+import time, uuid
 
 class XRPLSendXrpTool(BaseCustomTool, BaseTool):
     """
@@ -46,15 +49,32 @@ class XRPLSendXrpTool(BaseCustomTool, BaseTool):
                 destination=destination,
                 amount=amount_drops
             )
-
-            # Create a wallet instance, set with the current sequence
-            try:    
-                output = tx.submit_and_wait(payment, client, Config.XRP_WALLET)    
-            except tx.XRPLReliableSubmissionException as e:    
-                response = f"Submit failed: {str(e)}"
+            tx_id = str(uuid.uuid4())
+            # Create XrpTransactionRequest object with attributes
+            payload = json.dumps(
+                {
+                    "msg_type": "tx_send_xrp",
+                    "tx_id": tx_id,
+                    "transaction": payment.blob()
+                }
+            )
+            
+            send_to_kafka(producer=Config.kafka_out, topic=Config.KAFKA_OUT_TOPIC, message=payload, key=Config.REQUEST_ID, msg_type='tx_send_xrp')
+            match = False
+            while not match:
+                response, key = get_kafka_latest_message(Config.consume_from_kafka(Config.kafka_in, Config.KAFKA_IN_TOPIC) ,message_id=Config.REQUEST_ID)
+                if tx_id == response.tx_id:
+                    match = True
+                else:    
+                    match = False
+            if isinstance(response, Exception):
+                return False, f"Error processing message: {str(response)}"                   
+            if "SUCCESS" in response.tx_status:
+                response = f"Transaction Successfull: sent {amount_xrp} XRP to {destination} " # at time {output.result['close_time_iso']} , transaction hash: {output.result['hash']}"
+                return True, response
+            else:
+                response = f"Transaction Failed: {response}"
                 return False, response
-            response = f"Transaction Successfull: sent {amount_xrp} XRP to {destination} at time {output.result['close_time_iso']} , transaction hash: {output.result['hash']}"
-            return True, response
         except Exception as e:
             return False, f"Error sending XRP: {str(e)}"
 

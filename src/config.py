@@ -22,10 +22,11 @@ class Config:
     MORPHWARE_EMBEDDINGS_MODEL = os.getenv("MORPHWARE_EMBEDDINGS_MODEL", "nomic-embed-text:latest")
     MORPHWARE_FILTER_MODEL = os.getenv("MORPHWARE_FILTER_MODEL", "llama3.1:latest")
     AGENT_WORKFLOW_FILE = os.getenv("AGENT_WORKFLOW_FILE", "XRPL.json.json")
-
+    REQUEST_ID = None
     KAFKA_BOOTSTRAP_SERVERS = os.getenv("KAFKA_BOOTSTRAP_SERVERS", "morphware-cluster-kafka-plain-bootstrap.kafka.svc:9092")
     USER = os.getenv("USER", "morphware")
     CHAT_UUID = os.getenv("CHAT_UUID", str(uuid.uuid4()))
+    print(CHAT_UUID)
     KAFKA = os.getenv("KAFKA", "true")
 
     SERPER_API_KEY = os.getenv("SERPER_API_KEY")
@@ -49,9 +50,9 @@ class Config:
     os.environ["ANONYMIZED_TELEMETRY"] = "False"
 
     # init XRP Wallet
-    XRPL_ENDPOINT = os.getenv("XRPL_ENDPOINT", "https://s.altnet.rippletest.net:51234")
+    XRPL_ENDPOINT = os.getenv("XRPL_ENDPOINT", "https://s1.ripple.com:51234") #"https://s.altnet.rippletest.net:51234")
     WALLET_ENABLED=os.getenv("WALLET_ENABLED", "true").lower() == "true"
-
+    WALLET_ADDRESS=os.getenv("WALLET_ADDRESS", "rHDkTGymZL6WQbrrsxPnpeTqhcF8S44kR1")
     if WALLET_ENABLED:
         # init XRP Wallet
         
@@ -62,7 +63,9 @@ class Config:
         else:
             client = JsonRpcClient(XRPL_ENDPOINT)
             XRP_WALLET = generate_faucet_wallet(client=JsonRpcClient(XRPL_ENDPOINT))
-
+    else:
+        from types import SimpleNamespace
+        XRP_WALLET = SimpleNamespace(address=WALLET_ADDRESS)
     # Kafka Settings
     if KAFKA.lower() == "true":
         from src.utils.kafka import create_kafka_producer, create_kafka_consumer, send_to_kafka, consume_from_kafka, get_kafka_messages
@@ -70,12 +73,14 @@ class Config:
         KAFKA_IN_TOPIC = CHAT_UUID + "_IN"
         KAFKA_OUT_TOPIC = CHAT_UUID + "_OUT"
         KAFKA_LOGS_TOPIC = CHAT_UUID + "_LOGS"
+        # KAFKA_TX_TOPIC = CHAT_UUID + "_TX"
         KAFKA_HEARTBEAT_TOPIC = CHAT_UUID + "_HEARTBEAT"
         kafka_logger = create_kafka_producer(KAFKA_BOOTSTRAP_SERVERS)
-        kafka_in = create_kafka_consumer(KAFKA_BOOTSTRAP_SERVERS, "degen_agent")
-        kafka_in = consume_from_kafka(kafka_in, KAFKA_IN_TOPIC)
+        kafka_in = consume_from_kafka(create_kafka_consumer(KAFKA_BOOTSTRAP_SERVERS, "agent"), KAFKA_IN_TOPIC)
+        # kafka_tx = consume_from_kafka(create_kafka_consumer(KAFKA_BOOTSTRAP_SERVERS, "agent"), KAFKA_TX_TOPIC)   
         kafka_out = create_kafka_producer(KAFKA_BOOTSTRAP_SERVERS)
         kafka_heartbeat = create_kafka_producer(KAFKA_BOOTSTRAP_SERVERS)
+        
     else:
         KAFKA_IN_TOPIC = None
         KAFKA_OUT_TOPIC = None
@@ -91,7 +96,7 @@ class Config:
     MAX_RETRIES = 3
     REVIEW_THRESHOLD = 0.7  # Minimum score for approval
     ENABLE_FEEDBACK_LOOP = True
-    
+    PROCESS_LOCK = False
     # Debugging and Logging
     DEBUG_MODE = os.getenv("DEBUG_MODE", "false").lower() == "true"
     LOG_LEVEL = logging.DEBUG if DEBUG_MODE else logging.INFO

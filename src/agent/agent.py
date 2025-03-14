@@ -4,6 +4,7 @@ from src.config import Config
 from src.utils.logger import setup_debug_logging
 from .prompts import get_tool_instructions
 from src.agent.agent_loader import AgentsWorkflow
+from src.utils.kafka import send_to_kafka
 import logging
 import time
 import json
@@ -90,14 +91,17 @@ class MultiAgentSystem:
                         break
 
             metrics["total_duration"] = time.time_ns() - start_time
-            return {
+            Config.PROCESS_LOCK = False
+            response = {
                 "model": Config.OLLAMA_MODEL,
                 "created_at": time.strftime("%Y-%m-%dT%H:%M:%S.%fZ", time.gmtime()),
                 "response": response_text,
                 "done": True,
-                "context": context,
+                # "context": context,
                 **metrics
             }
+            send_to_kafka(producer=Config.kafka_out, topic=Config.KAFKA_OUT_TOPIC, message=json.dumps({"inference_result": json.dumps(response), "msg_key": Config.REQUEST_ID, "msg_type":"chat_completion_result"}), key=Config.REQUEST_ID, msg_type="chat_completion_result", model=Config.OLLAMA_MODEL)
+            return response
                     
         except Exception as e:
             error_msg = f"Error processing request: {str(e)}"
@@ -105,15 +109,18 @@ class MultiAgentSystem:
             self.memory.append_ai_message(f"Error occurred: {error_msg}")
             context.append({"role": "system", "content": f"Error: {error_msg}"})
             metrics["total_duration"] = time.time_ns() - start_time
-            return {
+            Config.PROCESS_LOCK = False
+            response = {
                 "model": Config.OLLAMA_MODEL,
                 "created_at": time.strftime("%Y-%m-%dT%H:%M:%S.%fZ", time.gmtime()),
                 "response": error_msg,
                 "done": True,
-                "context": context,
+                # "context": context,
                 "chat_id": Config.CHAT_UUID,
                 **metrics
             }
+            send_to_kafka(producer=Config.kafka_out, topic=Config.KAFKA_OUT_TOPIC, message=json.dumps({"inference_result": response, "msg_key": Config.REQUEST_ID, "msg_type":"chat_completion_result"}), key=Config.REQUEST_ID, msg_type="chat_completion_result", model=Config.OLLAMA_MODEL)
+            return response
 
 
 
