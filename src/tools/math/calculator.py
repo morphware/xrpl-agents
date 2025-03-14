@@ -37,7 +37,7 @@ class CalculatorTool(BaseCustomTool, BaseTool):
             # Validate the expression
             if not self._validate_expression(cleaned_expr):
                 logger.warning(f"Invalid characters detected in expression: {tool_input}")
-                return "Error: Invalid characters in expression. Only numbers and basic operators (+, -, *, /, (), .) are allowed."
+                return False, "Error: Invalid characters in expression. Only numbers and basic operators (+, -, *, /, (), .) are allowed."
             
             # Create a safe local environment for eval
             safe_locals = {"__builtins__": {}, "math": math}
@@ -52,17 +52,17 @@ class CalculatorTool(BaseCustomTool, BaseTool):
                 formatted_result = str(result)
             
             logger.info(f"Calculator result: {formatted_result}")
-            return f"The result of {tool_input} is {formatted_result}"
+            return True, f"The result of {tool_input} is {formatted_result}"
             
         except ZeroDivisionError:
             logger.error("Division by zero attempted")
-            return "Error: Division by zero is not allowed"
+            return False, "Error: Division by zero is not allowed"
         except SyntaxError:
             logger.error(f"Invalid syntax in expression: {tool_input}")
-            return "Error: Invalid syntax in the expression"
+            return False, "Error: Invalid syntax in the expression"
         except Exception as e:
             logger.error(f"Calculator error: {str(e)}", exc_info=True)
-            return f"Error: {str(e)}"
+            return False, f"Error: {str(e)}"
 
     async def _arun(self, tool_input: str) -> str:
         """Async version of run - not implemented."""

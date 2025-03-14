@@ -90,7 +90,7 @@ class MorphwareKnowledgeTool(BaseCustomTool, BaseTool):
     def _run(self, tool_input: str) -> str:
         """Query the MorphwareKnowledgeTool knowledge base."""
         if not tool_input or not tool_input.strip():
-            return "Error: Empty query provided"
+            return False, "Error: Empty query provided"
             
         logger.info(f"Querying MorphwareKnowledgeTool with: {tool_input}")
         
@@ -117,7 +117,7 @@ class MorphwareKnowledgeTool(BaseCustomTool, BaseTool):
                 )
             
             if not results:
-                return "No relevant information found in the knowledge base."
+                return True, "No relevant information found in the knowledge base."
             
             # Format results with similarity scores
             formatted_results = []
@@ -133,16 +133,16 @@ class MorphwareKnowledgeTool(BaseCustomTool, BaseTool):
                     logger.info(f"Found match with similarity {similarity:.1f}%: {doc.page_content[:100]}...")
             
             if not formatted_results:
-                return "No sufficiently relevant information found in the knowledge base."
+                return True, "No sufficiently relevant information found in the knowledge base."
             
             response = "Found relevant information:\n\n" + "\n---\n".join(formatted_results)
             logger.info(f"Returning {len(formatted_results)} relevant results")
-            return response
+            return True, response
                 
         except Exception as e:
             error_msg = f"Error querying knowledge base: {str(e)}"
             logger.error(error_msg, exc_info=True)
-            return error_msg
+            return False, error_msg
 
     def _arun(self, tool_input: str) -> str:
         """Async version of _run"""

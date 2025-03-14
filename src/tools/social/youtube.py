@@ -35,17 +35,17 @@ class YouTubeTool(BaseCustomTool, BaseTool):
             
             if not video_id:
                 logger.warning(f"Invalid YouTube URL format: {tool_input}")
-                return "Invalid YouTube URL format"
+                return False, "Invalid YouTube URL format"
 
             transcript_data = YouTubeTranscriptApi.get_transcript(video_id)
             if not transcript_data:
                 logger.warning(f"No transcript available for video: {video_id}")
-                return "No transcript available for this video."
+                return False, "No transcript available for this video."
                 
             formatted_text = " ".join(entry['text'].strip() for entry in transcript_data)
             logger.info(f"Returning transcript for video {video_id}")
-            return formatted_text
+            return True, formatted_text
                 
         except Exception as e:
             logger.error(f"Error getting YouTube transcript: {str(e)}", exc_info=True)
-            return f"Error getting transcript: {str(e)}"
+            return False, f"Error getting transcript: {str(e)}"

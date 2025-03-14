@@ -29,11 +29,11 @@ class CryptoAnalysisTool(BaseCustomTool, BaseTool):
                 result = self._compare_assets(crypto_list)
                 
             logger.info(f"Successfully analyzed crypto(s): {tool_input}")
-            return result
+            return True, result
                 
         except Exception as e:
             logger.error(f"Error analyzing crypto: {str(e)}", exc_info=True)
-            return f"Error analyzing crypto: {str(e)}"
+            return False, f"Error analyzing crypto: {str(e)}"
 
     async def _arun(self, tool_input: str) -> str:
         """Async version of run - not implemented."""

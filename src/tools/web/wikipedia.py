@@ -27,17 +27,17 @@ class WikipediaTool(BaseCustomTool, BaseTool):  # Add BaseTool inheritance
             # Clean the query
             tool_input = tool_input.strip()
             if not tool_input:
-                return "Error: Empty search query"
+                return False, "Error: Empty search query"
                 
             # Perform the search
             results = self.wikipedia.run(tool_input)
             logger.info(f"Wikipedia search completed successfully for: {tool_input}")
             
-            return results
+            return True, results
             
         except Exception as e:
             logger.error(f"Wikipedia search error: {str(e)}", exc_info=True)
-            return f"Error searching Wikipedia: {str(e)}"
+            return False, f"Error searching Wikipedia: {str(e)}"
     
     def _arun(self, tool_input: str) -> str:  # Changed query to tool_input
         """Async version of run - not implemented."""

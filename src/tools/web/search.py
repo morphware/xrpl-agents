@@ -26,13 +26,13 @@ class WebSearchTool(BaseCustomTool, BaseTool):  # Added BaseTool inheritance
             # Clean the query
             tool_input = tool_input.strip()
             if not tool_input:
-                return "Error: Empty search query"
+                return False, "Error: Empty search query"
                 
             # Perform the search
             results = self.search_engine.run(tool_input)
             logger.info(f"Search completed successfully for: {tool_input}")
             
-            return results
+            return True, results
             
         except Exception as e:
             logger.error(f"Search error: {str(e)}", exc_info=True)

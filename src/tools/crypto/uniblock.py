@@ -104,11 +104,11 @@ class UniblockTool(BaseCustomTool):
         except CryptoToolError as e:
             error_msg = str(e)
             logger.error(error_msg)
-            return error_msg
+            return False, error_msg
         except Exception as e:
             error_msg = f"Unexpected error: {str(e)}"
             logger.error(error_msg, exc_info=True)
-            return error_msg
+            return False, error_msg
 
     def _get_token_transfers(self, chain_id: int, wallet_address: str) -> str:
         """Get token transfer history for a wallet."""
@@ -122,7 +122,7 @@ class UniblockTool(BaseCustomTool):
             )
             
             if not data.get("transfers"):
-                return "No transfer history found for this wallet address."
+                return True, "No transfer history found for this wallet address."
                 
             transfers = data["transfers"]
             
@@ -155,11 +155,11 @@ class UniblockTool(BaseCustomTool):
                     logger.error(f"Error formatting transfer: {str(e)}")
                     continue
 
-            return "\n".join(summary)
+            return True, "\n".join(summary)
             
         except Exception as e:
             logger.error(f"Error getting transfer history: {str(e)}", exc_info=True)
-            return f"Error getting transfer history: {str(e)}"
+            return False, f"Error getting transfer history: {str(e)}"
 
     def _get_wallet_transactions(self, chain_id: int, wallet_address: str) -> str:
         """Get transaction history for a wallet."""
@@ -175,7 +175,7 @@ class UniblockTool(BaseCustomTool):
             
             txs = data.get('transactions', [])
             if not txs:
-                return "No transactions found for this wallet."
+                return True, "No transactions found for this wallet."
 
             summary = [f"Found {len(txs)} transactions for {wallet_address}"]
             
@@ -193,9 +193,9 @@ class UniblockTool(BaseCustomTool):
                     f" | Status: {'Success' if tx.get('successful', False) else 'Failed'}"
                 )
 
-            return "\n".join(summary)
+            return True, "\n".join(summary)
         except Exception as e:
-            return f"Error getting wallet transactions: {str(e)}"
+            return False, f"Error getting wallet transactions: {str(e)}"
 
     def _get_transaction_details(self, chain_id: int, tx_hash: str) -> str:
         """Get details for a specific transaction."""
@@ -209,7 +209,7 @@ class UniblockTool(BaseCustomTool):
             )
             
             if not data:
-                return "No transaction details found."
+                return True, "No transaction details found."
                 
             details = [
                 "Transaction Details:",
@@ -231,9 +231,9 @@ class UniblockTool(BaseCustomTool):
                     details.append(f"Topics: {', '.join(log.get('topics', []))}")
                     details.append(f"Data: {log.get('data', 'None')}")
                     
-            return "\n".join(details)
+            return True, "\n".join(details)
         except Exception as e:
-            return f"Error getting transaction details: {str(e)}"
+            return False, f"Error getting transaction details: {str(e)}"
 
     def _get_token_balance(self, chain_id: int, wallet_address: str) -> str:
         """Get token balances for a wallet."""
@@ -248,7 +248,7 @@ class UniblockTool(BaseCustomTool):
             )
             
             if not data.get('balances'):
-                return "No token balances found for this wallet."
+                return True, "No token balances found for this wallet."
                 
             balances = data['balances']
             summary = [f"Token balances for {wallet_address}:"]
@@ -260,6 +260,6 @@ class UniblockTool(BaseCustomTool):
                     f" {token_amount:,.4f} tokens"
                 )
                 
-            return "\n".join(summary)
+            return True, "\n".join(summary)
         except Exception as e:
-            return f"Error getting token balances: {str(e)}"
+            return False, f"Error getting token balances: {str(e)}"

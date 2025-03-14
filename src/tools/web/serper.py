@@ -63,7 +63,7 @@ class SerperSearchTool(BaseCustomTool, BaseTool):
             # Clean the query
             tool_input = tool_input.strip()
             if not tool_input:
-                return "Error: Empty search query"
+                return False, "Error: Empty search query"
             
             # Prepare the request
             headers = {
@@ -91,16 +91,16 @@ class SerperSearchTool(BaseCustomTool, BaseTool):
             formatted_results = self._format_results(results)
             
             logger.info(f"Search completed successfully for: {tool_input}")
-            return formatted_results
+            return True, formatted_results
             
         except requests.exceptions.RequestException as e:
             error_msg = f"API request failed: {str(e)}"
             logger.error(error_msg, exc_info=True)
-            return error_msg
+            return False, error_msg
         except Exception as e:
             error_msg = f"Error performing search: {str(e)}"
             logger.error(error_msg, exc_info=True)
-            return error_msg
+            return False, error_msg
     
     def _arun(self, tool_input: str) -> str:
         """Async version of run - not implemented."""

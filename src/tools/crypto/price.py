@@ -31,12 +31,12 @@ class CryptoPriceTool(BaseCustomTool, BaseTool):
             
             # Format response based on number of results
             if len(results) == 1:
-                return results[0]
-            return "\n".join(results)
+                return True, results[0]
+            return True, "\n".join(results)
             
         except Exception as e:
             logger.error(f"Error getting crypto price: {str(e)}", exc_info=True)
-            return f"Error getting crypto price: {str(e)}"
+            return False, f"Error getting crypto price: {str(e)}"
     
     def _get_single_price(self, crypto: str) -> str:
         """Get price for a single cryptocurrency."""

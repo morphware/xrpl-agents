@@ -104,7 +104,7 @@ class TwitterTool(BaseCustomTool, BaseTool):
             # First get the user ID
             user = self.client.get_user(username=username)
             if not user.data:
-                return f"User @{username} not found."
+                return False, f"User @{username} not found."
 
             user_id = user.data.id
 
@@ -117,18 +117,18 @@ class TwitterTool(BaseCustomTool, BaseTool):
             )
 
             if not tweets.data:
-                return f"No tweets found for @{username}."
+                return True, f"No tweets found for @{username}."
 
             results = []
             for tweet in tweets.data:
                 created_at = tweet.created_at.strftime('%Y-%m-%d %H:%M:%S') if tweet.created_at else 'Unknown date'
                 results.append(f"[{created_at}] {tweet.text}\n")
 
-            return "\n".join(results)
+            return True, "\n".join(results)
 
         except Exception as e:
             logger.error(f"Error getting user tweets: {str(e)}", exc_info=True)
-            return f"Error getting user tweets: {str(e)}"
+            return False, f"Error getting user tweets: {str(e)}"
 
     def _post_tweet(self, content: str) -> str:
         """Post a new tweet."""
