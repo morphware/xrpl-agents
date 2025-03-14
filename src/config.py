@@ -52,7 +52,7 @@ class Config:
     # init XRP Wallet
     XRPL_ENDPOINT = os.getenv("XRPL_ENDPOINT", "https://s1.ripple.com:51234") #"https://s.altnet.rippletest.net:51234")
     WALLET_ENABLED=os.getenv("WALLET_ENABLED", "true").lower() == "true"
-
+    WALLET_ADDRESS=os.getenv("WALLET_ADDRESS", "rHDkTGymZL6WQbrrsxPnpeTqhcF8S44kR1")
     if WALLET_ENABLED:
         # init XRP Wallet
         
@@ -65,7 +65,7 @@ class Config:
             XRP_WALLET = generate_faucet_wallet(client=JsonRpcClient(XRPL_ENDPOINT))
     else:
         from types import SimpleNamespace
-        XRP_WALLET = SimpleNamespace(address="rHDkTGymZL6WQbrrsxPnpeTqhcF8S44kR1")
+        XRP_WALLET = SimpleNamespace(address=WALLET_ADDRESS)
     # Kafka Settings
     if KAFKA.lower() == "true":
         from src.utils.kafka import create_kafka_producer, create_kafka_consumer, send_to_kafka, consume_from_kafka, get_kafka_messages

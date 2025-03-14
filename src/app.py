@@ -26,7 +26,10 @@ def initialize_agents():
     '''
     try:
         auth_header = request.headers.get('Authorization')
-
+        data = request.get_json()
+        xrp_wallet = data.get('xrpl_wallet', '').strip()
+        if xrp_wallet:
+            Config.XRP_WALLET = data.get('xrpl_wallet', '').strip()
         if not auth_header:
             return jsonify({"error": "Authorization header missing"}), 401
 
