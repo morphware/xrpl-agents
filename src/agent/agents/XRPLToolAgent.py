@@ -195,6 +195,7 @@ class XRPLToolAgent:
                                                             [{"role": "user", "content": inference_res.get("formatted_input")}])
 
                         output = f"Step {tool_idx+1} - \n{tool_response}\n"
+                        SUMMARISE = False
                     else:
                         try:
                             status, tool_response = tool.run(inference_res.get("formatted_input"))
