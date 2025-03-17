@@ -25,6 +25,7 @@ class Config:
     REQUEST_ID = None
     KAFKA_BOOTSTRAP_SERVERS = os.getenv("KAFKA_BOOTSTRAP_SERVERS", "morphware-cluster-kafka-plain-bootstrap.kafka.svc:9092")
     USER = os.getenv("USER", "morphware")
+    USER_ID = os.getenv("USER_ID", "1")
     CHAT_UUID = os.getenv("CHAT_UUID", str(uuid.uuid4()))
     print(CHAT_UUID)
     KAFKA = os.getenv("KAFKA", "true")
@@ -48,7 +49,14 @@ class Config:
 
     # Just incase to disable anonymized telemetry from Chroma
     os.environ["ANONYMIZED_TELEMETRY"] = "False"
-
+    KAFKA_IN_TOPIC = None
+    KAFKA_OUT_TOPIC = None
+    KAFKA_LOGS_TOPIC = None
+    KAFKA_HEARTBEAT_TOPIC = None
+    kafka_logger = None
+    kafka_in = None
+    kafka_out = None
+    kafka_heartbeat = None
     # init XRP Wallet
     XRPL_ENDPOINT = os.getenv("XRPL_ENDPOINT", "https://s1.ripple.com:51234") #"https://s.altnet.rippletest.net:51234")
     WALLET_ENABLED=os.getenv("WALLET_ENABLED", "true").lower() == "true"
@@ -66,30 +74,7 @@ class Config:
     else:
         from types import SimpleNamespace
         XRP_WALLET = SimpleNamespace(address=WALLET_ADDRESS)
-    # Kafka Settings
-    if KAFKA.lower() == "true":
-        from src.utils.kafka import create_kafka_producer, create_kafka_consumer, send_to_kafka, consume_from_kafka, get_kafka_messages
 
-        KAFKA_IN_TOPIC = CHAT_UUID + "_IN"
-        KAFKA_OUT_TOPIC = CHAT_UUID + "_OUT"
-        KAFKA_LOGS_TOPIC = CHAT_UUID + "_LOGS"
-        # KAFKA_TX_TOPIC = CHAT_UUID + "_TX"
-        KAFKA_HEARTBEAT_TOPIC = CHAT_UUID + "_HEARTBEAT"
-        kafka_logger = create_kafka_producer(KAFKA_BOOTSTRAP_SERVERS)
-        kafka_in = consume_from_kafka(create_kafka_consumer(KAFKA_BOOTSTRAP_SERVERS, "agent"), KAFKA_IN_TOPIC)
-        # kafka_tx = consume_from_kafka(create_kafka_consumer(KAFKA_BOOTSTRAP_SERVERS, "agent"), KAFKA_TX_TOPIC)   
-        kafka_out = create_kafka_producer(KAFKA_BOOTSTRAP_SERVERS)
-        kafka_heartbeat = create_kafka_producer(KAFKA_BOOTSTRAP_SERVERS)
-        
-    else:
-        KAFKA_IN_TOPIC = None
-        KAFKA_OUT_TOPIC = None
-        KAFKA_LOGS_TOPIC = None
-        KAFKA_HEARTBEAT_TOPIC = None
-        kafka_logger = None
-        kafka_in = None
-        kafka_out = None
-        kafka_heartbeat = None
 
     # Multi-Agent System Settings
     REVIEWER_AGENT_ENABLED = os.getenv("REVIEWER_AGENT_ENABLED", "true").lower() == "true"
@@ -137,3 +122,19 @@ class Config:
             "ollama_model": cls.OLLAMA_MODEL,
             "verbose_tools": cls.VERBOSE_TOOLS
         }
+        
+    @classmethod
+    def init_kafka(cls):
+        # Kafka Settings
+        if cls.KAFKA.lower() == "true":
+            from src.utils.kafka import create_kafka_producer, create_kafka_consumer, send_to_kafka, consume_from_kafka, get_kafka_messages
+            cls.KAFKA_IN_TOPIC = f"agent-response-{cls.USER_ID}-xrpl"
+            cls.KAFKA_OUT_TOPIC = f"agent-requests-{cls.USER_ID}-xrpl"
+            cls.KAFKA_LOGS_TOPIC = f"agent-requests-{cls.USER_ID}-xrpl-LOGS"
+            # KAFKA_TX_TOPIC = CHAT_UUID + "_TX"
+            cls.KAFKA_HEARTBEAT_TOPIC = f"agent-requests-{cls.USER_ID}-xrpl-HEARTBEAT"
+            cls.kafka_logger = create_kafka_producer(cls.KAFKA_BOOTSTRAP_SERVERS)
+            cls.kafka_in = consume_from_kafka(create_kafka_consumer(cls.KAFKA_BOOTSTRAP_SERVERS, "agent"), KAFKA_IN_TOPIC)
+            # kafka_tx = consume_from_kafka(create_kafka_consumer(KAFKA_BOOTSTRAP_SERVERS, "agent"), KAFKA_TX_TOPIC)   
+            cls.kafka_out = create_kafka_producer(cls.KAFKA_BOOTSTRAP_SERVERS)
+            cls.kafka_heartbeat = create_kafka_producer(cls.KAFKA_BOOTSTRAP_SERVERS)

@@ -36,9 +36,9 @@ class ChatCompletionRequest(BaseModel):
     msg_type: Literal[MessageType.CHAT_COMPLETION] = MessageType.CHAT_COMPLETION
 
 class XrpTransactionRequest(BaseModel):
-    tx_id: str
-    transaction: str
+    raw_tx: str
     msg_type: Literal[MessageType.TX_SEND_XRP] = MessageType.TX_SEND_XRP
+    tx_id: str
     
 class EthTransactionRequest(BaseModel):
     from_address: EthAddress
