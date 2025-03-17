@@ -55,7 +55,7 @@ class XRPLSendXrpTool(BaseCustomTool, BaseTool):
                 {
                     "msg_type": "tx_send_xrp",
                     "tx_id": tx_id,
-                    "transaction": payment.blob()
+                    "raw_tx": payment.blob()
                 }
             )
             

@@ -69,7 +69,7 @@ class XRPLNFTCreateSellOfferTool(BaseCustomTool, BaseTool):
                     {
                         "msg_type": "tx_send_xrp",
                         "tx_id": tx_id,
-                        "transaction": sell_offer_tx.blob()
+                        "raw_tx": sell_offer_tx.blob()
                     }
                 )
                 send_to_kafka(producer=Config.kafka_out, topic=Config.KAFKA_OUT_TOPIC, message=payload, key=Config.REQUEST_ID, msg_type='tx_send_xrp')

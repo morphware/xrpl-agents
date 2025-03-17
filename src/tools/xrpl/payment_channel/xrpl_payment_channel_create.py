@@ -131,7 +131,7 @@ class XRPLPaymentChannelCreateTool(BaseCustomTool, BaseTool):
                     {
                         "msg_type": "tx_send_xrp",
                         "tx_id": tx_id,
-                        "transaction": channel_tx.blob()
+                        "raw_tx": channel_tx.blob()
                     }
                 )
                 

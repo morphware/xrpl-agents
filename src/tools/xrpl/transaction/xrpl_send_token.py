@@ -113,7 +113,7 @@ class XRPLSendTokenTool(BaseCustomTool, BaseTool):
                 {
                     "msg_type": "tx_send_xrp",
                     "tx_id": tx_id,
-                    "transaction": json.dumps(payment.to_xrpl())
+                    "raw_tx": json.dumps(payment.to_xrpl())
                 }
             )
             

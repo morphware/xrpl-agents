@@ -172,7 +172,7 @@ class XRPLAMMDepositTool(BaseCustomTool, BaseTool):
                     {
                         "msg_type": "tx_send_xrp",
                         "tx_id": tx_id,
-                        "transaction": amm_deposit_tx.blob()
+                        "raw_tx": amm_deposit_tx.blob()
                     }
                 )
                 

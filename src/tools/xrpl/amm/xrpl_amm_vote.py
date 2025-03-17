@@ -139,7 +139,7 @@ class XRPLAMMVoteTool(BaseCustomTool, BaseTool):
                     {
                         "msg_type": "tx_send_xrp",
                         "tx_id": tx_id,
-                        "transaction": vote_tx.blob()
+                        "raw_tx": vote_tx.blob()
                     }
                 )
                 

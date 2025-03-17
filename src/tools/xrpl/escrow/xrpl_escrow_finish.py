@@ -123,7 +123,7 @@ class XRPLEscrowFinishTool(BaseCustomTool, BaseTool):
                     {
                         "msg_type": "tx_send_xrp",
                         "tx_id": tx_id,
-                        "transaction": finish_tx.blob()
+                        "raw_tx": finish_tx.blob()
                     }
                 )
                 # Send to Kafka

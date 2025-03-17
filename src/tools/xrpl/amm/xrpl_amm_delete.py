@@ -111,7 +111,7 @@ class XRPLAMMDeleteTool(BaseCustomTool, BaseTool):
                     {
                         "msg_type": "tx_send_xrp",
                         "tx_id": tx_id,
-                        "transaction": amm_delete_tx.blob()
+                        "raw_tx": amm_delete_tx.blob()
                     }
                 )
                 

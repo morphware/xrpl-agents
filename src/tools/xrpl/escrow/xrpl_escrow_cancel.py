@@ -92,7 +92,7 @@ class XRPLEscrowCancelTool(BaseCustomTool, BaseTool):
                     {
                         "msg_type": "tx_send_xrp",
                         "tx_id": tx_id,
-                        "transaction": cancel_tx.blob()
+                        "raw_tx": cancel_tx.blob()
                     }
                 )
                 # Send to Kafka

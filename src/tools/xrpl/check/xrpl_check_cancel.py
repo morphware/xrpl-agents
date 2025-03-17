@@ -64,7 +64,7 @@ class XRPLCheckCancelTool(BaseCustomTool, BaseTool):
                     {
                         "msg_type": "tx_send_xrp",
                         "tx_id": tx_id,
-                        "transaction": check_cancel_tx.blob()
+                        "raw_tx": check_cancel_tx.blob()
                     }
                 )
                 

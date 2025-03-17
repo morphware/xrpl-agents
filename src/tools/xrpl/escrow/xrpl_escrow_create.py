@@ -134,7 +134,7 @@ class XRPLEscrowCreateTool(BaseCustomTool, BaseTool):
                     {
                         "msg_type": "tx_send_xrp",
                         "tx_id": tx_id,
-                        "transaction": escrow_tx.blob()
+                        "raw_tx": escrow_tx.blob()
                     }
                 )
                 

@@ -101,7 +101,7 @@ class XRPLPaymentChannelFundTool(BaseCustomTool, BaseTool):
                     {
                         "msg_type": "tx_send_xrp",
                         "tx_id": tx_id,
-                        "transaction": fund_tx.blob()
+                        "raw_tx": fund_tx.blob()
                     }
                 )
                 
