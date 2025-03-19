@@ -161,7 +161,7 @@ class XRPLToolAgent:
         message = "Starting XRPL tool inference"
         context.append({"role": "system", "content": message})
         send_to_kafka(Config.kafka_out, Config.KAFKA_OUT_TOPIC, message=json.dumps({"message": message}), key=Config.REQUEST_ID, msg_type="info_message", model=self.llm.model)
-
+        self.logger.info("XRPLToolAgent: Starting tool inference")
         SUMMARISE = True
 
         inference_result = self.infer_tool(user_input)
@@ -183,12 +183,12 @@ class XRPLToolAgent:
                 if tool:
                     if inference_res.get("re_evaluate") and tool_idx > 0:
                         message = f"XRPLToolAgent: Re-evaluating tool '{tool.name}' in step {tool_idx+1}"
-                        self.logger.info(message)
+                        self.logger.info(f"XRPLToolAgent: Re-evaluating tool '{tool.name}' in step {tool_idx+1}")
                         send_to_kafka(Config.kafka_out, Config.KAFKA_OUT_TOPIC, message=json.dumps({"message": message}), key=Config.REQUEST_ID, msg_type="info_message", model=self.llm.model)
                         inference_res = self.re_eval_tool(inference_res.get("formatted_input"), tool_responses[-1], inference_res)
                     message = f"XRPLToolAgent: Executing tool '{tool.name}' in step {tool_idx+1}"
-                    self.logger.info(message)
                     send_to_kafka(Config.kafka_out, Config.KAFKA_OUT_TOPIC, message=json.dumps({"message": message}), key=Config.REQUEST_ID, msg_type="info_message", model=self.llm.model)
+                    self.logger.info(f"XRPLToolAgent: Executing tool '{tool.name}' in step {tool_idx+1}")
                     if tool.name == "direct_llm":
                         tool_response = self.llm.invoke(input=[{"role": "system", "content": self.backstory}]+    
                                                             self.memory.chat_memory.messages+
@@ -207,6 +207,7 @@ class XRPLToolAgent:
                         output = f"Step {tool_idx+1} - Executed tool {tool.name} which ({status_str}) with the response: \n{tool_response}\n"
                     tool_responses.append(output)
                     send_to_kafka(producer=Config.kafka_out, topic=Config.KAFKA_OUT_TOPIC, message=json.dumps({"message": output}), key=Config.REQUEST_ID, msg_type="info_message", model=self.llm.model)
+                    self.logger.info(f"XRPLToolAgent: Executed tool '{tool.name}' in step {tool_idx+1} with response: {tool_response}")
                     context.append({
                         "role": "system",
                         "content": output
@@ -225,6 +226,7 @@ class XRPLToolAgent:
                     tool_responses.append(f"Step {tool_idx+1} - {output}")
                     output_response["status"] = True
                     send_to_kafka(producer=Config.kafka_out, topic=Config.KAFKA_OUT_TOPIC, message=json.dumps({"message": output}), key=Config.REQUEST_ID, msg_type="info_message", model=self.llm.model)
+                    self.logger.info(f"XRPLToolAgent: Tool '{selected_tool_name}' not found among registered tools; using default LLM response: {tool_response}")    
             # Generate a summary of tool responses using the LLM
             summary_output = "\n\n".join(tool_responses) if tool_responses else "No tool responses executed."
             if SUMMARISE:
@@ -232,6 +234,7 @@ class XRPLToolAgent:
                 summary_output = self.llm.invoke(input=[{"role": "user", "content": summary_prompt}])
                 context.append({"role": "system", "content": summary_output})
                 send_to_kafka(producer=Config.kafka_out, topic=Config.KAFKA_OUT_TOPIC, message=json.dumps({"message": summary_output}), key=Config.REQUEST_ID, msg_type="info_message", model=self.llm.model)
+                self.logger.info(f"XRPLToolAgent: Summarised tool responses: {summary_output}")
             # Append the summary to output_response
             output_response.update({"output": summary_output,"inference": tool_responses})
         else:
@@ -243,7 +246,7 @@ class XRPLToolAgent:
 
             output_response = {"status": True, "output": default_response, "inference": tool_responses}
             send_to_kafka(producer=Config.kafka_out, topic=Config.KAFKA_OUT_TOPIC, message=json.dumps({"message": default_response}), key=Config.REQUEST_ID, msg_type="info_message", model=self.llm.model)
-
+            self.logger.info(f"XRPLToolAgent: No specific tool selected; using default LLM response: {default_response}")
 
         return user_input, tool_responses, context, output_response
 

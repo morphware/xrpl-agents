@@ -34,6 +34,8 @@ def initialize_agents():
 
         if xrp_wallet:
             Config.XRP_WALLET = xrp_wallet
+        if Config.KAFKA:
+            Config.init_kafka()
         if not auth_header:
             return jsonify({"error": "Authorization header missing"}), 401
 

@@ -134,7 +134,7 @@ class Config:
             # KAFKA_TX_TOPIC = CHAT_UUID + "_TX"
             cls.KAFKA_HEARTBEAT_TOPIC = f"agent-requests-{cls.USER_ID}-xrpl-HEARTBEAT"
             cls.kafka_logger = create_kafka_producer(cls.KAFKA_BOOTSTRAP_SERVERS)
-            cls.kafka_in = consume_from_kafka(create_kafka_consumer(cls.KAFKA_BOOTSTRAP_SERVERS, "agent"), KAFKA_IN_TOPIC)
+            cls.kafka_in = consume_from_kafka(create_kafka_consumer(cls.KAFKA_BOOTSTRAP_SERVERS, "agent"), cls.KAFKA_IN_TOPIC)
             # kafka_tx = consume_from_kafka(create_kafka_consumer(KAFKA_BOOTSTRAP_SERVERS, "agent"), KAFKA_TX_TOPIC)   
             cls.kafka_out = create_kafka_producer(cls.KAFKA_BOOTSTRAP_SERVERS)
             cls.kafka_heartbeat = create_kafka_producer(cls.KAFKA_BOOTSTRAP_SERVERS)
